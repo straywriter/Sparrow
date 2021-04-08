@@ -1,0 +1,17 @@
+#pragma once
+
+#include "Math/Detail/TVector.h"
+
+#include "Math/Detail/Vectorf.h"
+
+using Vector2i = Math::TVector<int, 2>;
+using Vector3i = Math::TVector<int, 3>;
+using Vector4i = Math::TVector<int, 4>;
+
+using Vector2f = Math::TVector<float, 2>;
+using Vector3f = Math::TVector<float, 3>;
+using Vector4f = Math::TVector<float, 4>;
+using Vector = Math::TVector<float, 3>;
+
+
+#include "Math/Inline/Math.inl"
