@@ -13,5 +13,9 @@ using Vector3f = Math::TVector<float, 3>;
 using Vector4f = Math::TVector<float, 4>;
 using Vector = Math::TVector<float, 3>;
 
+using Vector2d = Math::TVector<double, 2>;
+using Vector3d = Math::TVector<double, 3>;
+using Vector4d = Math::TVector<double, 4>;
+
 
 #include "Math/Inline/Math.inl"

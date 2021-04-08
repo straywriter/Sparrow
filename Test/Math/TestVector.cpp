@@ -210,9 +210,9 @@ TEST(Vector, Constructor)
 	//Vector4f
 	{
 		Vector4f t1;
-		t1.x = 0.f; t1.y = 0.f; t1.z = 0.f; t1.w = 0.f;
+		t1.x = 0.; t1.y = 0.; t1.z = 0.; t1.w = 0.;
 		Vector4f t2;
-		t2.x = 1.f; t2.y = 2.f; t2.z = 3.f; t2.w = 4.f;
+		t2.x = 1.; t2.y = 2.f; t2.z = 3.f; t2.w = 4.f;
 		Vector4f t3;
 		for (auto i = 4; i--; t3.data[i] = 8.9f);
 
@@ -222,12 +222,90 @@ TEST(Vector, Constructor)
 		EXPECT_EQ(t2, v2);
 		Vector4f  v3(8.9f);
 		EXPECT_EQ(t3, v3);
+		Vector4f v4(v2);
+		EXPECT_EQ(t2, v4);
+		Vector4f v5 = v2;
+		EXPECT_EQ(t2, v5);
+		Vector4f v6 = Vector4f();
+		EXPECT_EQ(t1, v6);
+		Vector4f v7 = Vector4f(8.9f);
+		EXPECT_EQ(t2, v7);
 
 	}
 
 	//Vector2d
+	{
+		Vector2d t1;
+		t1.x = 0.; t1.y = 0.; 
+		Vector2d t2;
+		t2.x = 1.1; t2.y = 2.2;
+		Vector2d t3;
+		t3.x = 8.8; t3.y = 8.8;
+
+		Vector2d v1;
+		EXPECT_EQ(t1, v1);
+		Vector2d v2(1.1, 2.2);
+		EXPECT_EQ(t2, v2);
+		Vector2d v3(8.8);
+		EXPECT_EQ(t3, v3);
+		Vector2d v4 = v2;
+		EXPECT_EQ(t2, v4);
+		Vector2d v5 = Vector2d();
+		EXPECT_EQ(t1, v5);
+		Vector2d v6 = Vector2d(8.8);
+		EXPECT_EQ(t3, v6);
+	}
 
 	//Vector3d
+	{
+		Vector3d t1;
+		t1.x = 0.; t1.y = 0.; t1.z = 0.;
+		Vector3d t2;
+		t2.x = 1.1; t2.y = 2.2; t2.z = 3.3;
+		Vector3d t3;
+		for (auto i = 3; i--; t3.data[i] = 8.9);
 
+
+		Vector3d v1;
+		EXPECT_EQ(t1, v1);
+		Vector3d v2(1.1, 2.2, 3.3);
+		EXPECT_EQ(t2, v2);
+		Vector3d v3(8.9);
+		EXPECT_EQ(t3, v3);
+		Vector3d v4 = t1;
+		EXPECT_EQ(t1, v4);
+		Vector3d v5 = Vector3d();
+		EXPECT_EQ(t1, v5);
+		Vector3d v6 = Vector3d(8.9);
+		EXPECT_EQ(t3, v6);
+
+	}
 	//Vector4d
+	{
+		
+		Vector4d t1;
+		t1.x = 0.f; t1.y = 0.f; t1.z = 0.f; t1.w = 0.f;
+		Vector4d t2;
+		t2.x = 1.f; t2.y = 2.f; t2.z = 3.f; t2.w = 4.f;
+		Vector4d t3;
+		for (auto i = 4; i--; t3.data[i] = 8.9f);
+
+		Vector4d v1;
+		EXPECT_EQ(t1, v1);
+		Vector4d v2(1.f, 2.f, 3.f, 4.f);
+		EXPECT_EQ(t2, v2);
+		Vector4d  v3(8.9f);
+		EXPECT_EQ(t3, v3);
+		Vector4d v4(v2);
+		EXPECT_EQ(t2, v4);
+		Vector4d v5 = v2;
+		EXPECT_EQ(t2, v5);
+		Vector4d v6 = Vector4d();
+		EXPECT_EQ(t1, v6);
+		Vector4d v7 = Vector4d(8.9f);
+		EXPECT_EQ(t2, v7);
+
+	}
+
+
 }

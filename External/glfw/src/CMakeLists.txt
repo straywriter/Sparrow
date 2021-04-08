@@ -3,7 +3,7 @@
 
 
 
-
+set(GLFW_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../)
 
 add_library(glfw "${GLFW_SOURCE_DIR}/include/GLFW/glfw3.h"
                  "${GLFW_SOURCE_DIR}/include/GLFW/glfw3native.h"
