@@ -39,6 +39,7 @@ endfunction()
 # add_executable(TestMathVector) target_sources(TestMathVector PRIVATE
 # ./Math/TestVector.cpp ) target_link_libraries(TestMathVector MathLib gtest
 # gtest_main)
+add_subdirectory(Core)
 
 add_subdirectory(Math)
 

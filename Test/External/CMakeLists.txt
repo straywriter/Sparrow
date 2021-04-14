@@ -33,3 +33,10 @@ addfmtexe(${CMAKE_CURRENT_SOURCE_DIR}/fmt)
 # target_link_libraries(${TestFileName}  gtest gtest_main
 # ${CMAKE_THREAD_LIBS_INIT} fmt) # add_test(${TestFileName} ${TestFileName}) #
 # set_tests_properties(${TestFileName} PROPERTIES TIMEOUT 5) endforeach()
+
+
+add_subdirectory(spdlog)
+
+add_subdirectory(ghc)
+
+add_subdirectory(lua)

@@ -1,8 +1,4 @@
 
-
-
-
-
 set(GLFW_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../)
 
 add_library(glfw "${GLFW_SOURCE_DIR}/include/GLFW/glfw3.h"
@@ -97,6 +93,7 @@ endif()
 configure_file(glfw_config.h.in glfw_config.h @ONLY)
 target_compile_definitions(glfw PRIVATE _GLFW_USE_CONFIG_H)
 target_sources(glfw PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/glfw_config.h")
+target_include_directories(glfw PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 
 set_target_properties(glfw PROPERTIES
                     #   OUTPUT_NAME ${GLFW_LIB_NAME}

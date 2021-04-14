@@ -53,3 +53,6 @@ target_include_directories(MathLib PUBLIC ${MathLibIncludeDir})
 target_sources(MathLib PUBLIC ${MathLibIncludeFile} ${MathLibSourceFile})
 
 set_target_properties(MathLib PROPERTIES FOLDER "Sparrow")
+
+
+# target_include_directories(Core )

@@ -2,7 +2,6 @@
 
 #include "Math/Detail/TVector.h"
 
-#include "Math/Detail/Vectorf.h"
 
 using Vector2i = Math::TVector<int, 2>;
 using Vector3i = Math::TVector<int, 3>;

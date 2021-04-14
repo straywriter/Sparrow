@@ -7,7 +7,7 @@
 //------TVector------
 template <typename T, size_t size> inline Math::TVector<T, size>::TVector()
 {
-	for (auto i = size; i--; this->data[i] = static_cast<T>(0))
+	for (auto i = size; i--; *this+i-1 = static_cast<T>(0))
 		;
 }
 
@@ -30,67 +30,67 @@ template <typename T> inline Math::TVector<T, 2>::TVector(const T& val) : x(val)
 {
 }
 
-template <typename T> inline void Math::TVector<T, 2>::Set(const T& x, const T& y)
-{
-	this->x = x;
-	this->y = y;
-}
+// template <typename T> inline void Math::TVector<T, 2>::Set(const T& x, const T& y)
+// {
+// 	this->x = x;
+// 	this->y = y;
+// }
 
-template <typename T> inline size_t Math::TVector<T, 2>::Size()
-{
-	return size_t(2);
-}
-template<typename T>
-inline T Math::TVector<T, 2>::SquaredLenth()
-{
-	return T();
-}
+// template <typename T> inline size_t Math::TVector<T, 2>::Size()
+// {
+// 	return size_t(2);
+// }
+// template<typename T>
+// inline T Math::TVector<T, 2>::SquaredLenth()
+// {
+// 	return T();
+// }
 
-template <typename T>
-Math::TVector<T, 2> Math::TVector<T, 2>::CrossProduct(const TVector& left, const TVector& right)
-{
-}
+// template <typename T>
+// Math::TVector<T, 2> Math::TVector<T, 2>::CrossProduct(const TVector& left, const TVector& right)
+// {
+// }
 
-template <typename T>
-Math::TVector<T, 2> Math::TVector<T, 2>::DotProduct(const TVector& left, const TVector& right)
-{
-}
-
-template<typename T>
-inline T Math::TVector<T, 2>::Lenth()
-{
-	return T();
-}
-template<typename T>
-inline void Math::TVector<T, 2>::Normalize()
-{
-}
-template<typename T>
-inline void Math::TVector<T, 2>::Cross(const TVector<T, 2>& val)
-{
-}
-
-template<typename T>
-inline void Math::TVector<T, 2>::Dot(const TVector<T, 2>& val)
-{
-}
+// template <typename T>
+// Math::TVector<T, 2> Math::TVector<T, 2>::DotProduct(const TVector& left, const TVector& right)
+// {
+// }
 
 // template<typename T>
-// inline TVector<T,2> Math::TVector<T, 2>::Abs()
+// inline T Math::TVector<T, 2>::Lenth()
 // {
-// return TVector<T,2>();
+// 	return T();
 // }
-template<typename T>
-inline T Math::TVector<T, 2>::Max()
-{
-	return T();
-}
+// template<typename T>
+// inline void Math::TVector<T, 2>::Normalize()
+// {
+// }
+// template<typename T>
+// inline void Math::TVector<T, 2>::Cross(const TVector<T, 2>& val)
+// {
+// }
 
-template<typename T>
-inline T Math::TVector<T, 2>::Min()
-{
-	return T();
-}
+// template<typename T>
+// inline void Math::TVector<T, 2>::Dot(const TVector<T, 2>& val)
+// {
+// }
+
+// // template<typename T>
+// // inline TVector<T,2> Math::TVector<T, 2>::Abs()
+// // {
+// // return TVector<T,2>();
+// // }
+// template<typename T>
+// inline T Math::TVector<T, 2>::Max()
+// {
+// 	return T();
+// }
+
+// template<typename T>
+// inline T Math::TVector<T, 2>::Min()
+// {
+// 	return T();
+// }
 
 // template<typename T>
 // inline TVector<T,2> Math::TVector<T, 2>::Lerp(TVector a, TVector b, float t)
@@ -114,62 +114,62 @@ inline Math::TVector<T, 3>::TVector(const T& x, const T& y, const T& z) :x(x), y
 {
 }
 
-template<typename T>
-inline T Math::TVector<T, 3>::Lenth()
-{
-	return T();
-}
+// template<typename T>
+// inline T Math::TVector<T, 3>::Lenth()
+// {
+// 	return T();
+// }
 
-template <typename T> inline size_t Math::TVector<T, 3>::Size()
-{
-	return size_t(3);
-}
-template<typename T>
-inline T Math::TVector<T, 3>::SquaredLenth()
-{
-	return T();
-}
+// template <typename T> inline size_t Math::TVector<T, 3>::Size()
+// {
+// 	return size_t(3);
+// }
+// template<typename T>
+// inline T Math::TVector<T, 3>::SquaredLenth()
+// {
+// 	return T();
+// }
 
-template <typename T>
-Math::TVector<T, 3> Math::TVector<T, 3>::CrossProduct(const TVector& left, const TVector& right)
-{
-}
+// template <typename T>
+// Math::TVector<T, 3> Math::TVector<T, 3>::CrossProduct(const TVector& left, const TVector& right)
+// {
+// }
 
-template <typename T>
-Math::TVector<T, 3> Math::TVector<T, 3>::DotProduct(const TVector& left, const TVector& right)
-{
-}
-
-template<typename T>
-inline void Math::TVector<T, 3>::Normalize()
-{
-}
-template<typename T>
-inline void Math::TVector<T, 3>::Cross(const TVector<T, 3>& val)
-{
-}
-
-template<typename T>
-inline void Math::TVector<T, 3>::Dot(const TVector<T, 3>& val)
-{
-}
+// template <typename T>
+// Math::TVector<T, 3> Math::TVector<T, 3>::DotProduct(const TVector& left, const TVector& right)
+// {
+// }
 
 // template<typename T>
-// inline TVector<T,3> Math::TVector<T, 3>::Abs()
+// inline void Math::TVector<T, 3>::Normalize()
 // {
-// return TVector<T,3>();
 // }
-template<typename T>
-inline T Math::TVector<T, 3>::Max()
-{
-	return T();
-}
+// template<typename T>
+// inline void Math::TVector<T, 3>::Cross(const TVector<T, 3>& val)
+// {
+// }
 
-template<typename T>
-inline T Math::TVector<T, 3>::Min()
-{
-	return T();
-}
+// template<typename T>
+// inline void Math::TVector<T, 3>::Dot(const TVector<T, 3>& val)
+// {
+// }
+
+// // template<typename T>
+// // inline TVector<T,3> Math::TVector<T, 3>::Abs()
+// // {
+// // return TVector<T,3>();
+// // }
+// template<typename T>
+// inline T Math::TVector<T, 3>::Max()
+// {
+// 	return T();
+// }
+
+// template<typename T>
+// inline T Math::TVector<T, 3>::Min()
+// {
+// 	return T();
+// }
 
 // template<typename T>
 // inline TVector<T,3> Math::TVector<T, 3>::Lerp(TVector a, TVector b, float t)
@@ -193,61 +193,61 @@ inline Math::TVector<T, 4>::TVector(const T& x, const T& y, const T& z, const T&
 {
 }
 
-template <typename T> inline size_t Math::TVector<T, 4>::Size()
-{
-	return size_t(4);
-}
-template<typename T>
-inline T Math::TVector<T, 4>::SquaredLenth()
-{
-	return T();
-}
+// template <typename T> inline size_t Math::TVector<T, 4>::Size()
+// {
+// 	return size_t(4);
+// }
+// template<typename T>
+// inline T Math::TVector<T, 4>::SquaredLenth()
+// {
+// 	return T();
+// }
 
-template <typename T>
-Math::TVector<T, 4> Math::TVector<T, 4>::CrossProduct(const TVector& left, const TVector& right)
-{
-}
+// template <typename T>
+// Math::TVector<T, 4> Math::TVector<T, 4>::CrossProduct(const TVector& left, const TVector& right)
+// {
+// }
 
-template <typename T>
-Math::TVector<T, 4> Math::TVector<T, 4>::DotProduct(const TVector& left, const TVector& right)
-{
-}
-
-template<typename T>
-inline T Math::TVector<T, 4>::Lenth()
-{
-	return T();
-}
-template<typename T>
-inline void Math::TVector<T, 4>::Normalize()
-{
-}
-template<typename T>
-inline void Math::TVector<T, 4>::Cross(const TVector<T, 4>& val)
-{
-}
-
-template<typename T>
-inline void Math::TVector<T, 4>::Dot(const TVector<T, 4>& val)
-{
-}
+// template <typename T>
+// Math::TVector<T, 4> Math::TVector<T, 4>::DotProduct(const TVector& left, const TVector& right)
+// {
+// }
 
 // template<typename T>
-// inline TVector<T,4> Math::TVector<T, 4>::Abs()
+// inline T Math::TVector<T, 4>::Lenth()
 // {
-// return TVector<T,4>();
+// 	return T();
 // }
-template<typename T>
-inline T Math::TVector<T, 4>::Max()
-{
-	return T();
-}
+// template<typename T>
+// inline void Math::TVector<T, 4>::Normalize()
+// {
+// }
+// template<typename T>
+// inline void Math::TVector<T, 4>::Cross(const TVector<T, 4>& val)
+// {
+// }
 
-template<typename T>
-inline T Math::TVector<T, 4>::Min()
-{
-	return T();
-}
+// template<typename T>
+// inline void Math::TVector<T, 4>::Dot(const TVector<T, 4>& val)
+// {
+// }
+
+// // template<typename T>
+// // inline TVector<T,4> Math::TVector<T, 4>::Abs()
+// // {
+// // return TVector<T,4>();
+// // }
+// template<typename T>
+// inline T Math::TVector<T, 4>::Max()
+// {
+// 	return T();
+// }
+
+// template<typename T>
+// inline T Math::TVector<T, 4>::Min()
+// {
+// 	return T();
+// }
 
 // template<typename T>
 // inline TVector<T,4> Math::TVector<T, 4>::Lerp(TVector a, TVector b, float t)
@@ -309,3 +309,14 @@ inline T Math::TVector<T, 4>::Min()
 //         ;
 //     return temp;
 // }
+
+
+template <typename T, size_t size>
+TVector<T, 2> CrossProduct(const TVector<T, 2> &left, const TVector<T, 2> &right)
+{
+TVector<T, 2> temp;
+
+
+
+
+}
