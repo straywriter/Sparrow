@@ -7,11 +7,11 @@
 //------TVector------
 template <typename T, size_t size> inline Math::TVector<T, size>::TVector()
 {
-	for (auto i = size; i--; *this+i-1 = static_cast<T>(0))
-		;
+    for (auto i = size; i--; *this + i - 1 = static_cast<T>(0))
+        ;
 }
 
-//template <typename T, size_t size> inline Math::TVector<T, size>::TVector(T val)
+// template <typename T, size_t size> inline Math::TVector<T, size>::TVector(T val)
 //{
 //    for (auto i = size; i--; this->data[i] = val)
 //        ;
@@ -23,10 +23,10 @@ template <typename T> inline Math::TVector<T, 2>::TVector() : x(0), y(0)
 {
 }
 
-template <typename T> inline Math::TVector<T, 2>::TVector(const T& x, const T& y) : x(x), y(y)
+template <typename T> inline Math::TVector<T, 2>::TVector(const T &x, const T &y) : x(x), y(y)
 {
 }
-template <typename T> inline Math::TVector<T, 2>::TVector(const T& val) : x(val), y(val)
+template <typename T> inline Math::TVector<T, 2>::TVector(const T &val) : x(val), y(val)
 {
 }
 
@@ -103,14 +103,14 @@ template <typename T> inline Math::TVector<T, 3>::TVector() : x(0), y(0), z(0)
 {
 }
 
-template <typename T> inline Math::TVector<T, 3>::TVector(const T& v){
-	this->x = v;
-	this->y = v;
-	this->z = v;
+template <typename T> inline Math::TVector<T, 3>::TVector(const T &v)
+{
+    this->x = v;
+    this->y = v;
+    this->z = v;
 }
 
-template<typename T>
-inline Math::TVector<T, 3>::TVector(const T& x, const T& y, const T& z) :x(x), y(y), z(z)
+template <typename T> inline Math::TVector<T, 3>::TVector(const T &x, const T &y, const T &z) : x(x), y(y), z(z)
 {
 }
 
@@ -178,18 +178,18 @@ inline Math::TVector<T, 3>::TVector(const T& x, const T& y, const T& z) :x(x), y
 // }
 
 //------TVector4------
-template<typename T>
-inline Math::TVector<T, 4>::TVector() :x(static_cast<T>(0)), y(static_cast<T>(0)), z(static_cast<T>(0)), w(static_cast<T>(0))
+template <typename T>
+inline Math::TVector<T, 4>::TVector()
+    : x(static_cast<T>(0)), y(static_cast<T>(0)), z(static_cast<T>(0)), w(static_cast<T>(0))
 {
 }
 
-template<typename T>
-inline Math::TVector<T, 4>::TVector(const T& val) : x(val), y(val), z(val), w(val)
+template <typename T> inline Math::TVector<T, 4>::TVector(const T &val) : x(val), y(val), z(val), w(val)
 {
 }
 
-template<typename T>
-inline Math::TVector<T, 4>::TVector(const T& x, const T& y, const T& z, const T& w) :x(x), y(y), z(z), w(w)
+template <typename T>
+inline Math::TVector<T, 4>::TVector(const T &x, const T &y, const T &z, const T &w) : x(x), y(y), z(z), w(w)
 {
 }
 
@@ -310,13 +310,17 @@ inline Math::TVector<T, 4>::TVector(const T& x, const T& y, const T& z, const T&
 //     return temp;
 // }
 
-
-template <typename T, size_t size>
-TVector<T, 2> CrossProduct(const TVector<T, 2> &left, const TVector<T, 2> &right)
+template <typename T, size_t size> TVector<T, 2> CrossProduct(const TVector<T, 2> &left, const TVector<T, 2> &right)
 {
-TVector<T, 2> temp;
-
-
-
-
+    TVector<T, 2> temp;
+  
+    return std::move(temp);
+}
+template <typename T, size_t size> TVector<T, 3> CrossProduct(const TVector<T, 3> &left, const TVector<T, 3> &right)
+{
+    TVector<T, 3> temp;
+    temp.x = left.y * right.z - right.y * left.z;
+    temp.y = left.z * right.x - left.x * right.z;
+    temp.z = left.x * right.y - left.y * right.x;
+    return std::move(temp);
 }

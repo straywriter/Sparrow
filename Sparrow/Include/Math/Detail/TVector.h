@@ -36,6 +36,10 @@ template <typename T> class TVector<T, 3>
     TVector<T, 3>(const T &val);
     TVector<T, 3>(const T &x, const T &y, const T &z);
     TVector<T, 3>(const T *ptr);
+
+  public:
+    template <typename T, size_t size>
+    static TVector<T, 3> CrossProduct(const TVector<T, 3> &left, const TVector<T, 3> &right);
 };
 
 template <typename T> class TVector<T, 4>
@@ -82,21 +86,13 @@ template <typename T> class TVector<T, 4>
 
 namespace Vector
 {
-template <typename T, size_t size>
-TVector<T, size> CrossProduct(const TVector<T, size> &left, const TVector<T, size> &right);
-
 
 template <typename T, size_t size>
 TVector<T, size> DotProduct(const TVector<T, size> &left, const TVector<T, size> &right);
 
-template <typename T, size_t size>
-TVector<T, size> Nomalize(const TVector<T, size> &vec);
+template <typename T, size_t size> TVector<T, size> Nomalize(const TVector<T, size> &vec);
 
-
-template <typename T, size_t size>
-TVector<T, size> Equal(const TVector<T, size> &vec);
-
-
+template <typename T, size_t size> TVector<T, size> Equal(const TVector<T, size> &vec);
 
 } // namespace Vector
 
