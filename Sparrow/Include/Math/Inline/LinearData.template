@@ -1,0 +1,54 @@
+
+
+#include "Math/Detail/LinearData.h"
+
+
+using Math::LinearDataType;
+
+template <typename T, size_t Row, size_t Col, LinearDataType> Math::LinearData<T, Row, Col>::LinearData()
+{
+}
+
+//------Vector2-----
+
+template <typename T> Math::LinearData<T, 2, 1, LinearDataType::Vector><T>::LinearData()
+{
+}
+
+template <typename T> Math::LinearData<T, 2, 1, LinearDataType::Vector><T>::LinearData(const T &val)
+{
+}
+
+template <typename T> Math::LinearData<T, 2, 1, LinearDataType::Vector><T>::LinearData(const T &x, const T &y)
+{
+}
+
+//------Vector3-----
+
+template <typename T> Math::LinearData<T, 3, 1, LinearDataType::Vector><T>::LinearData()
+{
+}
+
+template <typename T> Math::LinearData<T, 3, 1, LinearDataType::Vector><T>::LinearData(const T &val)
+{
+}
+
+template <typename T>
+Math::LinearData<T, 3, 1, LinearDataType::Vector><T>::LinearData(const T &x, const T &y, const T &z)
+{
+}
+
+//-----Vector4-----
+
+template <typename T> Math::LinearData<T, 4, 1, LinearDataType::Vector><T>::LinearData()
+{
+}
+
+template <typename T> Math::LinearData<T, 2, 1, LinearDataType::Vector><T>::LinearData(const T &val)
+{
+}
+
+template <typename T>
+Math::LinearData<T, 4, 1, LinearDataType::Vector><T>::LinearData(const T &x, const T &y, const T &z, const T &w)
+{
+}

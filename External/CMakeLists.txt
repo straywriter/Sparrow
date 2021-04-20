@@ -15,4 +15,4 @@ add_subdirectory(spdlog)
 
 add_subdirectory(ghc)
 
-add_subdirectory(lua)
+# add_subdirectory(lua)

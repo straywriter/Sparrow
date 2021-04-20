@@ -1,3 +1,8 @@
+#pragma once
+
+namespace Math
+{
+
 
 template <typename T, size_t size>
 inline TVector<T, size> operator+(const TVector<T, size> &left, const TVector<T, size> &right)
@@ -126,7 +131,7 @@ template <typename T, size_t size> inline bool operator==(const TVector<T, size>
 {
     for (auto i = size; i--;)
     {
-        if (!*(&right.x + i) == *(&left.x + i))
+        if (!(*(&right.x + i) == *(&left.x + i)))
             return false;
     }
     return true;
@@ -136,8 +141,9 @@ template <typename T, size_t size> inline bool operator!=(const TVector<T, size>
 {
     for (auto i = size; i--;)
     {
-        if (!*(&right.x + i) == *(&left.x + i))
+        if (!(*(&right.x + i) == *(&left.x + i)))
             return true;
     }
     return flase;
+}
 }

@@ -26,7 +26,7 @@ endmacro()
 # add_executable(TestFmt ./fmt/TestFmt.cpp) target_link_libraries(TestFmt PUBLIC
 # fmt)
 
-addfmtexe(${CMAKE_CURRENT_SOURCE_DIR}/fmt)
+# addfmtexe(${CMAKE_CURRENT_SOURCE_DIR}/fmt)
 
 # foreach(TestFile ) get_filename_component(TestFileName ${TestFile} NAME_WE)
 # add_executable(${TestFileName}  ${TestFile} )
@@ -37,6 +37,8 @@ addfmtexe(${CMAKE_CURRENT_SOURCE_DIR}/fmt)
 
 add_subdirectory(spdlog)
 
-add_subdirectory(ghc)
+# add_subdirectory(ghc)
 
-add_subdirectory(lua)
+# add_subdirectory(lua)
+
+add_subdirectory(Eigen)

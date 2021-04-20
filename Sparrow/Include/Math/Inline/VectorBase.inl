@@ -4,6 +4,8 @@
 #include <iostream>
 #include <utility>
 
+using namespace Math;
+
 //------TVector------
 template <typename T, size_t size> inline Math::TVector<T, size>::TVector()
 {
@@ -309,18 +311,20 @@ inline Math::TVector<T, 4>::TVector(const T &x, const T &y, const T &z, const T 
 //         ;
 //     return temp;
 // }
-
-template <typename T, size_t size> TVector<T, 2> CrossProduct(const TVector<T, 2> &left, const TVector<T, 2> &right)
-{
-    TVector<T, 2> temp;
-  
-    return std::move(temp);
-}
-template <typename T, size_t size> TVector<T, 3> CrossProduct(const TVector<T, 3> &left, const TVector<T, 3> &right)
+template<typename T>
+TVector<T, 3> TVector<T, 3>::CrossProduct(const TVector<T, 3> &left, const TVector<T, 3> &right)
 {
     TVector<T, 3> temp;
     temp.x = left.y * right.z - right.y * left.z;
     temp.y = left.z * right.x - left.x * right.z;
     temp.z = left.x * right.y - left.y * right.x;
+    return std::move(temp);
+}
+
+template <typename T, size_t size> T DotProduct(const TVector<T, size> &left, const TVector<T, size> &right)
+{
+    T temp;
+    for (auto i = size; i--; T += *(&left.x + i) * *(&right.x + i))
+        ;
     return std::move(temp);
 }
