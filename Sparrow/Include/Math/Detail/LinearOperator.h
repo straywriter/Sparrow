@@ -6,22 +6,12 @@ template <typename Derived, typename T, size_t Size> class LinearOperator
 {
   private:
   private:
-    Derived *data()
+  const Derived *data() const
     {
-        return static_cast<Derived *>(this);
+        return static_cast<const Derived *>(this);
     }
 
   public:
-    Derived operator+(Derived &val)
-    {
-        // auto derived = data();
-        Derived temp;
-        auto tempPtr = temp.GetDataPtr();
-        for (auto i = Size; i--; *(tempPtr + i) = *(val.GetDataPtr() + i) + *(data()->GetDataPtr() + i))
-            ;
-
-        return temp;
-    }
 
   T operator[](size_t index);
 
@@ -47,8 +37,5 @@ template <typename Derived, typename T, size_t Size> class LinearOperator
 
   bool operator==(const Derived &val) const;
   bool operator!=(const Derived &val) const;
-  bool operator<(const Derived &val) const;
-  bool operator<=(const Derived &val) const;
-  bool operator>(const Derived &val) const;
-  bool operator>=(const Derived &val) const;
+
 };

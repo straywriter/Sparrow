@@ -5,6 +5,5 @@
 
 #include "VectorBase.inl"
 
-#include "Math/Inline/MatrixOperator.inl"
 
 #include "VectorOperator.inl"

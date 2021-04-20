@@ -13,10 +13,7 @@ function(AddMathTestExe FileDir)
              $<$<CONFIG:Debug>:/MTd>
              $<$<CONFIG:Release>:/MT>
              $<$<CXX_COMPILER_ID:MSVC>:
-             -wd4201
-            #  -wd2220
-             /W3
-            #  /WX
+             
              /std:c++17
              >)
     add_test(${TestFileName} ${TestFileName})

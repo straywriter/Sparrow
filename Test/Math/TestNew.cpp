@@ -27,5 +27,11 @@ TEST(Vec, DotProduct)
     auto rr = Vector3f(3);
 
     std::cout << '\n' << rr.x << rr.y << rr.z;
+    Vector2f v2;
+    v2.x = 1;
+    v2.y = 2;
+
+    Vector3f v3(v2);
+    std::cout << '\n' << v3.x << v3.y << v3.z;
 
 }
