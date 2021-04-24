@@ -1,284 +1,145 @@
 #include "Math/Math.h"
 #include "gtest/gtest.h"
-
+#include <Eigen/Dense>
 #include <iostream>
 // #pragma warning( push )
 // #pragma warning( disable : 4201 )
 
 using namespace Math;
 
+#define VECTOR_TEST_OUT 0
+
 #define GTEST_COUT std::cerr << "[ INFO     ] "
 
-TEST(Vector, Constructor)
+template <typename T, size_t Size> void VectorConstructTest(TVector<T, Size> vec)
 {
-    //
+    vec.SetZero();
 
-    // Vector2i
+    using VectorType = TVector<T, Size>;
+    VectorType t1;
+    for (auto i = Size; i--; *(const_cast<T *>(t1.GetDataPtr()) + (int)i) = static_cast<T>(0))
+        ;
+    // std::cerr << "[ VecT1    ] " << t1<<std::endl;
+    VectorType t2;
+    for (auto i = Size; i--; *(&t2.x + (int)i) = static_cast<T>(0))
+        ;
+    VectorType t3;
+    for (auto i = Size; i--; *(&t3.x + (int)i) = static_cast<T>(1))
+        ;
+    VectorType t4;
+    for (auto i = Size; i--; *(&t4.x + (int)i) = (T)i + static_cast<T>(1))
+        ;
+
+#if VECTOR_TEST_OUT
+    std::cerr << "[ VecTest1 ] " << t1 << std::endl;
+    std::cerr << "[ VecTest2 ] " << t2 << std::endl;
+    std::cerr << "[ VecTest3 ] " << t3 << std::endl;
+    std::cerr << "[ VecTest4 ] " << t4 << std::endl;
+#endif
+
+    // default constructor
+    VectorType v10;
+    EXPECT_EQ(t1, v10);
+    VectorType v11 = VectorType();
+    EXPECT_EQ(t1, v11);
+    VectorType v12(v11);
+    EXPECT_EQ(t1, v12);
+    VectorType v13 = v10;
+    EXPECT_EQ(t1, v13);
+
+    // defalut zero
+    VectorType v20 = VectorType(static_cast<T>(0));
+    EXPECT_EQ(t2, v20);
+    VectorType v21(static_cast<T>(0));
+    EXPECT_EQ(t2, v21);
+    VectorType v22(VectorType(static_cast<T>(0)));
+    EXPECT_EQ(t2, v22);
+    VectorType v23(v21);
+    EXPECT_EQ(t2, v23);
+    VectorType v24;
+    v24.SetZero();
+    EXPECT_EQ(t2, v24);
+
+    // defalut one
+    VectorType v30 = VectorType(static_cast<T>(1));
+    EXPECT_EQ(t3, v30);
+    VectorType v31(static_cast<T>(1));
+    EXPECT_EQ(t3, v31);
+    VectorType v32(VectorType(static_cast<T>(1)));
+    EXPECT_EQ(t3, v32);
+    VectorType v33(v31);
+    EXPECT_EQ(t3, v33);
+    VectorType v34;
+    v34.SetOne();
+    EXPECT_EQ(t3, v34);
+
+    if constexpr (Size == size_t(2))
     {
-        Vector2i t1;
-        t1.x = 0;
-        t1.y = 0;
-        Vector2i t2;
-        t2.x = 1;
-        t2.y = 2;
-        Vector2i t3;
-        t3.x = 3;
-        t3.y = 3;
-
-        Vector2i v1;
-        Vector2i v2 = Vector2i();
-        Vector2i v3 = {1, 2};
-        Vector2i v4 = Vector2i(3);
-        Vector2i v5(1, 2);
-        Vector2i v6(v3);
-        Vector2i v7(Vector2i(1, 2));
-        Vector2i v8 = v3;
-        Vector2i v9 = Vector2i(1, 2);
-        Vector2i v10 = 1;
-
-        EXPECT_EQ(t1, v1);
-        EXPECT_EQ(t1, v2);
-        EXPECT_EQ(t2, v3);
-        EXPECT_EQ(t3, v4);
-        EXPECT_EQ(t2, v5);
-        EXPECT_EQ(t2, v6);
-        EXPECT_EQ(t2, v7);
-        EXPECT_EQ(t2, v8);
-        EXPECT_EQ(t2, v9);
-
-        EXPECT_EQ(t2, v9);
+        VectorType v40(static_cast<T>(1), static_cast<T>(2));
+        EXPECT_EQ(t4, v40);
+        VectorType v41(VectorType(static_cast<T>(1), static_cast<T>(2)));
+        EXPECT_EQ(t4, v41);
+        VectorType v42 = VectorType(static_cast<T>(1), static_cast<T>(2));
+        EXPECT_EQ(t4, v42);
+        VectorType v43 = v40;
+        EXPECT_EQ(t4, v43);
+        VectorType v44(v40);
+        EXPECT_EQ(t4, v44);
+        VectorType v45;
+        v45.Set(static_cast<T>(1), static_cast<T>(2));
+        EXPECT_EQ(t4, v45);
     }
-    // Vector3i
+    if constexpr (Size == size_t(3))
     {
-        Vector3i t1;
-        t1.x = 0;
-        t1.y = 0;
-        t1.z = 0;
-        Vector3i t2;
-        t2.x = 1;
-        t2.y = 2;
-        t2.z = 3;
-        Vector3i t3;
-        t3.x = 4;
-        t3.y = 4;
-        t3.z = 4;
-
-        Vector3i v1;
-        EXPECT_EQ(v1, t1);
-        Vector3i v2(1, 2, 3);
-        EXPECT_EQ(t2, v2);
-        Vector3i v3(4, 4, 4);
-        EXPECT_EQ(t3, v3);
-        Vector3i v4 = v1;
-        EXPECT_EQ(t1, v4);
-        Vector3i v5 = Vector3i(1, 2, 3);
-        EXPECT_EQ(t2, v5);
-        Vector3i v6 = Vector3i(4);
-        EXPECT_EQ(t3, v6);
+        VectorType v40(static_cast<T>(1), static_cast<T>(2), static_cast<T>(3));
+        EXPECT_EQ(t4, v40);
+        VectorType v41(VectorType(static_cast<T>(1), static_cast<T>(2), static_cast<T>(3)));
+        EXPECT_EQ(t4, v41);
+        VectorType v42 = VectorType(static_cast<T>(1), static_cast<T>(2), static_cast<T>(3));
+        EXPECT_EQ(t4, v42);
+        VectorType v43 = v40;
+        EXPECT_EQ(t4, v43);
+        VectorType v44(v40);
+        EXPECT_EQ(t4, v44);
+        VectorType v45;
+        v45.Set(static_cast<T>(1), static_cast<T>(2), static_cast<T>(3));
+        EXPECT_EQ(t4, v45);
     }
-    // Vector4i
+    if constexpr (Size == size_t(4))
     {
-        Vector4i t1;
-        t1.x = 0;
-        t1.y = 0;
-        t1.z = 0;
-        t1.w = 0;
-        Vector4i t2;
-        t2.x = 1;
-        t2.y = 2;
-        t2.z = 3;
-        t2.w = 4;
-        Vector4i t3;
-        for (auto i = 4; i--; *(&t3.x + i) = 5)
-            ;
-
-        Vector4i v1;
-        EXPECT_EQ(t1, v1);
-        Vector4i v2(1, 2, 3, 4);
-        EXPECT_EQ(t2, v2);
-        Vector4i v3(5);
-        EXPECT_EQ(t3, v3);
-
-        Vector4i v4 = v2;
-        EXPECT_EQ(t2, v4);
-        Vector4i v5 = Vector4i();
-        EXPECT_EQ(t1, v5);
-        Vector4i v6 = Vector4i(5);
-        EXPECT_EQ(t3, v6);
-    }
-
-    // Vector3f
-    {
-        Vector3f t1;
-        t1.x = 0.f;
-        t1.y = 0.f;
-        t1.z = 0.f;
-        Vector3f t2;
-        t2.x = 0.1f;
-        t2.y = 0.2f;
-        t2.z = 0.3f;
-        Vector3f t3;
-        for (auto i = 3; i--; *(&t3.x + i) = 4.4f)
-            ;
-
-        Vector3f v1;
-        EXPECT_EQ(t1, v1);
-        Vector3f v2(0.1f, 0.2f, 0.3f);
-        EXPECT_EQ(t2, v2);
-        Vector3f v3(4.4f);
-        EXPECT_EQ(t3, v3);
-        Vector3f v4(v2);
-        EXPECT_EQ(t2, v4);
-        Vector3f v5 = Vector3f(4.4f);
-        EXPECT_EQ(t3, v5);
-        Vector3f v6 = v2;
-        EXPECT_EQ(t2, v6);
-    }
-
-    // Vector2f
-    {
-        Vector2f t1;
-        t1.x = 0.f;
-        t1.y = 0.f;
-        Vector2f t2;
-        t2.x = 1.f;
-        t2.y = 2.f;
-        Vector2f t3;
-        t3.x = 4.4f;
-        t3.y = 4.4f;
-
-        Vector2f v1;
-        EXPECT_EQ(t1, v1);
-        Vector2f v2(1.f, 2.f);
-        EXPECT_EQ(t2, v2);
-        Vector2f v3(4.4f);
-        EXPECT_EQ(t3, v3);
-        Vector2f v4 = v2;
-        EXPECT_EQ(v4, t2);
-        Vector2f v5 = Vector2f();
-        EXPECT_EQ(t1, v5);
-    }
-
-    // Vector4f
-    {
-        Vector4f t1;
-        t1.x = 0.;
-        t1.y = 0.;
-        t1.z = 0.;
-        t1.w = 0.;
-        Vector4f t2;
-        t2.x = 1.;
-        t2.y = 2.f;
-        t2.z = 3.f;
-        t2.w = 4.f;
-        Vector4f t3;
-        for (auto i = 4; i--; *(&t3.x + i) = 8.9f)
-            ;
-
-        Vector4f v1;
-        EXPECT_EQ(t1, v1);
-        Vector4f v2(1.f, 2.f, 3.f, 4.f);
-        EXPECT_EQ(t2, v2);
-        Vector4f v3(8.9f);
-        EXPECT_EQ(t3, v3);
-        Vector4f v4(v2);
-        EXPECT_EQ(t2, v4);
-        Vector4f v5 = v2;
-        EXPECT_EQ(t2, v5);
-        Vector4f v6 = Vector4f();
-        EXPECT_EQ(t1, v6);
-        Vector4f v7 = Vector4f(8.9f);
-        EXPECT_EQ(t3, v7);
-    }
-
-    // Vector2d
-    {
-        Vector2d t1;
-        t1.x = 0.;
-        t1.y = 0.;
-        Vector2d t2;
-        t2.x = 1.1;
-        t2.y = 2.2;
-        Vector2d t3;
-        t3.x = 8.8;
-        t3.y = 8.8;
-
-        Vector2d v1;
-        EXPECT_EQ(t1, v1);
-        Vector2d v2(1.1, 2.2);
-        EXPECT_EQ(t2, v2);
-        Vector2d v3(8.8);
-        EXPECT_EQ(t3, v3);
-        Vector2d v4 = v2;
-        EXPECT_EQ(t2, v4);
-        Vector2d v5 = Vector2d();
-        EXPECT_EQ(t1, v5);
-        Vector2d v6 = Vector2d(8.8);
-        EXPECT_EQ(t3, v6);
-    }
-
-    // Vector3d
-    {
-        Vector3d t1;
-        t1.x = 0.;
-        t1.y = 0.;
-        t1.z = 0.;
-        Vector3d t2;
-        t2.x = 1.1;
-        t2.y = 2.2;
-        t2.z = 3.3;
-        Vector3d t3;
-        for (auto i = 3; i--; *(&t3.x + i) = 8.9)
-            ;
-
-        Vector3d v1;
-        EXPECT_EQ(t1, v1);
-        Vector3d v2(1.1, 2.2, 3.3);
-        EXPECT_EQ(t2, v2);
-        Vector3d v3(8.9);
-        EXPECT_EQ(t3, v3);
-        Vector3d v4 = t1;
-        EXPECT_EQ(t1, v4);
-        Vector3d v5 = Vector3d();
-        EXPECT_EQ(t1, v5);
-        Vector3d v6 = Vector3d(8.9);
-        EXPECT_EQ(t3, v6);
-    }
-    // Vector4d
-    {
-
-        Vector4d t1;
-        t1.x = 0.f;
-        t1.y = 0.f;
-        t1.z = 0.f;
-        t1.w = 0.f;
-        Vector4d t2;
-        t2.x = 1.f;
-        t2.y = 2.f;
-        t2.z = 3.f;
-        t2.w = 4.f;
-        Vector4d t3;
-        for (auto i = 4; i--; *(&t3.x + i) = 8.9f)
-            ;
-
-        Vector4d v1;
-        EXPECT_EQ(t1, v1);
-        Vector4d v2(1.f, 2.f, 3.f, 4.f);
-        EXPECT_EQ(t2, v2);
-        Vector4d v3(8.9f);
-        EXPECT_EQ(t3, v3);
-        Vector4d v4(v2);
-        EXPECT_EQ(t2, v4);
-        Vector4d v5 = v2;
-        EXPECT_EQ(t2, v5);
-        Vector4d v6 = Vector4d();
-        EXPECT_EQ(t1, v6);
-        Vector4d v7 = Vector4d(8.9f);
-        EXPECT_EQ(t3, v7);
+        VectorType v40(static_cast<T>(1), static_cast<T>(2), static_cast<T>(3), static_cast<T>(4));
+        EXPECT_EQ(t4, v40);
+        VectorType v41(VectorType(static_cast<T>(1), static_cast<T>(2), static_cast<T>(3), static_cast<T>(4)));
+        EXPECT_EQ(t4, v41);
+        VectorType v42 = VectorType(static_cast<T>(1), static_cast<T>(2), static_cast<T>(3), static_cast<T>(4));
+        EXPECT_EQ(t4, v42);
+        VectorType v43 = v40;
+        EXPECT_EQ(t4, v43);
+        VectorType v44(v40);
+        EXPECT_EQ(t4, v44);
+        VectorType v45;
+        v45.Set(static_cast<T>(1), static_cast<T>(2), static_cast<T>(3), static_cast<T>(4));
+        EXPECT_EQ(t4, v45);
     }
 }
 
-TEST(Vector, CrossProduct)
+#define VECTOR_CONSTRUCTOR_TEST(VectorType)                                                                            \
+    TEST(VectorConstructor, VectorType)                                                                                \
+    {                                                                                                                  \
+        VectorConstructTest(VectorType());                                                                             \
+    }
+VECTOR_CONSTRUCTOR_TEST(Vector2i)
+VECTOR_CONSTRUCTOR_TEST(Vector3i)
+VECTOR_CONSTRUCTOR_TEST(Vector4i)
+VECTOR_CONSTRUCTOR_TEST(Vector2f)
+VECTOR_CONSTRUCTOR_TEST(Vector3f)
+VECTOR_CONSTRUCTOR_TEST(Vector4f)
+VECTOR_CONSTRUCTOR_TEST(Vector2d)
+VECTOR_CONSTRUCTOR_TEST(Vector3d)
+VECTOR_CONSTRUCTOR_TEST(Vector4d)
+
+//----------
+TEST(VectorCrossProduct, Vector3f)
 {
     // https://www.osgeo.cn/app/s2848
     {
@@ -289,105 +150,139 @@ TEST(Vector, CrossProduct)
         auto v1 = Vector3f::Cross(t1, t2);
         EXPECT_EQ(t3, v1);
     }
-    {{Vector3f t1(1.f, 3.f, 4.f);
-    Vector3f t2(2.f, -5.f, 8.f);
-    Vector3f t3(44.f, 0.f, -11.f);
-
-    auto v1 = t1.Cross(t2);
-    EXPECT_EQ(t3, v1);
-}
-}
-{
-    Vector3i t1(4, -2, 1);
-    Vector3i t2(1, -1, 3);
-    Vector3i t3(-5, -11, -2);
-    auto v1 = Vector3i::Cross(t1, t2);
-    auto v2 = t1.Cross(t2);
-    GTEST_COUT << v1.x << v1.y << v1.z << '\n';
-    EXPECT_EQ(t3, v1);
-    EXPECT_EQ(t3, v2);
-}
-{
-    Vector3d t1(6., 2, 23.1);
-    Vector3d t2(3.6, -8.1, 7.3);
-    Vector3d t3(201.71, 39.360000000000014, -55.8);
-    auto v1 = Vector3d::Cross(t1, t2);
-    auto v2 = a1.Cross(t2);
-    GTEST_COUT << v1.x << " " << v1.y << " " << v1.z << '\n';
-    EXPECT_EQ(t3, v1);
-    EXPECT_EQ(t3, v2);
-}
-}
-TEST(Vector, Get)
-{
-
-    // Vector2i Get
     {
-        Vector2i t1;
-        t1.x = 0;
-        t1.y = 0;
-        Vector2i t2;
-        t2.x = 1;
-        t2.y = 2;
-        Vector2i t3;
-        t3.x = 3;
-        t3.y = 3;
+        Vector3f t1(1.f, 3.f, 4.f);
+        Vector3f t2(2.f, -5.f, 8.f);
+        Vector3f t3(44.f, 0.f, -11.f);
 
-        Vector2i v1;
-        Vector2i v2 = Vector2i();
-        Vector2i v3 = {1, 2};
-        Vector2i v4 = Vector2i(3);
-        Vector2i v5(1, 2);
-        Vector2i v6(v3);
-        Vector2i v7(Vector2i(1, 2));
-        Vector2i v8 = v3;
-        Vector2i v9 = Vector2i(1, 2);
-        Vector2i v10 = 1;
-
-        EXPECT_EQ(t1.x, v1.Get(0));
-        EXPECT_EQ(t1.y, v2.Get(1));
-        EXPECT_EQ(t2.y, v3.Get(1));
-        EXPECT_EQ(t3.x, v4.Get(0));
-        EXPECT_EQ(t2.Get(0), v5.x);
-        EXPECT_EQ(t2.Get(0), v6.Get(0));
-        EXPECT_EQ(t2.Get(1), v7.Get(1));
-        EXPECT_EQ(t2.Get(0), v8.x);
-        EXPECT_EQ(t2.Get(0), v9.x);
-
-        EXPECT_EQ(t2.Get(1), v9.y);
+        auto v1 = t1.Cross(t2);
+        EXPECT_EQ(t3, v1);
     }
-     // Vector3f
     {
-        Vector3f t1;
-        t1.x = 0.f;
-        t1.y = 0.f;
-        t1.z = 0.f;
-        Vector3f t2;
-        t2.x = 0.1f;
-        t2.y = 0.2f;
-        t2.z = 0.3f;
-        Vector3f t3;
-        for (auto i = 3; i--; *(&t3.x + i) = 4.4f)
+        Vector3i t1(4, -2, 1);
+        Vector3i t2(1, -1, 3);
+        Vector3i t3(-5, -11, -2);
+        auto v1 = Vector3i::Cross(t1, t2);
+        auto v2 = t1.Cross(t2);
+
+        // GTEST_COUT << v1.x << v1.y << v1.z << '\n';
+        // GTEST_COUT << t3.x << t3.y << t3.z << '\n';
+        EXPECT_EQ(t3, v1);
+        EXPECT_EQ(t3, v2);
+    }
+    {
+        Vector3d t1(6., 2, 23.1);
+        Vector3d t2(3.6, -8.1, 7.3);
+        Vector3d t3(201.71, 39.360000000000014, -55.8);
+        auto v1 = Vector3d::Cross(t1, t2);
+        auto v2 = t1.Cross(t2);
+        // GTEST_COUT << v1.x << " " << v1.y << " " << v1.z << '\n';
+        EXPECT_EQ(t3, v1);
+        EXPECT_EQ(t3, v2);
+    }
+}
+
+template <typename T, size_t Size> void VectorGetSetTest(TVector<T, Size> vec)
+{
+    {
+        using VectorType = TVector<T, Size>;
+        VectorType t1;
+        VectorType t2(static_cast<T>(1));
+        VectorType t3(static_cast<T>(0));
+
+        vec.SetZero();
+        EXPECT_EQ(t1, vec);
+        EXPECT_EQ(t3, vec);
+        vec.SetOne();
+        EXPECT_EQ(t2, vec);
+        vec.SetValue(static_cast<T>(4));
+    }
+    // Get
+    {
+        using VectorType = TVector<T, Size>;
+        VectorType t1;
+        for (auto i = Size; i--; *(const_cast<T *>(t1.GetDataPtr()) + (int)i) = static_cast<T>(0))
             ;
+        // std::cerr << "[ VecT1    ] " << t1<<std::endl;
+        VectorType t2;
+        for (auto i = Size; i--; *(&t2.x + (int)i) = static_cast<T>(0))
+            ;
+        VectorType t3;
+        for (auto i = Size; i--; *(&t3.x + (int)i) = static_cast<T>(1))
+            ;
+        VectorType t4;
+        for (auto i = Size; i--; *(&t4.x + (int)i) = (T)i + static_cast<T>(1))
+            ;
+        for (auto i = Size; i--;)
+        {
+            EXPECT_EQ(t1.Get(i), static_cast<T>(0));
+        }
+        for (auto i = Size; i--;)
+        {
+            EXPECT_EQ(t2.Get(i), static_cast<T>(0));
+        }
+        for (auto i = Size; i--;)
+        {
+            EXPECT_EQ(t3.Get(i), static_cast<T>(1));
+        }
+        for (auto i = Size; i--;)
+        {
+            EXPECT_EQ(t4.Get(i), static_cast<T>(i + 1));
+        }
 
-        Vector3f v1;
-        EXPECT_EQ(t1.Get(0), v1.x);
-        Vector3f v2(0.1f, 0.2f, 0.3f);
-        EXPECT_EQ(t2.x, v2.Get(0));
-        Vector3f v3(4.4f);
-        EXPECT_EQ(t3, v3);
-        Vector3f v4(v2);
-        EXPECT_EQ(t2, v4);
-        Vector3f v5 = Vector3f(4.4f);
-        EXPECT_EQ(t3, v5);
-        Vector3f v6 = v2;
-        EXPECT_EQ(t2, v6);
+        // t1[0] = static_cast<T>(3);
+
+        VectorType v10 = t4;
+        for (auto i = Size; i--; v10.SetOne(i))
+            ;
+        EXPECT_EQ(t3, v10);
+        VectorType v11 = t4;
+        for (auto i = Size; i--; v11.SetZero(i))
+            ;
+        EXPECT_EQ(t2, v11);
+    }
+    // Set
+    {
     }
 }
 
+#define VECTOR_GETSET_TEST(VectorType)                                                                                 \
+    TEST(VectorGetSetTest, VectorType)                                                                                 \
+    {                                                                                                                  \
+        VectorGetSetTest(VectorType());                                                                                \
+    }
+VECTOR_GETSET_TEST(Vector2i)
+VECTOR_GETSET_TEST(Vector3i)
+VECTOR_GETSET_TEST(Vector4i)
+VECTOR_GETSET_TEST(Vector2f)
+VECTOR_GETSET_TEST(Vector3f)
+VECTOR_GETSET_TEST(Vector4f)
+VECTOR_GETSET_TEST(Vector2d)
+VECTOR_GETSET_TEST(Vector3d)
+VECTOR_GETSET_TEST(Vector4d)
 
-
-
-TEST(Vector, Normlise)
+template <typename T, size_t Size> void VectorNormalizeTest(TVector<T, Size> vec)
 {
+
 }
+
+// TEST(Vector, Normlise)
+// {
+//     struct T
+//     {
+//         double x, y;
+//     };
+//     struct T1
+//     {
+//         float x, y;
+//     };
+
+//     // std::cerr << "[ INFO     ] "<<sizeof(Vector2d);
+//     // std::cerr << "[ INFO  T  ] "<<sizeof(T);
+//     // std::cerr << "[ INFO  T1  ] "<<sizeof(Vector2f);
+//     // std::cerr << "[ INFO  T  ] "<<sizeof(T1);
+
+//     // std::cerr << "[ INFO     ] "<<sizeof(Eigen::Vector2d);
+
+//     // std::cerr << "[ INFO     ] "<<sizeof(Eigen::Matrix<double, 2, 1>);
+// }

@@ -13,7 +13,8 @@ function(AddMathTestExe FileDir)
              $<$<CONFIG:Debug>:/MTd>
              $<$<CONFIG:Release>:/MT>
              $<$<CXX_COMPILER_ID:MSVC>:
-             
+            # /d1reportClassLayoutChanges
+            /permissive-
              /std:c++17
              >)
     add_test(${TestFileName} ${TestFileName})
