@@ -1,10 +1,9 @@
 #pragma once
-
-#include "Math/Detail/LinearData.h"
-
-#include "Math/Detail/VectorBase.h"
+#include "Math/Detail/TVector.h"
 #include <assert.h>
+#include <iostream>
 #include <utility>
+
 
 namespace Math
 {
@@ -34,7 +33,7 @@ template <typename T> class TVector<T, 2>
   public:
     void Normalize();
 
-    T Lenth();
+    float Lenth();
 
     T SquaredLenth();
 
@@ -62,7 +61,7 @@ template <typename T> class TVector<T, 2>
     }
 
   public:
-    T& operator[](size_t index);
+    T &operator[](size_t index);
 };
 
 template <typename T> class TVector<T, 3>
@@ -87,7 +86,7 @@ template <typename T> class TVector<T, 3>
   public:
     void Normalize();
 
-    T Lenth();
+    float Lenth();
 
     T SquaredLenth();
 
@@ -119,7 +118,7 @@ template <typename T> class TVector<T, 3>
     }
 
   public:
-    T& operator[](size_t index);
+    T &operator[](size_t index);
 };
 
 template <typename T> class TVector<T, 4>
@@ -145,7 +144,7 @@ template <typename T> class TVector<T, 4>
   public:
     void Normalize();
 
-    T Lenth();
+    float Lenth();
 
     T SquaredLenth();
 
@@ -173,7 +172,7 @@ template <typename T> class TVector<T, 4>
     }
 
   public:
-    T& operator[](size_t index);
+    T &operator[](size_t index);
 };
 
 template <typename T, size_t size>
