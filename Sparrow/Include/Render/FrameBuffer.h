@@ -6,6 +6,12 @@ namespace Render
 {
 class FrameBuffer : RenderObject
 {
+public:
+FrameBuffer();
+
+public:
+
+void SetViewport();
 
 
 };

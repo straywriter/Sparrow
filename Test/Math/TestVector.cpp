@@ -240,7 +240,8 @@ template <typename T, size_t Size> void VectorGetSetTest(TVector<T, Size> vec)
         VectorType v11 = t4;
         for (auto i = Size; i--; v11.SetZero(i))
             ;
-        EXPECT_EQ(t2, v11);;
+        EXPECT_EQ(t2, v11);
+        ;
     }
     // Set
     {
@@ -268,21 +269,21 @@ template <typename T, size_t Size> void VectorLenthTest(TVector<T, Size> vec)
     VectorType t1;
     for (auto i = Size; i--; t1[i] = (T)i + static_cast<T>(1))
         ;
-   std:: cout << t1;
-    float t2=static_cast<T>(0);
-    for (auto i = Size; i--; t2 += ((float)i + static_cast<float>(1))* ((float)i + static_cast<float>(1)))
+    std::cout << t1;
+    float t2 = static_cast<T>(0);
+    for (auto i = Size; i--; t2 += ((float)i + static_cast<float>(1)) * ((float)i + static_cast<float>(1)))
         ;
 
     EXPECT_EQ(t1.SquaredLenth(), t2);
-     std:: cout<<" " <<t2;
+    std::cout << " " << t2;
     auto vv = std::sqrt(t2);
-   std:: cout<<" " <<t2;
+    std::cout << " " << t2;
     EXPECT_EQ(t1.Lenth(), (T)vv);
 }
-#define VECTOR_LENTH_TEST(VectorType)                                                                                 \
-    TEST(VectorLenthTest, VectorType)                                                                                 \
+#define VECTOR_LENTH_TEST(VectorType)                                                                                  \
+    TEST(VectorLenthTest, VectorType)                                                                                  \
     {                                                                                                                  \
-        VectorLenthTest(VectorType());                                                                                \
+        VectorLenthTest(VectorType());                                                                                 \
     }
 VECTOR_LENTH_TEST(Vector2i)
 VECTOR_LENTH_TEST(Vector3i)
@@ -294,7 +295,6 @@ VECTOR_LENTH_TEST(Vector2d)
 VECTOR_LENTH_TEST(Vector3d)
 VECTOR_LENTH_TEST(Vector4d)
 
-
 template <typename T, size_t Size> void VectorNormalizeTest(TVector<T, Size> vec)
 {
     vec.SetZero();
@@ -303,14 +303,14 @@ template <typename T, size_t Size> void VectorNormalizeTest(TVector<T, Size> vec
     VectorType t1;
     for (auto i = Size; i--; *(&t1.x + (int)i) = (T)i + static_cast<T>(1))
         ;
-   std:: cout << t1;
-    T t2;
+    std::cout << t1;
+    VectorType t2;
     for (auto i = Size; i--; *(&t2.x + (int)i) = ((T)i + static_cast<T>(1)))
         ;
     for (auto i = Size; i--; t2[i] = t2[i] / t2.Lenth())
         ;
-
- std::   cout << t1;
+    std::cout << t1;
+    EXPECT_EQ(t1, t2);
 }
 
 // TEST(Vector, Normlise)

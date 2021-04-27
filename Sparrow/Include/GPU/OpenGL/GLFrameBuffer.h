@@ -17,7 +17,7 @@ class GLFrameBuffer : FrameBuffer
         DRAW = GL_DRAW_FRAMEBUFFER
     };
 
-    enum class Attachment:GLenum
+    enum class Attachment : GLenum
     {
         NONE = GL_NONE,
 
@@ -59,12 +59,15 @@ class GLFrameBuffer : FrameBuffer
     void Bind();
     void UnBind();
 
+    void BindTexture();
+    void UnBindTexture();
+
     void SetTexture();
     void SetTexture2D();
 
     void SetReadBuffer(Attachment a);
 
-void CheckError();
+    void CheckError();
 
     //----------------
 

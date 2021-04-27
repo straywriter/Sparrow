@@ -25,6 +25,10 @@ class VertexBufferCommand : RenderCommand
     // return
     VertexBuffer *object;
 
+  public:
+    VertexBuffer *GetVertexBuffer();
+    ECreateVertex GetType();
+
     static VertexBufferCommand CreateVertexBuffer();
     static VertexBufferCommand UpdateVertexBuffer();
     static VertexBufferCommand DestoryVertexBuffer();

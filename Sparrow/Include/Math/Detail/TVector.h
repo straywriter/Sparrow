@@ -33,7 +33,7 @@ template <typename T> class TVector<T, 2>
   public:
     void Normalize();
 
-    float Lenth();
+    T Lenth();
 
     T SquaredLenth();
 
@@ -86,7 +86,8 @@ template <typename T> class TVector<T, 3>
   public:
     void Normalize();
 
-    float Lenth();
+    T Lenth();
+
 
     T SquaredLenth();
 
@@ -144,7 +145,7 @@ template <typename T> class TVector<T, 4>
   public:
     void Normalize();
 
-    float Lenth();
+    T Lenth();
 
     T SquaredLenth();
 

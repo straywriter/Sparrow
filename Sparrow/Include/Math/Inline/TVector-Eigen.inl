@@ -55,9 +55,9 @@ template <typename T> inline void Math::TVector<T, 2>::Normalize()
      ((Eigen::Matrix<T, 2, 1> *)(this))->normalize();
 }
 
-template <typename T> inline float Math::TVector<T, 2>::Lenth()
+template <typename T> inline T Math::TVector<T, 2>::Lenth()
 {
-      return (float)(((Eigen::Matrix<T, 2, 1> *)(this))->norm());
+      return (T)(((Eigen::Matrix<T, 2, 1> *)(this))->norm());
 }
 
 template <typename T> inline T Math::TVector<T, 2>::SquaredLenth()
@@ -119,9 +119,9 @@ template <typename T> inline void Math::TVector<T, 3>::Normalize()
     ((Eigen::Matrix<T, 3, 1> *)(this))->normalize();
 }
 
-template <typename T> inline float Math::TVector<T, 3>::Lenth()
+template <typename T> inline T Math::TVector<T, 3>::Lenth()
 {
-    return (float)(((Eigen::Matrix<T, 3, 1> *)(this))->norm());
+    return (T)(((Eigen::Matrix<T, 3, 1> *)(this))->norm());
 }
 
 template <typename T> inline T Math::TVector<T, 3>::SquaredLenth()
@@ -203,9 +203,9 @@ template <typename T> inline void Math::TVector<T, 4>::Normalize()
      ((Eigen::Matrix<T, 4, 1> *)(this))->normalize();
 }
 
-template <typename T> inline float Math::TVector<T, 4>::Lenth()
+template <typename T> inline T Math::TVector<T, 4>::Lenth()
 {
-       return (float)(((Eigen::Matrix<T, 4 ,1> *)(this))->norm());
+       return (T)(((Eigen::Matrix<T, 4 ,1> *)(this))->norm());
 }
 
 template <typename T> inline T Math::TVector<T, 4>::SquaredLenth()
