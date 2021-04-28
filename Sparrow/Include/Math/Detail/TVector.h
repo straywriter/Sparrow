@@ -4,7 +4,6 @@
 #include <iostream>
 #include <utility>
 
-
 namespace Math
 {
 template <typename T, size_t Size> class TVector
@@ -24,9 +23,7 @@ template <typename T> class TVector<T, 2>
     TVector(const T &x, const T &y);
 
     void SetZero();
-    void SetZero(size_t index);
     void SetOne();
-    void SetOne(size_t index);
     void SetValue(const T &val);
     void Set(const T &x, const T &y);
 
@@ -36,6 +33,13 @@ template <typename T> class TVector<T, 2>
     T Lenth();
 
     T SquaredLenth();
+    T Dot(const TVector &val);
+
+  public:
+    TVector VectorLerp(const TVector &a, const TVector &b);
+    T static VectorDot(const TVector &a, const TVector &b);
+    static TVector VectorMax(const TVector &a, const TVector &b);
+    static TVector VectorMin(const TVector &a, const TVector &b);
 
   public:
     const T &Get(size_t index) const
@@ -53,15 +57,20 @@ template <typename T> class TVector<T, 2>
     {
         return &x;
     }
-    inline friend std::ostream &operator<<(std::ostream &out, const TVector &val)
-    {
-        for (auto i = 0; i < 2; i++)
-            out << *(const_cast<T *>(val.GetDataPtr()) + i) << ' ';
-        return out;
-    }
 
   public:
     T &operator[](size_t index);
+
+    template <typename T, size_t Size> inline operator TVector<T, Size>() const
+    {
+
+        if constexpr (Size == size_t(2))
+            return std::move(TVector<T, Size>((const T)x, (const T)y));
+        else if constexpr (Size == size_t(3))
+            return std::move(TVector<T, Size>((const T)x, (const T)y, static_cast<T>(0)));
+        else if constexpr (Size == size_t(4))
+            return std::move(TVector<T, Size>((const T)x, (const T)y, static_cast<T>(0), static_cast<T>(0)));
+    }
 };
 
 template <typename T> class TVector<T, 3>
@@ -77,9 +86,7 @@ template <typename T> class TVector<T, 3>
     TVector(const T &x, const T &y, const T &z);
 
     void SetZero();
-    void SetZero(size_t index);
     void SetOne();
-    void SetOne(size_t index);
     void SetValue(const T &val);
     void Set(const T &x, const T &y, const T &z);
 
@@ -87,7 +94,6 @@ template <typename T> class TVector<T, 3>
     void Normalize();
 
     T Lenth();
-
 
     T SquaredLenth();
 
@@ -111,15 +117,20 @@ template <typename T> class TVector<T, 3>
     {
         return &x;
     }
-    inline friend std::ostream &operator<<(std::ostream &out, const TVector &val)
-    {
-        for (auto i = 0; i < 3; i++)
-            out << *(const_cast<T *>(val.GetDataPtr()) + i) << ' ';
-        return out;
-    }
 
   public:
     T &operator[](size_t index);
+    template <typename T, size_t Size> inline operator TVector<T, Size>() const
+    {
+
+        // static_assert(Size != size_t(3));
+        if constexpr (Size == size_t(2))
+            return std::move(TVector<T, Size>((T)x, (T)y));
+        else if constexpr (Size == size_t(3))
+            return std::move(TVector<T, Size>((T)x, (T)y, (T)z));
+        else if constexpr (Size == size_t(4))
+            return std::move(TVector<T, Size>((T)x, (T)y, (T)z, static_cast<T>(0)));
+    }
 };
 
 template <typename T> class TVector<T, 4>
@@ -136,9 +147,7 @@ template <typename T> class TVector<T, 4>
     TVector(const T &x, const T &y, const T &z, const T &w);
 
     void SetZero();
-    void SetZero(size_t index);
     void SetOne();
-    void SetOne(size_t index);
     void SetValue(const T &val);
     void Set(const T &x, const T &y, const T &z, const T &w);
 
@@ -165,58 +174,70 @@ template <typename T> class TVector<T, 4>
     {
         return &x;
     }
-    inline friend std::ostream &operator<<(std::ostream &out, const TVector &val)
-    {
-        for (auto i = 0; i < 4; i++)
-            out << *(const_cast<T *>(val.GetDataPtr()) + i) << ' ';
-        return out;
-    }
 
   public:
     T &operator[](size_t index);
+
+    template <typename T, size_t Size> inline operator TVector<T, Size>() const
+    {
+        // static_assert(Size != size_t(4));
+        if constexpr (Size == size_t(2))
+            return std::move(TVector<T, Size>((T)x, (T)y));
+        else if constexpr (Size == size_t(3))
+            return std::move(TVector<T, Size>((T)x, (T)y, (T)z));
+        else if constexpr (Size == size_t(4))
+            return std::move(TVector<T, Size>((T)x, (T)y, (T)z, T(w)));
+    }
 };
 
-template <typename T, size_t size>
-TVector<T, size> operator+(const TVector<T, size> &left, const TVector<T, size> &right);
+template <typename T, size_t Size> std::ostream &operator<<(std::ostream &out, const TVector<T, Size> &val)
+{
+    for (auto i = 0; i < Size; i++)
+        out << *(const_cast<T *>(val.GetDataPtr()) + i) << ' ';
+    return out;
+}
 
-template <typename T, size_t size> TVector<T, size> operator+(const TVector<T, size> &left, const T &val);
+template <typename T, size_t Size>
+TVector<T, Size> operator+(const TVector<T, Size> &left, const TVector<T, Size> &right);
 
-template <typename T, size_t size>
-TVector<T, size> operator-(const TVector<T, size> &left, const TVector<T, size> &right);
+template <typename T, size_t Size> TVector<T, Size> operator+(const TVector<T, Size> &left, const T &val);
 
-template <typename T, size_t size> TVector<T, size> operator-(const TVector<T, size> &left, const T &val);
+template <typename T, size_t Size>
+TVector<T, Size> operator-(const TVector<T, Size> &left, const TVector<T, Size> &right);
 
-template <typename T, size_t size>
-TVector<T, size> operator*(const TVector<T, size> &left, const TVector<T, size> &right);
+template <typename T, size_t Size> TVector<T, Size> operator-(const TVector<T, Size> &left, const T &val);
 
-template <typename T, size_t size> TVector<T, size> operator*(const TVector<T, size> &left, const T &val);
+template <typename T, size_t Size>
+TVector<T, Size> operator*(const TVector<T, Size> &left, const TVector<T, Size> &right);
 
-template <typename T, size_t size>
-TVector<T, size> operator/(const TVector<T, size> &left, const TVector<T, size> &right);
+template <typename T, size_t Size> TVector<T, Size> operator*(const TVector<T, Size> &left, const T &val);
 
-template <typename T, size_t size> TVector<T, size> operator/(const TVector<T, size> &left, const T &val);
+template <typename T, size_t Size>
+TVector<T, Size> operator/(const TVector<T, Size> &left, const TVector<T, Size> &right);
 
-template <typename T, size_t size> TVector<T, size> operator-(const TVector<T, size> &left);
+template <typename T, size_t Size> TVector<T, Size> operator/(const TVector<T, Size> &left, const T &val);
 
-template <typename T, size_t size> void operator+=(TVector<T, size> &left, const TVector<T, size> &right);
+template <typename T, size_t Size> TVector<T, Size> operator-(const TVector<T, Size> &left);
 
-template <typename T, size_t size> void operator+=(TVector<T, size> &left, const T &val);
+template <typename T, size_t Size> void operator+=(TVector<T, Size> &left, const TVector<T, Size> &right);
 
-template <typename T, size_t size> void operator-=(TVector<T, size> &left, const TVector<T, size> &right);
+template <typename T, size_t Size> void operator+=(TVector<T, Size> &left, const T &val);
 
-template <typename T, size_t size> void operator-=(TVector<T, size> &left, const T &val);
+template <typename T, size_t Size> void operator-=(TVector<T, Size> &left, const TVector<T, Size> &right);
 
-template <typename T, size_t size> void operator*=(TVector<T, size> &left, const TVector<T, size> &right);
+template <typename T, size_t Size> void operator-=(TVector<T, Size> &left, const T &val);
 
-template <typename T, size_t size> void operator*=(TVector<T, size> &left, const T &val);
+template <typename T, size_t Size> void operator*=(TVector<T, Size> &left, const TVector<T, Size> &right);
 
-template <typename T, size_t size> void operator/=(TVector<T, size> &left, const TVector<T, size> &right);
+template <typename T, size_t Size> void operator*=(TVector<T, Size> &left, const T &val);
 
-template <typename T, size_t size> void operator/=(TVector<T, size> &left, const T &val);
+template <typename T, size_t Size> void operator/=(TVector<T, Size> &left, const TVector<T, Size> &right);
 
-template <typename T, size_t size> bool operator==(const TVector<T, size> &left, const TVector<T, size> &right);
+template <typename T, size_t Size> void operator/=(TVector<T, Size> &left, const T &val);
 
-template <typename T, size_t size> bool operator!=(const TVector<T, size> &left, const TVector<T, size> &right);
+template <typename T, size_t Size> bool operator==(const TVector<T, Size> &left, const TVector<T, Size> &right);
+
+template <typename T, size_t Size> bool operator!=(const TVector<T, Size> &left, const TVector<T, Size> &right);
 } // namespace Math
 
 // #include "Math/Inline/LinearData.Eigen.inl"

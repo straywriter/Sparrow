@@ -1,5 +1,6 @@
 #pragma once
 #include "Math/Detail/TVector.h"
+#include <iostream>
 
 namespace Math
 {
@@ -11,28 +12,20 @@ template <typename T, size_t Row, size_t Col> class TMatrix
 
   public:
     TMatrix();
-
     TMatrix(const T &val);
 
+    template<typename T, size_t Row, size_t Col>  inline operator TMatrix<T,Row,Col>()
+    {
+
+    }
+
     void SetZero();
-    void SetZero(size_t index);
-    void SetZero(size_t row, size_t col);
     void SetOne();
-    void SetOne(size_t index);
-    void SetOne(size_t row, size_t col);
     void SetValue(const T &val);
 
-    // template<typename VectorType,size_t Size>
-    // void SetVector(TVector<T,)
 
   public:
-
-
-
   public:
-  
- 
-
   public:
     const T &Get(size_t index) const
     {
@@ -42,24 +35,72 @@ template <typename T, size_t Row, size_t Col> class TMatrix
 
     inline size_t GetSize() const
     {
-        return size_t(3);
+        return Row*Col;
     }
 
     inline const T *GetDataPtr() const
     {
         return &matrix;
     }
-    inline friend std::ostream &operator<<(std::ostream &out, const TVector &val)
-    {
-        // for (auto i = 0; i < 2; i++)
-        //     out << *(const_cast<T *>(val.GetDataPtr()) + i) << ' ';
-        // return out;
-    }
 
   public:
     inline T &operator[](size_t index);
+  
 
+};
+template <typename T, size_t Row, size_t Col>
+std::ostream &operator<<(std::ostream &out, const TMatrix<T, Row, Col> &val);
 
-}
+template <typename T, size_t Row, size_t Col>
+TMatrix<T, Row, Col> operator+(const TMatrix<T, Row, Col> &left, const TMatrix<T, Row, Col> &right);
+
+template <typename T, size_t Row, size_t Col>
+TMatrix<T, Row, Col> operator+(const TMatrix<T, Row, Col> &left, const T &val);
+
+template <typename T, size_t Row, size_t Col>
+TMatrix<T, Row, Col> operator-(const TMatrix<T, Row, Col> &left, const TMatrix<T, Row, Col> &right);
+
+template <typename T, size_t Row, size_t Col>
+TMatrix<T, Row, Col> operator-(const TMatrix<T, Row, Col> &left, const T &val);
+
+template <typename T, size_t Row, size_t Col>
+TMatrix<T, Row, Col> operator*(const TMatrix<T, Row, Col> &left, const TMatrix<T, Row, Col> &right);
+
+template <typename T, size_t Row, size_t Col>
+TMatrix<T, Row, Col> operator*(const TMatrix<T, Row, Col> &left, const T &val);
+
+template <typename T, size_t Row, size_t Col>
+TMatrix<T, Row, Col> operator/(const TMatrix<T, Row, Col> &left, const TMatrix<T, Row, Col> &right);
+
+template <typename T, size_t Row, size_t Col>
+TMatrix<T, Row, Col> operator/(const TMatrix<T, Row, Col> &left, const T &val);
+
+template <typename T, size_t Row, size_t Col> TMatrix<T, Row, Col> operator-(const TMatrix<T, Row, Col> &left);
+
+template <typename T, size_t Row, size_t Col>
+void operator+=(TMatrix<T, Row, Col> &left, const TMatrix<T, Row, Col> &right);
+
+template <typename T, size_t Row, size_t Col> void operator+=(TMatrix<T, Row, Col> &left, const T &val);
+
+template <typename T, size_t Row, size_t Col>
+void operator-=(TMatrix<T, Row, Col> &left, const TMatrix<T, Row, Col> &right);
+
+template <typename T, size_t Row, size_t Col> void operator-=(TMatrix<T, Row, Col> &left, const T &val);
+
+template <typename T, size_t Row, size_t Col>
+void operator*=(TMatrix<T, Row, Col> &left, const TMatrix<T, Row, Col> &right);
+
+template <typename T, size_t Row, size_t Col> void operator*=(TMatrix<T, Row, Col> &left, const T &val);
+
+template <typename T, size_t Row, size_t Col>
+void operator/=(TMatrix<T, Row, Col> &left, const TMatrix<T, Row, Col> &right);
+
+template <typename T, size_t Row, size_t Col> void operator/=(TMatrix<T, Row, Col> &left, const T &val);
+
+template <typename T, size_t Row, size_t Col>
+bool operator==(const TMatrix<T, Row, Col> &left, const TMatrix<T, Row, Col> &right);
+
+template <typename T, size_t Row, size_t Col>
+bool operator!=(const TMatrix<T, Row, Col> &left, const TMatrix<T, Row, Col> &right);
 
 } // namespace  Math

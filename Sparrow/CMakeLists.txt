@@ -44,13 +44,14 @@ set_target_properties(OpenGL PROPERTIES FOLDER "Sparrow/GPU")
 
 # MathLib
 set(MathLibIncludeDir ${CMAKE_CURRENT_SOURCE_DIR}/Include)
-file(GLOB_RECURSE MathLibIncludeFile ${CMAKE_CURRENT_SOURCE_DIR}/Include/Math/*.h)
+# file(GLOB_RECURSE MathLibIncludeFile ${CMAKE_CURRENT_SOURCE_DIR}/Include/Math/*.h)
 file(GLOB_RECURSE MathLibSourceFile ${CMAKE_CURRENT_SOURCE_DIR}/Src/Math/*.cpp)
 message(STATUS "math lib include file: ${MathLibIncludeFile}")
 
 add_library(MathLib)
 target_include_directories(MathLib PUBLIC ${MathLibIncludeDir})
 target_sources(MathLib PUBLIC ${MathLibIncludeFile} ${MathLibSourceFile})
+ target_link_libraries(MathLib  Eigen)
 
 set_target_properties(MathLib PROPERTIES FOLDER "Sparrow")
 

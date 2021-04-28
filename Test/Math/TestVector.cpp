@@ -8,7 +8,7 @@
 
 using namespace Math;
 
-#define VECTOR_TEST_OUT 0
+#define VECTOR_TEST_OUT 1
 
 #define GTEST_COUT std::cerr << "[ INFO     ] "
 
@@ -230,18 +230,6 @@ template <typename T, size_t Size> void VectorGetSetTest(TVector<T, Size> vec)
         {
             EXPECT_EQ(t4.Get(i), static_cast<T>(i + 1));
         }
-
-        // t1[0] = static_cast<T>(3);
-
-        VectorType v10 = t4;
-        for (auto i = Size; i--; v10.SetOne(i))
-            ;
-        EXPECT_EQ(t3, v10);
-        VectorType v11 = t4;
-        for (auto i = Size; i--; v11.SetZero(i))
-            ;
-        EXPECT_EQ(t2, v11);
-        ;
     }
     // Set
     {
@@ -270,15 +258,19 @@ template <typename T, size_t Size> void VectorLenthTest(TVector<T, Size> vec)
     for (auto i = Size; i--; t1[i] = (T)i + static_cast<T>(1))
         ;
     std::cout << t1;
-    float t2 = static_cast<T>(0);
-    for (auto i = Size; i--; t2 += ((float)i + static_cast<float>(1)) * ((float)i + static_cast<float>(1)))
+    T t2 = static_cast<T>(0);
+    for (auto i = Size; i--; t2 += ((T)i + static_cast<T>(1)) * ((T)i + static_cast<T>(1)))
         ;
 
     EXPECT_EQ(t1.SquaredLenth(), t2);
-    std::cout << " " << t2;
     auto vv = std::sqrt(t2);
-    std::cout << " " << t2;
     EXPECT_EQ(t1.Lenth(), (T)vv);
+
+#if VECTOR_TEST_OUT
+    std::cerr << "[ VecTest  ] " << t1 << std::endl;
+    std::cerr << "[ VecTest2 ] " << t2 << std::endl;
+    std::cerr << "[ Vec      ] " << vv << std::endl;
+#endif
 }
 #define VECTOR_LENTH_TEST(VectorType)                                                                                  \
     TEST(VectorLenthTest, VectorType)                                                                                  \
@@ -303,14 +295,163 @@ template <typename T, size_t Size> void VectorNormalizeTest(TVector<T, Size> vec
     VectorType t1;
     for (auto i = Size; i--; *(&t1.x + (int)i) = (T)i + static_cast<T>(1))
         ;
-    std::cout << t1;
     VectorType t2;
     for (auto i = Size; i--; *(&t2.x + (int)i) = ((T)i + static_cast<T>(1)))
         ;
-    for (auto i = Size; i--; t2[i] = t2[i] / t2.Lenth())
+
+    auto lenth = t2.Lenth();
+
+    for (auto i = Size; i--; t2[i] = t2[i] / lenth)
         ;
-    std::cout << t1;
-    EXPECT_EQ(t1, t2);
+    auto v1 = t1;
+    v1.Normalize();
+    EXPECT_EQ(v1, t2);
+
+#if VECTOR_TEST_OUT
+    std::cerr << "[ VecTest1 ] " << t1 << std::endl;
+    std::cerr << "[ VecLenth ] " << lenth << std::endl;
+    std::cerr << "[ VecTest2 ] " << t2 << std::endl;
+    std::cerr << "[ Vec      ] " << v1 << std::endl;
+#endif
+}
+#define VECTOR_NORMALIZE_TEST(VectorType)                                                                              \
+    TEST(VectorNormalizeTest, VectorType)                                                                              \
+    {                                                                                                                  \
+        VectorNormalizeTest(VectorType());                                                                             \
+    }
+VECTOR_NORMALIZE_TEST(Vector2i)
+VECTOR_NORMALIZE_TEST(Vector3i)
+VECTOR_NORMALIZE_TEST(Vector4i)
+VECTOR_NORMALIZE_TEST(Vector2f)
+VECTOR_NORMALIZE_TEST(Vector3f)
+VECTOR_NORMALIZE_TEST(Vector4f)
+VECTOR_NORMALIZE_TEST(Vector2d)
+VECTOR_NORMALIZE_TEST(Vector3d)
+VECTOR_NORMALIZE_TEST(Vector4d)
+
+template <typename T, size_t Size> void VectorConvertTest(TVector<T, Size> vec)
+{
+    vec.SetZero();
+    using VectorType = TVector<T, Size>;
+
+    if constexpr (Size == 2)
+    {
+    }
+    VectorType t;
+    for (auto i = Size; i--; t[i] = (T)i + static_cast<T>(1))
+        ;
+#define VECTOR_INIT(size, type, var)                                                                                   \
+    if constexpr (Size > size_t(size))                                                                                 \
+    {                                                                                                                  \
+        for (auto i = size; i--; var[i] = (type)i + static_cast<type>(1))                                              \
+            ;                                                                                                          \
+    }                                                                                                                  \
+    else                                                                                                               \
+    {                                                                                                                  \
+        for (auto i = 0; i < Size; ++i)                                                                                \
+        {                                                                                                              \
+            var[i] = (type)i + static_cast<type>(1);                                                                   \
+        }                                                                                                              \
+        for (auto i = Size; i < size; ++i)                                                                             \
+        {                                                                                                              \
+            var[i] = static_cast<type>(0);                                                                             \
+        }                                                                                                              \
+    }
+
+    Vector2i t1;
+    VECTOR_INIT(2, int, t1)
+    Vector3i t2;
+    VECTOR_INIT(3, int, t2)
+    Vector4i t3;
+    VECTOR_INIT(4, int, t3)
+    Vector2f t4;
+    VECTOR_INIT(2, float, t4)
+    Vector3f t5;
+    VECTOR_INIT(3, float, t5)
+    Vector4f t6;
+    VECTOR_INIT(4, float, t6)
+    Vector2d t7;
+    VECTOR_INIT(2, double, t7)
+    Vector3d t8;
+    VECTOR_INIT(3, double, t8)
+    Vector4d t9;
+    VECTOR_INIT(4, double, t9)
+
+    Vector2i v1 = t;
+    Vector3i v2 = t;
+    Vector4i v3 = t;
+    Vector2f v4 = t;
+    Vector3f v5 = t;
+    Vector4f v6 = t;
+    Vector2d v7 = t;
+    Vector3d v8 = t;
+    Vector4d v9 = t;
+    EXPECT_EQ(t1, v1);
+    EXPECT_EQ(t2, v2);
+    EXPECT_EQ(t3, v3);
+    EXPECT_EQ(t4, v4);
+    EXPECT_EQ(t5, v5);
+    EXPECT_EQ(t6, v6);
+    EXPECT_EQ(t7, v7);
+    EXPECT_EQ(t8, v8);
+    EXPECT_EQ(t9, v9);
+
+#if VECTOR_TEST_OUT
+    std::cerr << "[ VecTest  ] " << t << std::endl;
+    std::cerr << "[ TVector1i] " << t1 << std::endl;
+    std::cerr << "[ Vector2i ] " << v1 << std::endl;
+    std::cerr << "[ TVector3i] " << t2 << std::endl;
+    std::cerr << "[ Vector3i ] " << v2 << std::endl;
+    std::cerr << "[ TVector4i] " << t3 << std::endl;
+    std::cerr << "[ Vector4i ] " << v3 << std::endl;
+    std::cerr << "[ TVector2f] " << t4 << std::endl;
+    std::cerr << "[ Vector2f ] " << v4 << std::endl;
+    std::cerr << "[ TVector3f] " << t5 << std::endl;
+    std::cerr << "[ Vector3f ] " << v5 << std::endl;
+    std::cerr << "[ TVector4f] " << t6 << std::endl;
+    std::cerr << "[ Vector4f ] " << v6 << std::endl;
+    std::cerr << "[ TVector2d] " << t7 << std::endl;
+    std::cerr << "[ Vector2d ] " << v7 << std::endl;
+    std::cerr << "[ TVector3d] " << t8 << std::endl;
+    std::cerr << "[ Vector3d ] " << v8 << std::endl;
+    std::cerr << "[ TVector4d] " << t9 << std::endl;
+    std::cerr << "[ Vector4d ] " << v9 << std::endl;
+#endif
+}
+
+#define VECTORCONVERTTEST(VectorType)                                                                                  \
+    TEST(VectorConvertTest, VectorType)                                                                                \
+    {                                                                                                                  \
+        VectorConvertTest(VectorType());                                                                               \
+    }
+
+VECTORCONVERTTEST(Vector2i)
+VECTORCONVERTTEST(Vector3i)
+VECTORCONVERTTEST(Vector4i)
+VECTORCONVERTTEST(Vector2f)
+VECTORCONVERTTEST(Vector3f)
+VECTORCONVERTTEST(Vector4f)
+VECTORCONVERTTEST(Vector2d)
+VECTORCONVERTTEST(Vector3d)
+VECTORCONVERTTEST(Vector4d)
+
+TEST(VectorConvert, Vector)
+{
+    Vector3f V(1.f, 2.f, 3.f);
+    std::cout << V;
+    Vector2f f = V;
+    std::cout << f;
+    Vector3f a = V;
+    Vector2i i2 = V;
+
+    Vector3f f3 = i2;
+    // Vector3d d3=f3;
+    auto xx = V;
+
+    Vector3i i3;
+    Vector4f f4 = i3;
+
+    std::cout << a;
 }
 
 // TEST(Vector, Normlise)

@@ -26,14 +26,7 @@ template <typename T> inline void Math::TVector<T, 2>::SetZero()
 {
     ((Eigen::Matrix<T, 2, 1> *)(this))->setZero();
 }
-template <typename T> inline void Math::TVector<T, 2>::SetZero(size_t index)
-{
-    const_cast<T&>(Get(index))= static_cast<T>(0);
-}
-template <typename T> inline void Math::TVector<T, 2>::SetOne(size_t index)
-{
-    const_cast<T&>(Get(index))=  static_cast<T>(1);
-}
+
 template <typename T> inline void Math::TVector<T, 2>::SetOne()
 {
     ((Eigen::Matrix<T, 2, 1> *)(this))->setConstant(static_cast<T>(1));
@@ -91,14 +84,7 @@ template <typename T> inline void Math::TVector<T, 3>::SetZero()
 {
     ((Eigen::Matrix<T, 3, 1> *)(this))->setZero();
 }
-template <typename T> inline void Math::TVector<T, 3>::SetZero(size_t index)
-{
-   const_cast<T&>(Get(index)) =  static_cast<T>(0);
-}
-template <typename T> inline void Math::TVector<T, 3>::SetOne(size_t index)
-{
-    const_cast<T&>(Get(index)) =  static_cast<T>(1);
-}
+
 template <typename T> inline void Math::TVector<T, 3>::SetOne()
 {
     ((Eigen::Matrix<T, 3, 1> *)(this))->setConstant(static_cast<T>(1));
@@ -173,14 +159,7 @@ template <typename T> inline void Math::TVector<T, 4>::SetZero()
 {
     ((Eigen::Matrix<T, 4, 1> *)(this))->setZero();
 }
-template <typename T> inline void Math::TVector<T, 4>::SetZero(size_t index)
-{
-    const_cast<T&>(Get(index)) =  static_cast<T>(0);
-}
-template <typename T> inline void Math::TVector<T, 4>::SetOne(size_t index)
-{
-    const_cast<T&>(Get(index))=  static_cast<T>(1);
-}
+
 template <typename T> inline void Math::TVector<T, 4>::SetOne()
 {
     ((Eigen::Matrix<T, 4, 1> *)(this))->setConstant(static_cast<T>(1));
@@ -222,84 +201,84 @@ template <typename T> inline T &Math::TVector<T, 4>::operator[](size_t index)
 namespace Math
 {
 
-template <typename T, size_t size>
-TVector<T, size> Math::operator+(const TVector<T, size> &left, const TVector<T, size> &right)
+template <typename T, size_t Size>
+TVector<T, Size> Math::operator+(const TVector<T, Size> &left, const TVector<T, Size> &right)
 {
-    return TVector<T, size>();
+    return TVector<T, Size>();
 }
-template <typename T, size_t size> TVector<T, size> Math::operator+(const TVector<T, size> &left, const T &val)
+template <typename T, size_t Size> TVector<T, Size> Math::operator+(const TVector<T, Size> &left, const T &val)
 {
-    return TVector<T, size>();
+    return TVector<T, Size>();
 }
-template <typename T, size_t size>
-TVector<T, size> Math::operator-(const TVector<T, size> &left, const TVector<T, size> &right)
+template <typename T, size_t Size>
+TVector<T, Size> Math::operator-(const TVector<T, Size> &left, const TVector<T, Size> &right)
 {
-    return TVector<T, size>();
+    return TVector<T, Size>();
 }
-template <typename T, size_t size> TVector<T, size> Math::operator-(const TVector<T, size> &left, const T &val)
+template <typename T, size_t Size> TVector<T, Size> Math::operator-(const TVector<T, Size> &left, const T &val)
 {
-    return TVector<T, size>();
+    return TVector<T, Size>();
 }
-template <typename T, size_t size>
-TVector<T, size> Math::operator*(const TVector<T, size> &left, const TVector<T, size> &right)
+template <typename T, size_t Size>
+TVector<T, Size> Math::operator*(const TVector<T, Size> &left, const TVector<T, Size> &right)
 {
-    return TVector<T, size>();
+    return TVector<T, Size>();
 }
-template <typename T, size_t size> TVector<T, size> Math::operator*(const TVector<T, size> &left, const T &val)
+template <typename T, size_t Size> TVector<T, Size> Math::operator*(const TVector<T, Size> &left, const T &val)
 {
-    return TVector<T, size>();
+    return TVector<T, Size>();
 }
-template <typename T, size_t size>
-TVector<T, size> Math::operator/(const TVector<T, size> &left, const TVector<T, size> &right)
+template <typename T, size_t Size>
+TVector<T, Size> Math::operator/(const TVector<T, Size> &left, const TVector<T, Size> &right)
 {
-    return TVector<T, size>();
+    return TVector<T, Size>();
 }
-template <typename T, size_t size> TVector<T, size> Math::operator/(const TVector<T, size> &left, const T &val)
+template <typename T, size_t Size> TVector<T, Size> Math::operator/(const TVector<T, Size> &left, const T &val)
 {
-    return TVector<T, size>();
+    return TVector<T, Size>();
 }
-template <typename T, size_t size> TVector<T, size> Math::operator-(const TVector<T, size> &left)
+template <typename T, size_t Size> TVector<T, Size> Math::operator-(const TVector<T, Size> &left)
 {
-    return TVector<T, size>();
+    return TVector<T, Size>();
 }
-template <typename T, size_t size> void Math::operator+=(TVector<T, size> &left, const TVector<T, size> &right)
-{
-}
-template <typename T, size_t size> void Math::operator+=(TVector<T, size> &left, const T &val)
+template <typename T, size_t Size> void Math::operator+=(TVector<T, Size> &left, const TVector<T, Size> &right)
 {
 }
-template <typename T, size_t size> void Math::operator-=(TVector<T, size> &left, const TVector<T, size> &right)
+template <typename T, size_t Size> void Math::operator+=(TVector<T, Size> &left, const T &val)
 {
 }
-template <typename T, size_t size> void Math::operator-=(TVector<T, size> &left, const T &val)
+template <typename T, size_t Size> void Math::operator-=(TVector<T, Size> &left, const TVector<T, Size> &right)
 {
 }
-template <typename T, size_t size> void Math::operator*=(TVector<T, size> &left, const TVector<T, size> &right)
+template <typename T, size_t Size> void Math::operator-=(TVector<T, Size> &left, const T &val)
 {
 }
-template <typename T, size_t size> void Math::operator*=(TVector<T, size> &left, const T &val)
+template <typename T, size_t Size> void Math::operator*=(TVector<T, Size> &left, const TVector<T, Size> &right)
 {
 }
-template <typename T, size_t size> void Math::operator/=(TVector<T, size> &left, const TVector<T, size> &right)
+template <typename T, size_t Size> void Math::operator*=(TVector<T, Size> &left, const T &val)
 {
 }
-template <typename T, size_t size> void Math::operator/=(TVector<T, size> &left, const T &val)
+template <typename T, size_t Size> void Math::operator/=(TVector<T, Size> &left, const TVector<T, Size> &right)
 {
 }
-template <typename T, size_t size> bool Math::operator==(const TVector<T, size> &left, const TVector<T, size> &right)
+template <typename T, size_t Size> void Math::operator/=(TVector<T, Size> &left, const T &val)
 {
-    // return(*((Eigen::Matrix<T, size, 1> *)(const_cast<TVector<T, size> *>(&left))) )==
-    //     (*((Eigen::Matrix<T, size, 1> *)const_cast<TVector<T, size> *>(&right)));
-    for (auto i = size; i--;)
+}
+template <typename T, size_t Size> bool Math::operator==(const TVector<T, Size> &left, const TVector<T, Size> &right)
+{
+    // return(*((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size> *>(&left))) )==
+    //     (*((Eigen::Matrix<T, Size, 1> *)const_cast<TVector<T, Size> *>(&right)));
+    for (auto i = Size; i--;)
     {
         if (!(*(&right.x + i) == *(&left.x + i)))
             return false;
     }
     return true;
 }
-template <typename T, size_t size> bool Math::operator!=(const TVector<T, size> &left, const TVector<T, size> &right)
+template <typename T, size_t Size> bool Math::operator!=(const TVector<T, Size> &left, const TVector<T, Size> &right)
 {
-    for (auto i = size; i--;)
+    for (auto i = Size; i--;)
     {
         if (!(*(&right.x + i) == *(&left.x + i)))
             return true;

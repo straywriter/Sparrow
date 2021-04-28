@@ -1,11 +1,33 @@
 
-function(AddMathTestExe FileDir)
+# function(AddMathTestExe FileDir)
 
-  file(GLOB Files ${FileDir}/*.cpp)
+#   file(GLOB Files ${FileDir}/*.cpp)
+#   foreach(TestFile ${Files})
+#     get_filename_component(TestFileName ${TestFile} NAME_WE)
+#     add_executable(${TestFileName} ${TestFile})
+#     target_link_libraries(${TestFileName} PUBLIC gtest gtest_main MathLib Eigen)
+#     set_target_properties(${TestFileName} PROPERTIES FOLDER "Test/Math")
+#     target_compile_options(
+#       ${TestFileName}
+#       PUBLIC $<$<CONFIG:>:/MT>
+#              $<$<CONFIG:Debug>:/MTd>
+#              $<$<CONFIG:Release>:/MT>
+#              $<$<CXX_COMPILER_ID:MSVC>:
+#             # /d1reportClassLayoutChanges
+#             /permissive-
+#              /std:c++17
+#              >)
+#     add_test(${TestFileName} ${TestFileName})
+#   endforeach()
+# endfunction()
+
+# addmathtestexe(${CMAKE_CURRENT_SOURCE_DIR})
+
+  file(GLOB Files *.cpp)
   foreach(TestFile ${Files})
     get_filename_component(TestFileName ${TestFile} NAME_WE)
     add_executable(${TestFileName} ${TestFile})
-    target_link_libraries(${TestFileName} PUBLIC gtest gtest_main MathLib Eigen)
+    target_link_libraries(${TestFileName}  gtest gtest_main MathLib Eigen)
     set_target_properties(${TestFileName} PROPERTIES FOLDER "Test/Math")
     target_compile_options(
       ${TestFileName}
@@ -19,9 +41,7 @@ function(AddMathTestExe FileDir)
              >)
     add_test(${TestFileName} ${TestFileName})
   endforeach()
-endfunction()
 
-addmathtestexe(${CMAKE_CURRENT_SOURCE_DIR})
 # project(MathTest)
 
 # add_executable(TestMathVector) target_sources(TestMathVector PRIVATE
