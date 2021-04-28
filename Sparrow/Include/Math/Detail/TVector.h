@@ -26,6 +26,7 @@ template <typename T> class TVector<T, 2>
     void SetOne();
     void SetValue(const T &val);
     void Set(const T &x, const T &y);
+    void SetRandom();
 
   public:
     void Normalize();
@@ -34,12 +35,27 @@ template <typename T> class TVector<T, 2>
 
     T SquaredLenth();
     T Dot(const TVector &val);
+    float Angle(const TVector &val);
+    TVector Reflect(const TVector &);
+    bool Equals(const TVector &val);
 
   public:
-    TVector VectorLerp(const TVector &a, const TVector &b);
+    static TVector Reflect(const TVector &a, const TVector &b);
+    static float VectorAngle(const TVector &a, const TVector &b);
+    static TVector VectorLerp(const TVector &a, const TVector &b);
     T static VectorDot(const TVector &a, const TVector &b);
     static TVector VectorMax(const TVector &a, const TVector &b);
     static TVector VectorMin(const TVector &a, const TVector &b);
+    static TVector VectorRandom();
+    static TVector VectorNormalize(const TVector &val);
+
+    inline const static TVector VectorZero;
+    // constexpr const static TVector VectorZero(static_cast<T>(0), static_cast<T>(0));
+    // constexpr const static TVector VectorOne(static_cast<T>(1), static_cast<T>(1));
+    // constexpr const static TVector VectorUp(static_cast<T>(0), static_cast<T>(1));
+    // constexpr const static TVector VectorDown(static_cast<T>(0), static_cast<T>(-1));
+    // constexpr const static TVector VectorLeft(static_cast<T>(-1), static_cast<T>(0));
+    // constexpr const static TVector VectorRight(static_cast<T>(1), static_cast<T>(0));
 
   public:
     const T &Get(size_t index) const
@@ -63,7 +79,6 @@ template <typename T> class TVector<T, 2>
 
     template <typename T, size_t Size> inline operator TVector<T, Size>() const
     {
-
         if constexpr (Size == size_t(2))
             return std::move(TVector<T, Size>((const T)x, (const T)y));
         else if constexpr (Size == size_t(3))

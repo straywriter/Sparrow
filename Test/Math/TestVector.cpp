@@ -435,6 +435,47 @@ VECTORCONVERTTEST(Vector2d)
 VECTORCONVERTTEST(Vector3d)
 VECTORCONVERTTEST(Vector4d)
 
+template <typename T, size_t Size> void VectorStaticVariableTest(TVector<T, Size> vec)
+{
+
+}
+
+template <typename T, size_t Size> void VectorRandomTest(TVector<T, Size> vec)
+{
+
+}
+
+template <typename T, size_t Size> void VectorMinMaxTest(TVector<T, Size> vec)
+{
+
+}
+
+template <typename T, size_t Size> void VectorDotTest(TVector<T, Size> vec)
+{
+
+}
+
+template <typename T, size_t Size> void VectorReflectTest(TVector<T, Size> vec)
+{
+
+}
+template <typename T, size_t Size> void VectorAngleTest(TVector<T, Size> vec)
+{
+
+}
+
+template <typename T, size_t Size> void VectorEqualsTest(TVector<T, Size> vec)
+{
+
+}
+
+template <typename T, size_t Size> void VectorOperatorTest(TVector<T, Size> vec)
+{
+
+}
+
+
+
 TEST(VectorConvert, Vector)
 {
     Vector3f V(1.f, 2.f, 3.f);
@@ -450,8 +491,11 @@ TEST(VectorConvert, Vector)
 
     Vector3i i3;
     Vector4f f4 = i3;
+Vector2f ccc{2.f,3.f};
+    std::cout<<'\n' << ccc;
+    auto yy = Vector2d::VectorZero;
+    std::cout<<'\n' << yy;
 
-    std::cout << a;
 }
 
 // TEST(Vector, Normlise)
