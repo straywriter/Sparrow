@@ -1,5 +1,6 @@
 #pragma once
 #include "GPU/OpenGL/GLRequirement.h"
+#include "Core/Log.h"
 
 #include <stdio.h>
 

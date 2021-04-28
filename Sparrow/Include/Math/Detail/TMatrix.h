@@ -14,28 +14,15 @@ template <typename T, size_t Row, size_t Col> class TMatrix
     TMatrix();
     TMatrix(const T &val);
 
-    template <typename OtherType, size_t OtherRow, size_t OtherCol>
-    inline operator TMatrix<OtherType, OtherRow, OtherCol>()
-    {
-        // if constexpr (OtherRow <= Row && OtherCol <= Col)
-        // {
-        //     TMatrix<OtherType, OtherRow, OtherCol> temp;
-        //     for (auto i = Row; i--;)
-        //         for (auto j = Col; j--)
-        //             temp.matrix[i][j] = (OtherType)this->matrix[i][j];
-        //     return temp;
-        // }
-        // else if constexpr(OtherRow>Row||OtherCol>Col)
-        // {
-
-        // }
-    }
-
     void SetZero();
     void SetOne();
     void SetValue(const T &val);
     void SetRandom();
 
+  public:
+    //伴随矩阵
+
+    //矩阵的逆
   public:
     static TMatrix MatrixRandom();
 
@@ -68,6 +55,23 @@ template <typename T, size_t Row, size_t Col> class TMatrix
 
   public:
     inline T &operator[](size_t index);
+
+    template <typename OtherType, size_t OtherRow, size_t OtherCol>
+    inline operator TMatrix<OtherType, OtherRow, OtherCol>()
+    {
+        // if constexpr (OtherRow <= Row && OtherCol <= Col)
+        // {
+        //     TMatrix<OtherType, OtherRow, OtherCol> temp;
+        //     for (auto i = Row; i--;)
+        //         for (auto j = Col; j--)
+        //             temp.matrix[i][j] = (OtherType)this->matrix[i][j];
+        //     return temp;
+        // }
+        // else if constexpr(OtherRow>Row||OtherCol>Col)
+        // {
+
+        // }
+    }
 };
 template <typename T, size_t Row, size_t Col>
 std::ostream &operator<<(std::ostream &out, const TMatrix<T, Row, Col> &val);

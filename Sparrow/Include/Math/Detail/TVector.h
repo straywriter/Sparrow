@@ -38,8 +38,8 @@ template <typename T> class TVector<T, 2>
     float Angle(const TVector &val);
     TVector Reflect(const TVector &);
     bool Equals(const TVector &val);
-    TVector<T, 2> Max(const T& val);
-    TVector<T, 2> Min(const T& val);
+    TVector<T, 2> Max(const T &val);
+    TVector<T, 2> Min(const T &val);
 
   public:
     static TVector Reflect(const TVector &a, const TVector &b);
@@ -50,6 +50,7 @@ template <typename T> class TVector<T, 2>
     static TVector VectorMin(const TVector &a, const TVector &b);
     static TVector VectorRandom();
     static TVector VectorNormalize(const TVector &val);
+    static TVector VectorInverse(const TVector &val);
 
     const static TVector VectorZero;
     const static TVector VectorOne;

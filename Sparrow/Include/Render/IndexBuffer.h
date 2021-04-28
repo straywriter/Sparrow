@@ -1,5 +1,4 @@
 #pragma once
-#include "GPU/OpenGL/GLRequirement.h"
 #include "Render/RenderObject.h"
 
 namespace Render
