@@ -11,24 +11,18 @@ namespace RenderCommand
 
 class VertexBufferCommand : RenderCommand
 {
-  public:
-    enum class ECreateVertex
-    {
-        Create,
-        Update,
-        Destory
-    };
 
   public:
-    // data
-    ECreateVertex type;
-    // return
     VertexBuffer *object;
 
   public:
-    VertexBuffer *GetVertexBuffer();
-    ECreateVertex GetType();
-  
+    inline VertexBuffer *GetVertexBuffer() const
+    {
+        if (isSuccessed)
+            return object;
+        else
+            return nullptr;
+    }
 };
 } // namespace RenderCommand
 } // namespace Render

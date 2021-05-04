@@ -3,20 +3,46 @@
 class RenderCommand
 {
   public:
-    enum ECommandType
+    struct ResourceCommand
     {
-        Begin,
-        VertexBufferCommand,
-
-        End
+        enum class ResourceType
+        {
+            VertexBuffer,
+            IndexBuffer,
+            Shader,
+        };
+        enum class ResourceCommandType
+        {
+            Create,
+            Update,
+            Destory,
+        };
+        ResourceCommandType resourceCommandType;
+        ResourceType resourceType;
     };
 
-    ECommandType type;
+    enum class RenderCommandType
+    {
+        Begin,
+        Resource,
+        Command,
+        RenderCommand,
+        None,
+        End
+    };
+    union CommandType {
+
+        ResourceCommand resourceCommand;
+    };
+
+    RenderCommandType resourceType;
+    CommandType commandType;
     bool isSuccessed;
 
   public:
-    ECommandType GetCommandType();
-    bool IsSuccessed();
-
-    
+    RenderCommandType GetCommandType();
+    inline bool IsSuccessed() const
+    {
+        return isSuccessed;
+    }
 };

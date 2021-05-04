@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Render/RenderCommand.h"
 #include "Render/IndexBuffer.h"
+#include "Render/RenderCommand.h"
+
 
 namespace Render
 {
@@ -12,20 +13,17 @@ namespace RenderCommand
 class IndexBufferCommand : RenderCommand
 {
   public:
-    enum class ECreateIndex
-    {
-        Create,
-        Update,
-        Destory
-    };
-
-  public:
     // data
-    ECreateIndex type;
     IndexBuffer *object;
 
-
-
+  public:
+    inline VertexBuffer *GetVertexBuffer() const
+    {
+        if (isSuccessed)
+            return object;
+        else
+            return nullptr;
+    }
 };
 } // namespace RenderCommand
 } // namespace Render
