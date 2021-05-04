@@ -34,20 +34,28 @@ template <typename T> class TVector<T, 2>
     T Lenth();
 
     T SquaredLenth();
-    T Dot(const TVector &val);
+    T Dot(const TVector &val) const;
     float Angle(const TVector &val);
-    TVector Reflect(const TVector &);
+    T MaxComponent() const;
+    T MinComponent() const;
+
     bool Equals(const TVector &val);
-    TVector<T, 2> Max(const T &val);
-    TVector<T, 2> Min(const T &val);
+    TVector GetNormalize();
+    bool IsOne();
+    bool IsZero();
+    bool IsNormalize();
 
   public:
-    static TVector Reflect(const TVector &a, const TVector &b);
+    static T VectorMinComponent(const TVector &val);
+    static T VectorMaxComponent(const TVector &val);
+    static TVector VectorGetNormalize();
+    static TVector VectorReflect(const TVector &vec, const TVector &norm);
+
+    static TVector VectorRefract(const TVector &vec, const TVector &norm,float n1,float n2);
+
     static float VectorAngle(const TVector &a, const TVector &b);
     static TVector VectorLerp(const TVector &a, const TVector &b);
     T static VectorDot(const TVector &a, const TVector &b);
-    static TVector VectorMax(const TVector &a, const TVector &b);
-    static TVector VectorMin(const TVector &a, const TVector &b);
     static TVector VectorRandom();
     static TVector VectorNormalize(const TVector &val);
     static TVector VectorInverse(const TVector &val);
@@ -107,6 +115,12 @@ template <typename T> class TVector<T, 3>
     void SetValue(const T &val);
     void Set(const T &x, const T &y, const T &z);
     void SetRandom();
+    T MaxComponent() const;
+    T MinComponent() const;
+
+  public:
+    static T VectorMinComponent(const TVector &val);
+    static T VectorMaxComponent(const TVector &val);
 
   public:
     void Normalize();
@@ -116,7 +130,7 @@ template <typename T> class TVector<T, 3>
 
     static TVector Cross(const TVector &left, const TVector &right);
 
-    T Dot(const TVector &val);
+    T Dot(const TVector &val) const;
     T Angle(const TVector &val);
     TVector Reflect(const TVector &);
     bool Equals(const TVector &val);
@@ -126,8 +140,6 @@ template <typename T> class TVector<T, 3>
     static float VectorAngle(const TVector &a, const TVector &b);
     static TVector VectorLerp(const TVector &a, const TVector &b);
     T static VectorDot(const TVector &a, const TVector &b);
-    static TVector VectorMax(const TVector &a, const TVector &b);
-    static TVector VectorMin(const TVector &a, const TVector &b);
     static TVector VectorRandom();
     static TVector VectorNormalize(const TVector &val);
 
@@ -161,7 +173,6 @@ template <typename T> class TVector<T, 3>
     T &operator[](size_t index);
     template <typename T, size_t Size> inline operator TVector<T, Size>() const
     {
-        // static_assert(Size != size_t(3));
         if constexpr (Size == size_t(2))
             return std::move(TVector<T, Size>((T)x, (T)y));
         else if constexpr (Size == size_t(3))
@@ -172,7 +183,6 @@ template <typename T> class TVector<T, 3>
 };
 
 template <typename T> class TVector<T, 4>
-
 {
   public:
     T x, y, z, w;
@@ -196,18 +206,23 @@ template <typename T> class TVector<T, 4>
     T Lenth();
 
     T SquaredLenth();
-    T Dot(const TVector &val);
+    T Dot(const TVector &val) const;
     T Angle(const TVector &val);
     TVector Reflect(const TVector &);
     bool Equals(const TVector &val);
+
+    T MaxComponent() const;
+    T MinComponent() const;
+
+  public:
+    static T VectorMinComponent(const TVector &val);
+    static T VectorMaxComponent(const TVector &val);
 
   public:
     static TVector Reflect(const TVector &a, const TVector &b);
     static float VectorAngle(const TVector &a, const TVector &b);
     static TVector VectorLerp(const TVector &a, const TVector &b);
     T static VectorDot(const TVector &a, const TVector &b);
-    static TVector VectorMax(const TVector &a, const TVector &b);
-    static TVector VectorMin(const TVector &a, const TVector &b);
     static TVector VectorRandom();
     static TVector VectorNormalize(const TVector &val);
 

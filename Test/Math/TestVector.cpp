@@ -575,10 +575,10 @@ template <typename T, size_t Size> void VectorRandomTest(TVector<T, Size> vec)
     std::cerr << "[ Random   ] " << t3 << std::endl;
     std::cerr << "[ Random   ] " << t4 << std::endl;
 }
-#define VECTOR_RANDOM_TEST(VectorType) \
-    TEST(VectorRandomTest, VectorType) \
-    { \
-        VectorRandomTest(VectorType()); \
+#define VECTOR_RANDOM_TEST(VectorType)                                                                                 \
+    TEST(VectorRandomTest, VectorType)                                                                                 \
+    {                                                                                                                  \
+        VectorRandomTest(VectorType());                                                                                \
     }
 
 VECTOR_RANDOM_TEST(Vector2i)
@@ -596,22 +596,27 @@ template <typename T, size_t Size> void VectorMinMaxTest(TVector<T, Size> vec)
     vec.SetZero();
     using VectorType = TVector<T, Size>;
 
-    VectorType t1;
-    t1.SetValue(static_cast<T>(6));
-    VectorType t2;
-    t2.SetValue(static_cast<T>(8));
-    VectorType v1 = VectorType::VectorMax(t1, t1);
-    VectorType v2 = VectorType::VectorMin(t1, t1);
-    VectorType v3 = t1.Max(t2);
-    VectorType v4 = t1.Max(t2);
+    VectorType t;
+    for (auto i = Size; i--; t[i] = (T)i + static_cast<T>(1))
+        ;
+    T max = (T)(Size);
 
-    EXPECT_EQ(t1, v2);
-    EXPECT_EQ(t2, v1);
-    EXPECT_EQ(t1, v4);
-    EXPECT_EQ(t2, v3);
+    T min = static_cast<T>(1);
+
+    auto v1 = VectorType::VectorMaxComponent(t);
+    auto v2 = VectorType::VectorMinComponent(t);
+    auto v3 = t.MinComponent();
+    auto v4 = t.MaxComponent();
+
+    EXPECT_EQ(min, v2);
+    EXPECT_EQ(max, v1);
+    EXPECT_EQ(max, v4);
+    EXPECT_EQ(min, v3);
 #if VECTOR_TEST_OUT
-    std::cerr << "[ Vector   ] " << t1 << std::endl;
-    std::cerr << "[ Vector   ] " << t2 << std::endl;
+    std::cerr << "[ Vector   ] " << t << std::endl;
+    std::cerr << "[ Vector   ] " << max << std::endl;
+    std::cerr << "[ Vector   ] " << min << std::endl;
+
     std::cerr << "[ Vector   ] " << v1 << std::endl;
     std::cerr << "[ Vector   ] " << v2 << std::endl;
     std::cerr << "[ Vector   ] " << v3 << std::endl;
@@ -635,154 +640,154 @@ VECTOR_MINMAX_TEST(Vector2d)
 VECTOR_MINMAX_TEST(Vector3d)
 VECTOR_MINMAX_TEST(Vector4d)
 
-// template <typename T, size_t Size> void VectorDotTest(TVector<T, Size> vec)
-// {
-//     vec.SetZero();
-//     using VectorType = TVector<T, Size>;
+template <typename T, size_t Size> void VectorDotTest(TVector<T, Size> vec)
+{
+    vec.SetZero();
+    using VectorType = TVector<T, Size>;
 
-//     VectorType t1;
-//     for (auto i = Size; i--; t1[i] = (T)i + static_cast<T>(1))
-//         ;
-//     VectorType t2;
-//     for (auto i = Size; i--; t2[i] = (T)i + static_cast<T>(1))
-//         ;
-//     T t3 = static_cast<T>(0);
-//     for (auto i = Size; i--; t3 += t1[i] * t2[i])
-//         ;
-//     auto v1 = t1.Dot(t2);
-//     auto v2 = VectorType::VectorDot(t1, t1);
+    VectorType t1;
+    for (auto i = Size; i--; t1[i] = (T)i + static_cast<T>(1))
+        ;
+    VectorType t2;
+    for (auto i = Size; i--; t2[i] = (T)i + static_cast<T>(1))
+        ;
+    T t3 = static_cast<T>(0);
+    for (auto i = Size; i--; t3 += t1[i] * t2[i])
+        ;
+    auto v1 = t1.Dot(t2);
+    auto v2 = VectorType::VectorDot(t1, t1);
 
-//     EXPECT_EQ(t3, v1);
-//     EXPECT_EQ(t3, v2);
-// #if VECTOR_TEST_OUT
-//     std::cerr << "[ Vector   ] " << t1 << std::endl;
-//     std::cerr << "[ Vector   ] " << t2 << std::endl;
-//     std::cerr << "[ VectorDot] " << t3 << std::endl;
-//     std::cerr << "[ Vector   ] " << v1 << std::endl;
-//     std::cerr << "[ Vector   ] " << v2 << std::endl;
-// #endif
-// }
+    EXPECT_EQ(t3, v1);
+    EXPECT_EQ(t3, v2);
+#if VECTOR_TEST_OUT
+    std::cerr << "[ Vector   ] " << t1 << std::endl;
+    std::cerr << "[ Vector   ] " << t2 << std::endl;
+    std::cerr << "[ VectorDot] " << t3 << std::endl;
+    std::cerr << "[ Vector   ] " << v1 << std::endl;
+    std::cerr << "[ Vector   ] " << v2 << std::endl;
+#endif
+}
 
-// #define VECTOR_DOT_TEST(VectorType)                                                                                    \
-//     TEST(VectorDotTest, VectorType)                                                                                    \
-//     {                                                                                                                  \
-//         VectorDotTest(VectorType());                                                                                   \
-//     }
+#define VECTOR_DOT_TEST(VectorType)                                                                                    \
+    TEST(VectorDotTest, VectorType)                                                                                    \
+    {                                                                                                                  \
+        VectorDotTest(VectorType());                                                                                   \
+    }
 
-// VECTOR_DOT_TEST(Vector2i)
-// VECTOR_DOT_TEST(Vector3i)
-// VECTOR_DOT_TEST(Vector4i)
-// VECTOR_DOT_TEST(Vector2f)
-// VECTOR_DOT_TEST(Vector3f)
-// VECTOR_DOT_TEST(Vector4f)
-// VECTOR_DOT_TEST(Vector2d)
-// VECTOR_DOT_TEST(Vector3d)
-// VECTOR_DOT_TEST(Vector4d)
+VECTOR_DOT_TEST(Vector2i)
+VECTOR_DOT_TEST(Vector3i)
+VECTOR_DOT_TEST(Vector4i)
+VECTOR_DOT_TEST(Vector2f)
+VECTOR_DOT_TEST(Vector3f)
+VECTOR_DOT_TEST(Vector4f)
+VECTOR_DOT_TEST(Vector2d)
+VECTOR_DOT_TEST(Vector3d)
+VECTOR_DOT_TEST(Vector4d)
 
-// template <typename T, size_t Size> void VectorOperatorTest(TVector<T, Size> vec)
-// {
-//     vec.SetZero();
-//     using VectorType = TVector<T, Size>;
-//     {
-//         VectorType t1;
-//         t1.SetValue(static_cast<T>(1));
-//         VectorType t2;
-//         t2.SetValue(static_cast<T>(2));
-//         VectorType t3;
-//         t3.SetValue(static_cast<T>(3));
+template <typename T, size_t Size> void VectorOperatorTest(TVector<T, Size> vec)
+{
+    vec.SetZero();
+    using VectorType = TVector<T, Size>;
+    {
+        VectorType t1;
+        t1.SetValue(static_cast<T>(1));
+        VectorType t2;
+        t2.SetValue(static_cast<T>(2));
+        VectorType t3;
+        t3.SetValue(static_cast<T>(3));
 
-//         auto v1 = t1 + t2;
-//         auto v2 = t2 + static_cast<T>(1);
+        auto v1 = t1 + t2;
+        auto v2 = t2 + static_cast<T>(1);
 
-//         EXPECT_EQ(t3, v2);
-//         EXPECT_EQ(t3, v1);
-// #if VECTOR_TEST_OUT
-//         std::cerr << "[ Vector+   ] " << t1 << std::endl;
-//         std::cerr << "[ Vector+   ] " << t2 << std::endl;
-//         std::cerr << "[ Vector+   ] " << t3 << std::endl;
-//         std::cerr << "[ Vector+   ] " << v1 << std::endl;
-//         std::cerr << "[ Vector+   ] " << v2 << std::endl;
-// #endif
-//     }
-//     {
-//         VectorType t1;
-//         t1.SetValue(static_cast<T>(1));
-//         VectorType t2;
-//         t2.SetValue(static_cast<T>(2));
-//         VectorType t3;
-//         t3.SetValue(static_cast<T>(3));
+        EXPECT_EQ(t3, v2);
+        EXPECT_EQ(t3, v1);
+#if VECTOR_TEST_OUT
+        std::cerr << "[ Vector+   ] " << t1 << std::endl;
+        std::cerr << "[ Vector+   ] " << t2 << std::endl;
+        std::cerr << "[ Vector+   ] " << t3 << std::endl;
+        std::cerr << "[ Vector+   ] " << v1 << std::endl;
+        std::cerr << "[ Vector+   ] " << v2 << std::endl;
+#endif
+    }
+    {
+        VectorType t1;
+        t1.SetValue(static_cast<T>(1));
+        VectorType t2;
+        t2.SetValue(static_cast<T>(2));
+        VectorType t3;
+        t3.SetValue(static_cast<T>(3));
 
-//         auto v1 = t2 - t1;
-//         auto v2 = t3 - static_cast<T>(1);
+        auto v1 = t2 - t1;
+        auto v2 = t3 - static_cast<T>(1);
 
-//         EXPECT_EQ(t2, v2);
-//         EXPECT_EQ(t1, v1);
-// #if VECTOR_TEST_OUT
-//         std::cerr << "[ Vector-   ] " << t1 << std::endl;
-//         std::cerr << "[ Vector-   ] " << t2 << std::endl;
-//         std::cerr << "[ Vector-   ] " << t3 << std::endl;
-//         std::cerr << "[ Vector-   ] " << v1 << std::endl;
-//         std::cerr << "[ Vector-   ] " << v2 << std::endl;
-// #endif
-//     }
-//     {
-//         VectorType t1;
-//         t1.SetValue(static_cast<T>(2));
-//         VectorType t2;
-//         t2.SetValue(static_cast<T>(2));
-//         VectorType t3;
-//         t3.SetValue(static_cast<T>(4));
+        EXPECT_EQ(t2, v2);
+        EXPECT_EQ(t1, v1);
+#if VECTOR_TEST_OUT
+        std::cerr << "[ Vector-   ] " << t1 << std::endl;
+        std::cerr << "[ Vector-   ] " << t2 << std::endl;
+        std::cerr << "[ Vector-   ] " << t3 << std::endl;
+        std::cerr << "[ Vector-   ] " << v1 << std::endl;
+        std::cerr << "[ Vector-   ] " << v2 << std::endl;
+#endif
+    }
+    {
+        VectorType t1;
+        t1.SetValue(static_cast<T>(2));
+        VectorType t2;
+        t2.SetValue(static_cast<T>(2));
+        VectorType t3;
+        t3.SetValue(static_cast<T>(4));
 
-//         auto v1 = t2 * t1;
-//         auto v2 = t1 * static_cast<T>(2);
+        auto v1 = t2 * t1;
+        auto v2 = t1 * static_cast<T>(2);
 
-//         EXPECT_EQ(t3, v2);
-//         EXPECT_EQ(t3, v1);
-// #if VECTOR_TEST_OUT
-//         std::cerr << "[ Vector*   ] " << t1 << std::endl;
-//         std::cerr << "[ Vector*   ] " << t2 << std::endl;
-//         std::cerr << "[ Vector*   ] " << t3 << std::endl;
-//         std::cerr << "[ Vector*   ] " << v1 << std::endl;
-//         std::cerr << "[ Vector*   ] " << v2 << std::endl;
-// #endif
-//     }
-//     {
-//         VectorType t1;
-//         t1.SetValue(static_cast<T>(2));
-//         VectorType t2;
-//         t2.SetValue(static_cast<T>(3));
-//         VectorType t3;
-//         t3.SetValue(static_cast<T>(6));
+        EXPECT_EQ(t3, v2);
+        EXPECT_EQ(t3, v1);
+#if VECTOR_TEST_OUT
+        std::cerr << "[ Vector*   ] " << t1 << std::endl;
+        std::cerr << "[ Vector*   ] " << t2 << std::endl;
+        std::cerr << "[ Vector*   ] " << t3 << std::endl;
+        std::cerr << "[ Vector*   ] " << v1 << std::endl;
+        std::cerr << "[ Vector*   ] " << v2 << std::endl;
+#endif
+    }
+    {
+        VectorType t1;
+        t1.SetValue(static_cast<T>(2));
+        VectorType t2;
+        t2.SetValue(static_cast<T>(3));
+        VectorType t3;
+        t3.SetValue(static_cast<T>(6));
 
-//         auto v1 = t3 / t2;
-//         auto v2 = t1 / static_cast<T>(2);
+        auto v1 = t3 / t2;
+        auto v2 = t3 / static_cast<T>(2);
 
-//         EXPECT_EQ(t2, v2);
-//         EXPECT_EQ(t1, v1);
-// #if VECTOR_TEST_OUT
-//         std::cerr << "[ Vector/   ] " << t1 << std::endl;
-//         std::cerr << "[ Vector/   ] " << t2 << std::endl;
-//         std::cerr << "[ Vector/   ] " << t3 << std::endl;
-//         std::cerr << "[ Vector/   ] " << v1 << std::endl;
-//         std::cerr << "[ Vector/   ] " << v2 << std::endl;
-// #endif
-//     }
-// }
-// #define VECTOR_OPERATOR_TEST(VectorType) \
-//     TEST(VectorOperatorTest, VectorType) \
-//     { \
-//         VectorOperatorTest(VectorType()); \
-//     }
+        EXPECT_EQ(t2, v2);
+        EXPECT_EQ(t1, v1);
+#if VECTOR_TEST_OUT
+        std::cerr << "[ Vector/   ] " << t1 << std::endl;
+        std::cerr << "[ Vector/   ] " << t2 << std::endl;
+        std::cerr << "[ Vector/   ] " << t3 << std::endl;
+        std::cerr << "[ Vector/   ] " << v1 << std::endl;
+        std::cerr << "[ Vector/   ] " << v2 << std::endl;
+#endif
+    }
+}
+#define VECTOR_OPERATOR_TEST(VectorType) \
+    TEST(VectorOperatorTest, VectorType) \
+    { \
+        VectorOperatorTest(VectorType()); \
+    }
 
-// VECTOR_OPERATOR_TEST(Vector2i)
-// VECTOR_OPERATOR_TEST(Vector3i)
-// VECTOR_OPERATOR_TEST(Vector4i)
-// VECTOR_OPERATOR_TEST(Vector2f)
-// VECTOR_OPERATOR_TEST(Vector3f)
-// VECTOR_OPERATOR_TEST(Vector4f)
-// VECTOR_OPERATOR_TEST(Vector2d)
-// VECTOR_OPERATOR_TEST(Vector3d)
-// VECTOR_OPERATOR_TEST(Vector4d)
+VECTOR_OPERATOR_TEST(Vector2i)
+VECTOR_OPERATOR_TEST(Vector3i)
+VECTOR_OPERATOR_TEST(Vector4i)
+VECTOR_OPERATOR_TEST(Vector2f)
+VECTOR_OPERATOR_TEST(Vector3f)
+VECTOR_OPERATOR_TEST(Vector4f)
+VECTOR_OPERATOR_TEST(Vector2d)
+VECTOR_OPERATOR_TEST(Vector3d)
+VECTOR_OPERATOR_TEST(Vector4d)
 
 // template <typename T, size_t Size> void VectorReflectTest(TVector<T, Size> vec)
 // {
@@ -811,8 +816,10 @@ TEST(VectorConvert, Vector)
     Vector3i i3;
     Vector4f f4 = i3;
     Vector2f ccc{2.f, 3.f};
+    auto add=ccc+(Vector2f)f3;
+    std::cout << '\n' << add;
     std::cout << '\n' << ccc;
-    auto yy = Vector2d::VectorZero;
+    auto yy = ccc+2.f;
     std::cout << '\n' << yy;
 }
 

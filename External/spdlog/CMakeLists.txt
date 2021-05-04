@@ -23,7 +23,7 @@
 # spdlog target
 #---------------------------------------------------------------------------------------
 add_library(spdlog INTERFACE)
-
+set(SpdLogIncludeDir ${CMAKE_CURRENT_SOURCE_DIR}/include/ CACHE STRING "" FORCE)
 
 target_include_directories(
     spdlog

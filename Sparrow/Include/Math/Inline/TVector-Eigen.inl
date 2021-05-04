@@ -1,5 +1,6 @@
 #include "Math/Detail/TVector.h"
 #include <Eigen/Dense>
+#include <string.h>
 
 using namespace Math;
 
@@ -70,19 +71,33 @@ template <typename T> inline T &Math::TVector<T, 2>::operator[](size_t index)
 {
     return const_cast<T &>(Get(index));
 }
-template <typename T> inline TVector<T, 2> Math::TVector<T, 2>::Max(const T &val)
+
+template <typename T> inline T Math::TVector<T, 2>::MaxComponent() const
 {
-    TVector<T, 2> temp;
-    *((Eigen::Matrix<T, 2, 1> *)(&temp)) =
-        ((Eigen::Matrix<T, 2, 1> *)(this))->max(*((Eigen::Matrix<T, 2, 1> *)const_cast<TVector<T, 2> *>(&val)));
+    return ((Eigen::Matrix<T, 2, 1> *)(this))->maxCoeff();
+}
+template <typename T> inline T Math::TVector<T, 2>::MinComponent() const
+{
+    return ((Eigen::Matrix<T, 2, 1> *)(this))->minCoeff();
+}
+template <typename T> inline T Math::TVector<T, 2>::VectorMinComponent(const TVector &val)
+{
+    return val.MinComponent();
+}
+template <typename T> inline T Math::TVector<T, 2>::VectorMaxComponent(const TVector &val)
+{
+    return val.MaxComponent();
+}
+template <typename T> inline T Math::TVector<T, 2>::Dot(const TVector &val) const
+{
+    T temp;
+    *((&temp)) =
+        ((Eigen::Matrix<T, 2, 1> *)(this))->dot(*((Eigen::Matrix<T, 2, 1> *)const_cast<TVector<T, 2> *>(&val)));
     return std::move(temp);
 }
-template <typename T> inline TVector<T, 2> Math::TVector<T, 2>::Min(const T &val)
+template <typename T> inline T Math::TVector<T, 2>::VectorDot(const TVector &a, const TVector &b)
 {
-    TVector<T, 2> temp;
-    *((Eigen::Matrix<T, 2, 1> *)(&temp)) =
-        ((Eigen::Matrix<T, 2, 1> *)(this))->min(*((Eigen::Matrix<T, 2, 1> *)const_cast<TVector<T, 2> *>(&val)));
-    return std::move(temp);
+    return a.Dot(b);
 }
 
 template <typename T>
@@ -145,6 +160,17 @@ template <typename T> inline void Math::TVector<T, 3>::Set(const T &_x, const T 
     y = _y;
     z = _z;
 }
+template <typename T> inline T Math::TVector<T, 3>::Dot(const TVector &val) const
+{
+    T temp;
+    *((&temp)) =
+        ((Eigen::Matrix<T, 3, 1> *)(this))->dot(*((Eigen::Matrix<T, 3, 1> *)const_cast<TVector<T, 3> *>(&val)));
+    return std::move(temp);
+}
+template <typename T> inline T Math::TVector<T, 3>::VectorDot(const TVector &a, const TVector &b)
+{
+    return a.Dot(b);
+}
 
 template <typename T> inline void Math::TVector<T, 3>::Normalize()
 {
@@ -176,6 +202,23 @@ template <typename T> inline TVector<T, 3> Math::TVector<T, 3>::Cross(const TVec
         ((Eigen::Matrix<T, 3, 1> *)(const_cast<TVector<T, 3> *>(&left)))
             ->cross(*((Eigen::Matrix<T, 3, 1> *)const_cast<TVector<T, 3> *>(&right)));
     return std::move(temp);
+}
+
+template <typename T> inline T Math::TVector<T, 3>::MaxComponent() const
+{
+    return (T)((Eigen::Matrix<T, 3, 1> *)(this))->maxCoeff();
+}
+template <typename T> inline T Math::TVector<T, 3>::MinComponent() const
+{
+    return (T)((Eigen::Matrix<T, 3, 1> *)(this))->minCoeff();
+}
+template <typename T> inline T Math::TVector<T, 3>::VectorMinComponent(const TVector &val)
+{
+    return val.MinComponent();
+}
+template <typename T> inline T Math::TVector<T, 3>::VectorMaxComponent(const TVector &val)
+{
+    return val.MaxComponent();
 }
 
 template <typename T> inline T &Math::TVector<T, 3>::operator[](size_t index)
@@ -243,11 +286,40 @@ template <typename T> inline void Math::TVector<T, 4>::SetRandom()
 {
     ((Eigen::Matrix<T, 4, 1> *)(this))->setRandom();
 }
+
 template <typename T> inline TVector<T, 4> Math::TVector<T, 4>::VectorRandom()
 {
     TVector<T, 4> temp;
     temp.SetRandom();
     return std::move(temp);
+}
+template <typename T> inline T Math::TVector<T, 4>::Dot(const TVector &val) const
+{
+    T temp;
+    *((&temp)) =
+        ((Eigen::Matrix<T, 4, 1> *)(this))->dot(*((Eigen::Matrix<T, 4, 1> *)const_cast<TVector<T, 4> *>(&val)));
+    return std::move(temp);
+}
+template <typename T> inline T Math::TVector<T, 4>::VectorDot(const TVector &a, const TVector &b)
+{
+    return a.Dot(b);
+}
+
+template <typename T> inline T Math::TVector<T, 4>::MaxComponent() const
+{
+    return ((Eigen::Matrix<T, 4, 1> *)(this))->maxCoeff();
+}
+template <typename T> inline T Math::TVector<T, 4>::MinComponent() const
+{
+    return ((Eigen::Matrix<T, 4, 1> *)(this))->minCoeff();
+}
+template <typename T> inline T Math::TVector<T, 4>::VectorMinComponent(const TVector &val)
+{
+    return val.MinComponent();
+}
+template <typename T> inline T Math::TVector<T, 4>::VectorMaxComponent(const TVector &val)
+{
+    return val.MaxComponent();
 }
 
 template <typename T> inline void Math::TVector<T, 4>::Set(const T &_x, const T &_y, const T &_z, const T &_w)
@@ -291,85 +363,117 @@ namespace Math
 template <typename T, size_t Size>
 TVector<T, Size> operator+(const TVector<T, Size> &left, const TVector<T, Size> &right)
 {
-    return TVector<T, Size>();
+    TVector<T, Size> temp;
+    *((Eigen::Matrix<T, Size, 1> *)(&temp)) = *((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size> *>(&left))) +
+                                              *((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size> *>(&right)));
+    return std::move(temp);
 }
 template <typename T, size_t Size> TVector<T, Size> operator+(const TVector<T, Size> &left, const T &val)
 {
-    return TVector<T, Size>();
+    TVector<T, Size> temp;
+    for (auto i = Size; i--; temp[i] = *(left.GetDataPtr() + (int)i) + val)
+        ;
+    return std::move(temp);
 }
 template <typename T, size_t Size>
 TVector<T, Size> operator-(const TVector<T, Size> &left, const TVector<T, Size> &right)
 {
-    return TVector<T, Size>();
+    TVector<T, Size> temp;
+    *((Eigen::Matrix<T, Size, 1> *)(&temp)) = *((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size> *>(&left))) -
+                                              *((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size> *>(&right)));
+    return std::move(temp);
 }
 template <typename T, size_t Size> TVector<T, Size> operator-(const TVector<T, Size> &left, const T &val)
 {
-    return TVector<T, Size>();
+    TVector<T, Size> temp;
+    for (auto i = Size; i--; temp[i] = *(left.GetDataPtr() + (int)i) - val)
+        ;
+    return std::move(temp);
 }
 template <typename T, size_t Size>
 TVector<T, Size> operator*(const TVector<T, Size> &left, const TVector<T, Size> &right)
 {
-    return TVector<T, Size>();
+    TVector<T, Size> temp;
+     for (auto i = Size; i--; temp[i] = *(left.GetDataPtr() + (int)i) * *(right.GetDataPtr() + (int)i))
+        ;
+    // *((Eigen::Matrix<T, Size, 1> *)(&temp)) = *((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size> *>(&left))) *
+    //                                           *((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size> *>(&right)));
+    return std::move(temp);
 }
 template <typename T, size_t Size> TVector<T, Size> operator*(const TVector<T, Size> &left, const T &val)
 {
-    return TVector<T, Size>();
+    TVector<T, Size> temp;
+    for (auto i = Size; i--; temp[i] = *(left.GetDataPtr() + (int)i) * val)
+        ;
+    return std::move(temp);
 }
 template <typename T, size_t Size>
 TVector<T, Size> operator/(const TVector<T, Size> &left, const TVector<T, Size> &right)
 {
-    return TVector<T, Size>();
+    TVector<T, Size> temp;
+    for (auto i = Size; i--; temp[i] = *(left.GetDataPtr() + (int)i) / *(right.GetDataPtr() + (int)i))
+        ;
+    return std::move(temp);
+    // *((Eigen::Matrix<T, Size, 1> *)(&temp)) = *((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size> *>(&left)))
+    // /
+    //                                           *((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size>
+    //                                           *>(&right)));
 }
 template <typename T, size_t Size> TVector<T, Size> operator/(const TVector<T, Size> &left, const T &val)
 {
-    return TVector<T, Size>();
+    TVector<T, Size> temp;
+    for (auto i = Size; i--; temp[i] = *(left.GetDataPtr() + (int)i) / val)
+        ;
+    return std::move(temp);
 }
 template <typename T, size_t Size> TVector<T, Size> operator-(const TVector<T, Size> &left)
 {
-    return TVector<T, Size>();
+    TVector<T, Size> temp;
+    ((Eigen::Matrix<T, Size, 1> *)(&temp))->inverse();
+    return std::move(temp);
 }
 template <typename T, size_t Size> void operator+=(TVector<T, Size> &left, const TVector<T, Size> &right)
 {
+
+    *((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size> *>(&left))) +=
+        *((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size> *>(&right)));
 }
 template <typename T, size_t Size> void operator+=(TVector<T, Size> &left, const T &val)
 {
+    left = left + val;
 }
 template <typename T, size_t Size> void operator-=(TVector<T, Size> &left, const TVector<T, Size> &right)
 {
+    *((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size> *>(&left))) -=
+        *((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size> *>(&right)));
 }
 template <typename T, size_t Size> void operator-=(TVector<T, Size> &left, const T &val)
 {
+    left = left - val;
 }
 template <typename T, size_t Size> void operator*=(TVector<T, Size> &left, const TVector<T, Size> &right)
 {
+    *((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size> *>(&left))) *=
+        *((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size> *>(&right)));
 }
 template <typename T, size_t Size> void operator*=(TVector<T, Size> &left, const T &val)
 {
+    left = left * val;
 }
 template <typename T, size_t Size> void operator/=(TVector<T, Size> &left, const TVector<T, Size> &right)
 {
+    left = left / right;
 }
 template <typename T, size_t Size> void operator/=(TVector<T, Size> &left, const T &val)
 {
+    left = left / val;
 }
 template <typename T, size_t Size> bool operator==(const TVector<T, Size> &left, const TVector<T, Size> &right)
 {
-    // return(*((Eigen::Matrix<T, Size, 1> *)(const_cast<TVector<T, Size> *>(&left))) )==
-    //     (*((Eigen::Matrix<T, Size, 1> *)const_cast<TVector<T, Size> *>(&right)));
-    for (auto i = Size; i--;)
-    {
-        if (!(*(&right.x + i) == *(&left.x + i)))
-            return false;
-    }
-    return true;
+    return !memcmp(left.GetDataPtr(), right.GetDataPtr(), sizeof(TVector<T, Size>));
 }
 template <typename T, size_t Size> bool operator!=(const TVector<T, Size> &left, const TVector<T, Size> &right)
 {
-    for (auto i = Size; i--;)
-    {
-        if (!(*(&right.x + i) == *(&left.x + i)))
-            return true;
-    }
-    return false;
+    return !(left == right);
 }
 } // namespace Math

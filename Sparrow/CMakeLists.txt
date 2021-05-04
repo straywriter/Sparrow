@@ -12,6 +12,14 @@ set(IncludeDir ${CMAKE_CURRENT_SOURCE_DIR}/Include)
 
 
 # Core
+file(GLOB_RECURSE CoreIncludeFile ${CMAKE_CURRENT_SOURCE_DIR}/Include/Core/*.h)
+file(GLOB_RECURSE CoreSourceFile ${CMAKE_CURRENT_SOURCE_DIR}/Src/Core/*.cpp)
+add_library(Core)
+target_sources(Core PUBLIC ${CoreIncludeFile} ${CoreSourceFile})
+target_include_directories(Core PUBLIC ${IncludeDir})
+target_link_libraries(Core PUBLIC spdlog)
+set_target_properties(Core PROPERTIES FOLDER "Sparrow/")
+
 
 # Render
 set(RenderIncludeDir ${CMAKE_CURRENT_SOURCE_DIR}/Include)
@@ -34,7 +42,7 @@ message(STATUS "opengl file :${OpenGLSourceFile}")
 add_library(OpenGL)
 target_sources(OpenGL PUBLIC ${OpenGLIncludeFile} ${OpenGLSourceFile})
 target_include_directories(OpenGL PUBLIC ${IncludeDir})
-target_link_libraries(OpenGL PUBLIC glfw glad)
+target_link_libraries(OpenGL PUBLIC glfw glad Core)
 set_target_properties(OpenGL PROPERTIES FOLDER "Sparrow/GPU")
 
 

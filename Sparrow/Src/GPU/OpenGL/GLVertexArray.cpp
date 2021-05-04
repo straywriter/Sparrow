@@ -5,7 +5,7 @@ using namespace Render;
 
 void GLVertexArray::Create()
 {
-  glGenVertexArrays(1, &id);
+  GL_CHECK(glGenVertexArrays(1, &id);)
     //std::cout<<"vaid:"<<id<<'\n';
 }
 

@@ -17,7 +17,7 @@ bool Render::GLContext::Init()
     {
         vertexArray.Create();
 
-        GLDebugInit();
+        // GLDebugInit();
 
         return true;
     }

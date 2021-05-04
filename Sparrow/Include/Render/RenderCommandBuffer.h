@@ -6,8 +6,9 @@ class RenderCommandBuffer
 {
   public:
     // data
-    
 
+  public:
+    void Run(RenderContext *);
 
   public:
     bool AddCommand();
@@ -16,8 +17,6 @@ class RenderCommandBuffer
     RenderObject *CreateVertexBuffer();
     RenderObject *CreateVertexBuffer()
     {
-  
-
     }
     void UpdateVertexBuffer(RenderObject *object);
     void DestoryVertexBuffer(RenderObject *object);

@@ -1,10 +1,14 @@
 
-#include "GPU/OpenGL/GLRequirement.h"
 #include "GPU/OpenGL/GLDebug.h"
+#include "GPU/OpenGL/GLRequirement.h"
 
 #include <iostream>
 #include <stdio.h>
+#include <string>
 
+#include <filesystem> // C++17 standard header file name
+
+// #include <experimental/filesystem>
 
 void MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message,
                      const void *userParam)
@@ -108,52 +112,53 @@ void GLDebugInit()
     }
 }
 
-void GLCheckErrors(const char *filename, int line, char *funName)
+void GLCheckErrors(const char *filenamepath, int line, char *funName)
 {
     GLenum err;
+    std::string filename = filesystem::path(filenamepath).filename();
     while ((err = glGetError()) != GL_NO_ERROR)
-        printf("OpenGL Error: %s (%d) [%s] [%u] %s\n", filename, line, err, funName, glGetErrorString(err));
+        OUT_WARN("OpenGL Error: %s (%d) [%s] [%u] %s\n", filename, line, err, funName, glGetErrorString(err));
 
     // info log
-    // printf("OpenGL Info: %s (%d) [%s]\n", filename, line, funName);
+    OUT_INFO("OpenGL Info: {0} ({1}) [{2}]", filename, line, funName);
 }
 
-char const* glGetErrorString(GLenum const err) noexcept
+char const *glGetErrorString(GLenum const err) noexcept
 {
-  switch (err)
-  {
+    switch (err)
+    {
     // opengl 2 errors (8)
     case GL_NO_ERROR:
-      return "GL_NO_ERROR";
+        return "GL_NO_ERROR";
 
     case GL_INVALID_ENUM:
-      return "GL_INVALID_ENUM";
+        return "GL_INVALID_ENUM";
 
     case GL_INVALID_VALUE:
-      return "GL_INVALID_VALUE";
+        return "GL_INVALID_VALUE";
 
     case GL_INVALID_OPERATION:
-      return "GL_INVALID_OPERATION";
+        return "GL_INVALID_OPERATION";
 
     case GL_STACK_OVERFLOW:
-      return "GL_STACK_OVERFLOW";
+        return "GL_STACK_OVERFLOW";
 
     case GL_STACK_UNDERFLOW:
-      return "GL_STACK_UNDERFLOW";
+        return "GL_STACK_UNDERFLOW";
 
     case GL_OUT_OF_MEMORY:
-      return "GL_OUT_OF_MEMORY";
+        return "GL_OUT_OF_MEMORY";
 
     // case GL_TABLE_TOO_LARGE:
     //   return "GL_TABLE_TOO_LARGE";
 
     // opengl 3 errors (1)
     case GL_INVALID_FRAMEBUFFER_OPERATION:
-      return "GL_INVALID_FRAMEBUFFER_OPERATION";
+        return "GL_INVALID_FRAMEBUFFER_OPERATION";
 
     // gles 2, 3 and gl 4 error are handled by the switch above
     default:
-    //   assert(!"unknown error");
-      return nullptr;
-  }
+        //   assert(!"unknown error");
+        return nullptr;
+    }
 }

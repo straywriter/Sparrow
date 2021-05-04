@@ -19,6 +19,8 @@ template <typename T, size_t Row, size_t Col> class TMatrix
     void SetValue(const T &val);
     void SetRandom();
 
+    void SetIdentity();
+
   public:
     //伴随矩阵
 
@@ -74,7 +76,17 @@ template <typename T, size_t Row, size_t Col> class TMatrix
     }
 };
 template <typename T, size_t Row, size_t Col>
-std::ostream &operator<<(std::ostream &out, const TMatrix<T, Row, Col> &val);
+std::ostream &operator<<(std::ostream &out, const TMatrix<T, Row, Col> &val)
+{
+
+    for (auto i = 0; i < Row; ++i)
+    {
+        for (auto j = 0; j < Col; ++j)
+            out << val.matrix[i][j] << ' ';
+        out << '\n';
+    }
+    return out;
+}
 
 template <typename T, size_t Row, size_t Col>
 TMatrix<T, Row, Col> operator+(const TMatrix<T, Row, Col> &left, const TMatrix<T, Row, Col> &right);
@@ -129,3 +141,5 @@ template <typename T, size_t Row, size_t Col>
 bool operator!=(const TMatrix<T, Row, Col> &left, const TMatrix<T, Row, Col> &right);
 
 } // namespace  Math
+
+#include "Math/Inline/TMatrix-Eigen.inl"
