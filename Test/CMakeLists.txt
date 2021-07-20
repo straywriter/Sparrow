@@ -45,9 +45,9 @@ add_subdirectory(GPU/OpenGL)
 
 add_subdirectory(Math)
 
-add_subdirectory(External)
+# add_subdirectory(External)
 
-add_subdirectory(Render)
+# add_subdirectory(Render)
 
 
 add_subdirectory(RenderExample)

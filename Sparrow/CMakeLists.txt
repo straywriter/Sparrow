@@ -77,7 +77,7 @@ target_include_directories(
 if(MSVC)
   target_compile_definitions(Render PRIVATE "_CRT_SECURE_NO_WARNINGS")
 endif()
-
+set_target_properties(Render PROPERTIES FOLDER "Render/aa")
 
 # ----------------------------------------------------------------------------
 # Render VertexLayout
@@ -103,6 +103,11 @@ target_include_directories(RenderVertexLayout
 # ${CMAKE_CURRENT_SOURCE_DIR}/Include/) target_link_libraries(RenderVertexLayout
 # PUBLIC bx)
 
+# ----------------------------------------------------------------------------
+# Render ShaderSpirv
+# ----------------------------------------------------------------------------
+
+
 add_library(RenderShaderSpirv INTERFACE)
 
 target_sources(
@@ -123,7 +128,7 @@ target_include_directories(RenderShaderSpirv
 # PUBLIC bx bimg)
 
 # ----------------------------------------------------------------------------
-#
+# Render Bounds
 # ----------------------------------------------------------------------------
 
 add_library(RenderBounds INTERFACE)
