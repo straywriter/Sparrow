@@ -40,8 +40,14 @@ project(Test)
 # ./Math/TestVector.cpp ) target_link_libraries(TestMathVector MathLib gtest
 # gtest_main)
 add_subdirectory(GPU/OpenGL)
-add_subdirectory(Core)
+
+# add_subdirectory(Core)
 
 add_subdirectory(Math)
 
 add_subdirectory(External)
+
+add_subdirectory(Render)
+
+
+add_subdirectory(RenderExample)

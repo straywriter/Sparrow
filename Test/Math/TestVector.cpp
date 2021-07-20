@@ -14,6 +14,7 @@ using namespace Math;
 
 template <typename T, size_t Size> void VectorConstructTest(TVector<T, Size> vec)
 {
+   
     vec.SetZero();
 
     using VectorType = TVector<T, Size>;
@@ -142,6 +143,7 @@ VECTOR_CONSTRUCTOR_TEST(Vector4d)
 //----------
 TEST(VectorCrossProduct, Vector3f)
 {
+     testing::GTEST_FLAG(output) = "xml:d:/1.xml"; 
     // https://www.osgeo.cn/app/s2848
     {
         Vector3f t1(1.f, 3.f, 4.f);
@@ -773,10 +775,10 @@ template <typename T, size_t Size> void VectorOperatorTest(TVector<T, Size> vec)
 #endif
     }
 }
-#define VECTOR_OPERATOR_TEST(VectorType) \
-    TEST(VectorOperatorTest, VectorType) \
-    { \
-        VectorOperatorTest(VectorType()); \
+#define VECTOR_OPERATOR_TEST(VectorType)                                                                               \
+    TEST(VectorOperatorTest, VectorType)                                                                               \
+    {                                                                                                                  \
+        VectorOperatorTest(VectorType());                                                                              \
     }
 
 VECTOR_OPERATOR_TEST(Vector2i)
@@ -816,10 +818,10 @@ TEST(VectorConvert, Vector)
     Vector3i i3;
     Vector4f f4 = i3;
     Vector2f ccc{2.f, 3.f};
-    auto add=ccc+(Vector2f)f3;
+    auto add = ccc + (Vector2f)f3;
     std::cout << '\n' << add;
     std::cout << '\n' << ccc;
-    auto yy = ccc+2.f;
+    auto yy = ccc + 2.f;
     std::cout << '\n' << yy;
 }
 

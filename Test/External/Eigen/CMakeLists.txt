@@ -8,7 +8,7 @@ foreach(TestFile ${Files})
 
   # target_include_directories(TestEigen PUBLIC ${RootDir}/External/eigen/)
   target_link_libraries(${TestFileName} PUBLIC gtest gtest_main Eigen)
-  set_target_properties(${TestFileName} PROPERTIES FOLDER "External/Eigen")
+  set_target_properties(${TestFileName} PROPERTIES FOLDER "Test/External/Eigen")
   target_compile_options(
     ${TestFileName}
     PUBLIC $<$<CONFIG:>:/MT> $<$<CONFIG:Debug>:/MTd> $<$<CONFIG:Release>:/MT>
