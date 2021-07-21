@@ -2,8 +2,20 @@
 #include "RenderStructInternal.h"
 #include "StaticVariable.h"
 
+#include "RenderContext.h"
+#include "RenderFunction.h"
+#include "embedded_shader.h"
+
 namespace bgfx
 {
+extern Context *s_ctx;
+
+
+ const uint32_t numCharsPerBatch = 1024;
+ const uint32_t numBatchVertices = numCharsPerBatch * 4;
+ const uint32_t numBatchIndices = numCharsPerBatch * 6;
+// extern const uint32_t numBatchVertices;
+// extern const uint32_t numBatchIndices;
 
 void charsetFillTexture(const uint8_t *_charset, uint8_t *_rgba, uint32_t _height, uint32_t _pitch, uint32_t _bpp)
 {

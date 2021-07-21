@@ -1,9 +1,16 @@
 #pragma once
 #include "Render/CallbackI.h"
-#include "Render/Render.h"
+// #include "Render/Render.h"
 #include "Render/RenderConfig.h"
-#include "Render/StaticVariable.h"
+// #include "Render/StaticVariable.h"
 
+#include "bx/bx.h"
+#include "bx/debug.h"
+#include "bx/readerwriter.h"
+#include "bx/file.h"
+#include "bimg/bimg.h"
+
+#include "Render/RenderDebug.h"
 namespace bgfx
 {
 
@@ -197,23 +204,23 @@ class AllocatorStub : public bx::AllocatorI
 
 extern CallbackStub*  s_callbackStub;
 
-void AllocatorStub::checkLeaks()
-	{
-#if BGFX_CONFIG_MEMORY_TRACKING
-		// BK - CallbackStub will be deleted after printing this info, so there is always one
-		// leak if CallbackStub is used.
-		BX_WARN(uint32_t(NULL != s_callbackStub ? 1 : 0) == m_numBlocks
-			, "\n\n"
-			  "\n########################################################"
-			  "\n"
-			  "\nMEMORY LEAK: Number of leaked blocks %d (Max blocks: %d)"
-			  "\n"
-			  "\n########################################################"
-			  "\n\n"
-			, m_numBlocks
-			, m_maxBlocks
-			);
-#endif // BGFX_CONFIG_MEMORY_TRACKING
-	}
+// void AllocatorStub::checkLeaks()
+// 	{
+// #if BGFX_CONFIG_MEMORY_TRACKING
+// 		// BK - CallbackStub will be deleted after printing this info, so there is always one
+// 		// leak if CallbackStub is used.
+// 		BX_WARN(uint32_t(NULL != s_callbackStub ? 1 : 0) == m_numBlocks
+// 			, "\n\n"
+// 			  "\n########################################################"
+// 			  "\n"
+// 			  "\nMEMORY LEAK: Number of leaked blocks %d (Max blocks: %d)"
+// 			  "\n"
+// 			  "\n########################################################"
+// 			  "\n\n"
+// 			, m_numBlocks
+// 			, m_maxBlocks
+// 			);
+// #endif // BGFX_CONFIG_MEMORY_TRACKING
+// 	}
 
 } // namespace bgfx

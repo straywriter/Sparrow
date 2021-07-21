@@ -1,9 +1,51 @@
 #pragma once
+
+
+#include <bx/allocator.h>
+#include <bx/bx.h>
+#include <bx/cpu.h>
+#include <bx/debug.h>
+#include <bx/endian.h>
+#include <bx/float4x4_t.h>
+#include <bx/handlealloc.h>
+#include <bx/hash.h>
+#include <bx/math.h>
+#include <bx/mutex.h>
+#include <bx/os.h>
+#include <bx/readerwriter.h>
+#include <bx/ringbuffer.h>
+#include <bx/sort.h>
+#include <bx/string.h>
+#include <bx/thread.h>
+#include <bx/timer.h>
+#include <bx/uint32_t.h>
+
+
+// namespace bgfx
+// {
+// struct TinyStlAllocator
+// {
+//     static void *static_allocate(size_t _bytes);
+//     static void static_deallocate(void *_ptr, size_t /*_bytes*/);
+// };
+// } // namespace bgfx
+// #define TINYSTL_ALLOCATOR bgfx::TinyStlAllocator
+// #include <tinystl/unordered_set.h>
+// #include <tinystl/string.h>
+// #include <tinystl/unordered_map.h>
+// #include <tinystl/unordered_set.h>
+// #include <tinystl/vector.h>
+// namespace stl = tinystl;
+
+#include "Render/RenderConfig.h"
+#include "Render/RTemp.h"
 #include "Render/RenderConfig.h"
 #include "RenderHandle.h"
-#include "Render/Render.h"
-#include "Render/RTemp.h"
-
+// #include "Render/Render.h"
+#include "Encoder.h"
+#include "RenderStructInternal.h"
+#include "RenderCommandBuffer.h"
+#include "RenderDefine.h"
 namespace bgfx
 {
 
@@ -999,7 +1041,8 @@ BX_ALIGN_DECL_CACHE_LINE(struct) Frame
     bool m_capture;
 };
 
-BX_ALIGN_DECL_CACHE_LINE(struct) EncoderImpl
+// BX_ALIGN_DECL_CACHE_LINE(struct) EncoderImpl
+struct EncoderImpl
 {
     EncoderImpl()
     {

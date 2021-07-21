@@ -1,7 +1,12 @@
 #pragma once
-#include "CallbackI.h"
+// #include "CallbackI.h"
+#include "bx/allocator.h"
+
 #include "RenderEnum.h"
-#include "RenderHandle.h"
+#include "Render/RenderDefine.h"
+#include "Render/CallbackI.h"
+#include "Render/RenderHandle.h"
+// #include "RenderHandle.h"
 
 namespace bgfx
 {

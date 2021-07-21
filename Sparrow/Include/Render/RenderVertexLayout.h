@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include <Render/Render.h>
+// #include <Render/Render.h>
 
 // #include "CallbackI.h"
-// #include "RenderEnum.h"
+#include "RenderEnum.h"
 // #include "RenderHandle.h"
 // #include <bx/readerwriter.h>
 

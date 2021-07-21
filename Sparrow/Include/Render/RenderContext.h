@@ -4,6 +4,8 @@
 #include "Render/RTemp.h"
 #include "RenderObject.h"
 
+#include "RenderFunction.h"
+
 #if BGFX_CONFIG_DEBUG
 #define BGFX_API_FUNC(_func) BX_NO_INLINE _func
 #else

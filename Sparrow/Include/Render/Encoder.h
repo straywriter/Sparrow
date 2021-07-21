@@ -3,11 +3,11 @@
 #pragma once
 
 #include <stdint.h>
-#include "RenderStruct.h"
-#include "RenderEnum.h"
-#include "RenderHandle.h"
+// #include "RenderStruct.h"
+// #include "RenderEnum.h"
 #include "Render/RenderHandle.h"
-
+#include "Render/RenderDefine.h"
+#include "Render/RenderStruct.h"
 
 namespace bgfx
 {
@@ -152,6 +152,7 @@ struct Encoder
     /// @attention C99 equivalent is `bgfx_encoder_set_condition`.
     ///
     void setCondition(OcclusionQueryHandle _handle, bool _visible);
+
 
     /// Set stencil test state.
     ///

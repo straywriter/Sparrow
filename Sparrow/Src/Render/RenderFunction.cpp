@@ -1,7 +1,25 @@
 #include "Render/RenderFunction.h"
 
+#include "RenderContext.h"
+#include "RenderStruct.h"
+#include "StaticVariable.h"
+#include "IRenderContext.h"
+#include "Topology.h"
+
+#include "Callback.hpp"
+#include "Render/Tools/VertexLayout/VertexLayout.h"
+
+BX_ERROR_RESULT(BGFX_ERROR_TEXTURE_VALIDATION, BX_MAKEFOURCC('b', 'g', 0, 1));
+
 namespace bgfx
 {
+
+extern Caps g_caps;
+extern Context *s_ctx;
+
+extern AllocatorStub *s_allocatorStub;
+extern uint32_t s_threadIndex;
+extern RendererCreator s_rendererCreator[];
 
 uint32_t weldVertices(void *_output, const VertexLayout &_layout, const void *_data, uint32_t _num, bool _index32,
                       float _epsilon)

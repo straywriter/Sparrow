@@ -1,7 +1,10 @@
 #include "RenderObject.h"
+#include "RenderContext.h"
 
 namespace bgfx
 {
+
+extern Context *s_ctx;
 
 void EncoderImpl::submit(ViewId _id, ProgramHandle _program, OcclusionQueryHandle _occlusionQuery, uint32_t _depth,
                          uint8_t _flags)

@@ -717,6 +717,43 @@ namespace bgfx
 #define BGFX_RENDERER_WEBGPU_NAME "WebGPU"
 #define BGFX_RENDERER_NOOP_NAME "Noop"
 
+
+#define BGFX_CHUNK_MAGIC_TEX BX_MAKEFOURCC('T', 'E', 'X', 0x0)
+
+
+
+//---------
+#define BGFX_CLEAR_COLOR_USE_PALETTE UINT16_C(0x8000)
+#define BGFX_CLEAR_MASK (0 | BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL | BGFX_CLEAR_COLOR_USE_PALETTE)
+
+#define BGFX_CHECK_CAPS(_caps, _msg)                                                                                   \
+    BX_ASSERT(0 != (g_caps.supported & (_caps)),                                                                       \
+              _msg " Use bgfx::getCaps to check " #_caps " backend renderer capabilities.");
+
+
+#define BGFX_API_THREAD_MAGIC UINT32_C(0x78666762)
+
+#if BGFX_CONFIG_MULTITHREADED
+#define BGFX_CHECK_API_THREAD()                                                                                        \
+    BX_ASSERT(NULL != s_ctx, "Library is not initialized yet.");                                                       \
+    BX_ASSERT(BGFX_API_THREAD_MAGIC == s_threadIndex, "Must be called from main thread.")
+#define BGFX_CHECK_RENDER_THREAD()                                                                                     \
+    BX_ASSERT((NULL != s_ctx && s_ctx->m_singleThreaded) || ~BGFX_API_THREAD_MAGIC == s_threadIndex,                   \
+              "Must be called from render thread.")
+#else
+#define BGFX_CHECK_API_THREAD()
+#define BGFX_CHECK_RENDER_THREAD()
+#endif // BGFX_CONFIG_MULTITHREADED
+
+
+struct CapsFlags
+{
+    uint64_t m_flag;
+    const char *m_str;
+};
+
+//-------------------
+
 #if BGFX_CONFIG_RENDERER_OPENGL
 #if BGFX_CONFIG_RENDERER_OPENGL >= 31 && BGFX_CONFIG_RENDERER_OPENGL <= 33
 #if BGFX_CONFIG_RENDERER_OPENGL == 31

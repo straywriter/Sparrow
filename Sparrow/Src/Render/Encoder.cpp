@@ -1,5 +1,7 @@
 #include "Render/Encoder.h"
 
+#include "RenderContext.h"
+
 namespace bgfx
 {
 

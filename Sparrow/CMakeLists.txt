@@ -47,29 +47,121 @@ set_target_properties(Core PROPERTIES FOLDER "Sparrow/")
 # ----------------------------------------------------------------------------
 set(RenderIncludeDir ${CMAKE_CURRENT_SOURCE_DIR}/Include)
 set(RenderSourceDir ${CMAKE_CURRENT_SOURCE_DIR}/Src/Render)
+
 if(NOT APPLE)
-  set(BGFX_AMALGAMATED_SOURCE ${RenderSourceDir}/Amalgamated.cpp)
+  set(RenderAmalgamateSourceFile ${RenderSourceDir}/Amalgamated.cpp)
 else()
-  set(BGFX_AMALGAMATED_SOURCE ${RenderSourceDir}/Amalgamated.mm)
+  set(RenderAmalgamateSourceFile ${RenderSourceDir}/Amalgamated.mm)
 endif()
+
+# set(RenderSourceFile
+# # "${RenderSourceDir}/Amalgamated.cpp"
+# # "${RenderSourceDir}/Amalgamated.mm"
+# "${RenderSourceDir}/bgfx.cpp"
+# "${RenderSourceDir}/DebugRenderdoc.cpp"
+# "${RenderSourceDir}/HRI/DirectX/DXGI.cpp"
+# "${RenderSourceDir}/HRI/OpenGL/OpenGLEGL.cpp"
+# "${RenderSourceDir}/HRI/OpenGL/OpenGLGLX.cpp"
+# "${RenderSourceDir}/HRI/OpenGL/OpenGLWGL.cpp"
+# "${RenderSourceDir}/HRI/OpenGL/OpenGLHTML5.cpp"
+# "${RenderSourceDir}/HRI/DirectX/NVIDIAAPI.cpp"
+# "${RenderSourceDir}/HRI/DirectX/DirectX11/RenderDirectX11.cpp"
+# "${RenderSourceDir}/HRI/DirectX/DirectX12/RenderDirectX12.cpp"
+# "${RenderSourceDir}/HRI/DirectX/DirectX9/RenderDirectX9.cpp"
+# "${RenderSourceDir}/HRI/OpenGL/RenderOpenGL.cpp"
+# "${RenderSourceDir}/HRI/Other/renderer_gnm.cpp"
+# "${RenderSourceDir}/HRI/Other/renderer_noop.cpp"
+# "${RenderSourceDir}/HRI/Other/renderer_nvn.cpp"
+# "${RenderSourceDir}/HRI/Web/RenderWebGPU.cpp"
+# "${RenderSourceDir}/HRI/Vulkan/RenderVulkan.cpp"
+# "${RenderSourceDir}/shader_dx9bc.cpp"
+# "${RenderSourceDir}/shader_dxbc.cpp"
+# "${RenderSourceDir}/shader_spirv.cpp"
+# "${RenderSourceDir}/topology.cpp"
+# "${RenderSourceDir}/vertexlayout.cpp"
+# "${RenderSourceDir}/Encoder.cpp"
+# "${RenderSourceDir}/IRenderContext.cpp"
+# "${RenderSourceDir}/RenderContext.cpp"
+# "${RenderSourceDir}/RenderFunction.cpp"
+# "${RenderSourceDir}/StaticVariable.cpp"
+# "${RenderSourceDir}/EmbeddedShader.cpp"
+# "${RenderSourceDir}/RenderDebug.cpp"
+# "${RenderSourceDir}/RenderHandle.cpp"
+# "${RenderSourceDir}/RenderObject.cpp"
+# "${RenderSourceDir}/RenderPlatform.cpp"
+# "${RenderSourceDir}/RenderStructInternal.cpp"
+# "${RenderSourceDir}/RTemp.cpp"
+# )
+
+# if(BGFX_AMALGAMATED)
+	# set(BGFX_NOBUILD ${RenderSourceFile})
+	# list(REMOVE_ITEM BGFX_NOBUILD ${RenderAmalgamateSourceFile})
+	foreach(BGFX_SRC ${RenderSourceFile})
+    message(${BGFX_SRC})
+		set_source_files_properties( ${BGFX_SRC} PROPERTIES HEADER_FILE_ONLY ON )
+	endforeach()
+# else()
+# 	# Do not build using amalgamated sources
+# 	set_source_files_properties( ${BGFX_DIR}/src/amalgamated.cpp PROPERTIES HEADER_FILE_ONLY ON )
+# 	set_source_files_properties( ${BGFX_DIR}/src/amalgamated.mm PROPERTIES HEADER_FILE_ONLY ON )
+# endif()
+
 file(GLOB_RECURSE RenderIncludeFile
      ${CMAKE_CURRENT_SOURCE_DIR}/Include/Render/*.h)
-set(RenderSourceFile ${BGFX_AMALGAMATED_SOURCE})
+# set(RenderSourceFile ${BGFX_AMALGAMATED_SOURCE})
 
-set(BGFX_NOBUILD ${RenderSourceFile})
-list(REMOVE_ITEM BGFX_NOBUILD ${BGFX_AMALGAMATED_SOURCE})
-foreach(BGFX_SRC ${BGFX_NOBUILD})
-  set_source_files_properties(${BGFX_SRC} PROPERTIES HEADER_FILE_ONLY ON)
-endforeach()
+set(RenderSourceFile 
+"${RenderSourceDir}/bgfx.cpp"
+"${RenderSourceDir}/DebugRenderdoc.cpp"
+"${RenderSourceDir}/HRI/DirectX/DXGI.cpp"
+"${RenderSourceDir}/HRI/OpenGL/OpenGLEGL.cpp"
+"${RenderSourceDir}/HRI/OpenGL/OpenGLGLX.cpp"
+"${RenderSourceDir}/HRI/OpenGL/OpenGLWGL.cpp"
+"${RenderSourceDir}/HRI/OpenGL/OpenGLHTML5.cpp"
+"${RenderSourceDir}/HRI/DirectX/NVIDIAAPI.cpp"
+"${RenderSourceDir}/HRI/DirectX/DirectX11/RenderDirectX11.cpp"
+"${RenderSourceDir}/HRI/DirectX/DirectX12/RenderDirectX12.cpp"
+"${RenderSourceDir}/HRI/DirectX/DirectX9/RenderDirectX9.cpp"
+"${RenderSourceDir}/HRI/OpenGL/RenderOpenGL.cpp"
+"${RenderSourceDir}/HRI/Other/renderer_gnm.cpp"
+"${RenderSourceDir}/HRI/Other/renderer_noop.cpp"
+"${RenderSourceDir}/HRI/Other/renderer_nvn.cpp"
+"${RenderSourceDir}/HRI/Web/RenderWebGPU.cpp"
+"${RenderSourceDir}/HRI/Vulkan/RenderVulkan.cpp"
+"${RenderSourceDir}/shader_dx9bc.cpp"
+"${RenderSourceDir}/shader_dxbc.cpp"
+"${RenderSourceDir}/shader_spirv.cpp"
+"${RenderSourceDir}/topology.cpp"
+"${RenderSourceDir}/vertexlayout.cpp"
+"${RenderSourceDir}/Encoder.cpp"
+"${RenderSourceDir}/IRenderContext.cpp"
+"${RenderSourceDir}/RenderContext.cpp"
+"${RenderSourceDir}/RenderFunction.cpp"
+"${RenderSourceDir}/StaticVariable.cpp"
+"${RenderSourceDir}/EmbeddedShader.cpp"
+"${RenderSourceDir}/RenderDebug.cpp"
+"${RenderSourceDir}/RenderHandle.cpp"
+"${RenderSourceDir}/RenderObject.cpp"
+"${RenderSourceDir}/RenderPlatform.cpp"
+"${RenderSourceDir}/RenderStructInternal.cpp"
+"${RenderSourceDir}/RTemp.cpp"
+)
+# message("asdfasdf")
+# message(${RenderSourceFile})
+# set(BGFX_NOBUILD ${RenderSourceFile})
+# list(REMOVE_ITEM BGFX_NOBUILD ${BGFX_AMALGAMATED_SOURCE})
+# foreach(BGFX_SRC ${RenderSourceFile})
+#   set_source_files_properties(${BGFX_SRC} PROPERTIES HEADER_FILE_ONLY ON)
+# endforeach()
 
-add_library(Render)
-target_sources(Render PUBLIC ${RenderIncludeFile} ${RenderSourceFile})
+add_library(Render )
+# target_sources(Render PUBLIC ${RenderIncludeFile} ${RenderSourceFile} ${RenderAmalgamateSourceFile})
+target_sources(Render PUBLIC ${RenderIncludeFile} ${RenderSourceFile} )
 target_link_libraries(Render PUBLIC bx bimg dxsdk khronos renderdoc)
 # Includes
 target_include_directories(
   Render
-  PUBLIC # ${BGFX_DIR}/3rdparty ${BGFX_DIR}/3rdparty/dxsdk/include
-         # ${BGFX_DIR}/3rdparty/khronos
+  PUBLIC
          ${CMAKE_CURRENT_SOURCE_DIR}/Include/Render
          ${CMAKE_CURRENT_SOURCE_DIR}/Include/
          ${CMAKE_CURRENT_SOURCE_DIR}/Src/Render/)

@@ -85,7 +85,7 @@ static const DXGI_COLOR_SPACE_TYPE kDxgiLastColorSpace =
 BX_STATIC_ASSERT(BX_COUNTOF(s_colorSpaceStr) == kDxgiLastColorSpace + 2,
                  "Colorspace string table mismatch with DXGI_COLOR_SPACE_*.");
 
-static const char *s_topologyName[] = {
+ const char *s_topologyName[] = {
     "Triangles", "TriStrip", "Lines", "LineStrip", "Points",
 };
 BX_STATIC_ASSERT(Topology::Count == BX_COUNTOF(s_topologyName));

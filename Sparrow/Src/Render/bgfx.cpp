@@ -10,6 +10,8 @@
 #include <bx/file.h>
 #include <bx/mutex.h>
 
+#include "Callback.hpp"
+
 #include "Render/Topology.h"
 #include "version.h"
 
@@ -20,27 +22,28 @@
 #include <objc/message.h>
 #endif // BX_PLATFORM_OSX
 
-BX_ERROR_RESULT(BGFX_ERROR_TEXTURE_VALIDATION, BX_MAKEFOURCC('b', 'g', 0, 1));
+// BX_ERROR_RESULT(BGFX_ERROR_TEXTURE_VALIDATION, BX_MAKEFOURCC('b', 'g', 0, 1));
 
 namespace bgfx
 {
-#define BGFX_API_THREAD_MAGIC UINT32_C(0x78666762)
 
-#if BGFX_CONFIG_MULTITHREADED
-#define BGFX_CHECK_API_THREAD()                                                                                        \
-    BX_ASSERT(NULL != s_ctx, "Library is not initialized yet.");                                                       \
-    BX_ASSERT(BGFX_API_THREAD_MAGIC == s_threadIndex, "Must be called from main thread.")
-#define BGFX_CHECK_RENDER_THREAD()                                                                                     \
-    BX_ASSERT((NULL != s_ctx && s_ctx->m_singleThreaded) || ~BGFX_API_THREAD_MAGIC == s_threadIndex,                   \
-              "Must be called from render thread.")
-#else
-#define BGFX_CHECK_API_THREAD()
-#define BGFX_CHECK_RENDER_THREAD()
-#endif // BGFX_CONFIG_MULTITHREADED
+// #define BGFX_API_THREAD_MAGIC UINT32_C(0x78666762)
 
-#define BGFX_CHECK_CAPS(_caps, _msg)                                                                                   \
-    BX_ASSERT(0 != (g_caps.supported & (_caps)),                                                                       \
-              _msg " Use bgfx::getCaps to check " #_caps " backend renderer capabilities.");
+// #if BGFX_CONFIG_MULTITHREADED
+// #define BGFX_CHECK_API_THREAD()                                                                                        \
+//     BX_ASSERT(NULL != s_ctx, "Library is not initialized yet.");                                                       \
+//     BX_ASSERT(BGFX_API_THREAD_MAGIC == s_threadIndex, "Must be called from main thread.")
+// #define BGFX_CHECK_RENDER_THREAD()                                                                                     \
+//     BX_ASSERT((NULL != s_ctx && s_ctx->m_singleThreaded) || ~BGFX_API_THREAD_MAGIC == s_threadIndex,                   \
+//               "Must be called from render thread.")
+// #else
+// #define BGFX_CHECK_API_THREAD()
+// #define BGFX_CHECK_RENDER_THREAD()
+// #endif // BGFX_CONFIG_MULTITHREADED
+
+// #define BGFX_CHECK_CAPS(_caps, _msg)                                                                                   \
+//     BX_ASSERT(0 != (g_caps.supported & (_caps)),                                                                       \
+//               _msg " Use bgfx::getCaps to check " #_caps " backend renderer capabilities.");
 
 #if BGFX_CONFIG_USE_TINYSTL
 void *TinyStlAllocator::static_allocate(size_t _bytes)
@@ -57,9 +60,12 @@ void TinyStlAllocator::static_deallocate(void *_ptr, size_t /*_bytes*/)
 }
 #endif // BGFX_CONFIG_USE_TINYSTL
 
-static CallbackStub *s_callbackStub = NULL;
-static AllocatorStub *s_allocatorStub = NULL;
-static bool s_graphicsDebuggerPresent = false;
+// static CallbackStub *s_callbackStub = NULL;
+// static AllocatorStub *s_allocatorStub = NULL;
+// static bool s_graphicsDebuggerPresent = false;
+ CallbackStub *s_callbackStub = NULL;
+ AllocatorStub *s_allocatorStub = NULL;
+ bool s_graphicsDebuggerPresent = false;
 
 CallbackI *g_callback = NULL;
 bx::AllocatorI *g_allocator = NULL;
@@ -115,11 +121,13 @@ static ThreadData s_threadIndex(0);
 #elif !BGFX_CONFIG_MULTITHREADED
 static uint32_t s_threadIndex(0);
 #else
-static BX_THREAD_LOCAL uint32_t s_threadIndex(0);
+// static BX_THREAD_LOCAL uint32_t s_threadIndex(0);
+ BX_THREAD_LOCAL uint32_t s_threadIndex(0);
 #endif
 
-static Context *s_ctx = NULL;
-static bool s_renderFrameCalled = false;
+// static Context *s_ctx = NULL;
+ Context *s_ctx = NULL;
+ bool s_renderFrameCalled = false;
 InternalData g_internalData;
 PlatformData g_platformData;
 bool g_platformDataChangedSinceReset = false;
@@ -127,9 +135,33 @@ bool g_platformDataChangedSinceReset = false;
 
 extern const EmbeddedShader s_embeddedShaders[];
 
-static const uint32_t numCharsPerBatch = 1024;
-static const uint32_t numBatchVertices = numCharsPerBatch * 4;
-static const uint32_t numBatchIndices = numCharsPerBatch * 6;
+// static const uint32_t numCharsPerBatch = 1024;
+// static const uint32_t numBatchVertices = numCharsPerBatch * 4;
+// static const uint32_t numBatchIndices = numCharsPerBatch * 6;
+ const uint32_t numCharsPerBatch = 1024;
+ const uint32_t numBatchVertices = numCharsPerBatch * 4;
+ const uint32_t numBatchIndices = numCharsPerBatch * 6;
+
+
+void AllocatorStub::checkLeaks()
+	{
+#if BGFX_CONFIG_MEMORY_TRACKING
+		// BK - CallbackStub will be deleted after printing this info, so there is always one
+		// leak if CallbackStub is used.
+		BX_WARN(uint32_t(NULL != s_callbackStub ? 1 : 0) == m_numBlocks
+			, "\n\n"
+			  "\n########################################################"
+			  "\n"
+			  "\nMEMORY LEAK: Number of leaked blocks %d (Max blocks: %d)"
+			  "\n"
+			  "\n########################################################"
+			  "\n\n"
+			, m_numBlocks
+			, m_maxBlocks
+			);
+#endif // BGFX_CONFIG_MEMORY_TRACKING
+	}
+
 
 void blit(RendererContextI *_renderCtx, TextVideoMemBlitter &_blitter, const TextVideoMem &_mem)
 {
@@ -449,45 +481,45 @@ const uint32_t g_uniformTypeSize[UniformType::Count + 1] = {
     sizeof(int32_t), 0, 4 * sizeof(float), 3 * 3 * sizeof(float), 4 * 4 * sizeof(float), 1,
 };
 
-struct CapsFlags
-{
-    uint64_t m_flag;
-    const char *m_str;
-};
+// struct CapsFlags
+// {
+//     uint64_t m_flag;
+//     const char *m_str;
+// };
 
-static const CapsFlags s_capsFlags[] = {
-#define CAPS_FLAGS(_x)                                                                                                 \
-    {                                                                                                                  \
-        _x, #_x                                                                                                        \
-    }
-    CAPS_FLAGS(BGFX_CAPS_ALPHA_TO_COVERAGE),
-    CAPS_FLAGS(BGFX_CAPS_BLEND_INDEPENDENT),
-    CAPS_FLAGS(BGFX_CAPS_COMPUTE),
-    CAPS_FLAGS(BGFX_CAPS_CONSERVATIVE_RASTER),
-    CAPS_FLAGS(BGFX_CAPS_DRAW_INDIRECT),
-    CAPS_FLAGS(BGFX_CAPS_FRAGMENT_DEPTH),
-    CAPS_FLAGS(BGFX_CAPS_FRAGMENT_ORDERING),
-    CAPS_FLAGS(BGFX_CAPS_GRAPHICS_DEBUGGER),
-    CAPS_FLAGS(BGFX_CAPS_HDR10),
-    CAPS_FLAGS(BGFX_CAPS_HIDPI),
-    CAPS_FLAGS(BGFX_CAPS_INDEX32),
-    CAPS_FLAGS(BGFX_CAPS_INSTANCING),
-    CAPS_FLAGS(BGFX_CAPS_OCCLUSION_QUERY),
-    CAPS_FLAGS(BGFX_CAPS_RENDERER_MULTITHREADED),
-    CAPS_FLAGS(BGFX_CAPS_SWAP_CHAIN),
-    CAPS_FLAGS(BGFX_CAPS_TEXTURE_2D_ARRAY),
-    CAPS_FLAGS(BGFX_CAPS_TEXTURE_3D),
-    CAPS_FLAGS(BGFX_CAPS_TEXTURE_BLIT),
-    CAPS_FLAGS(BGFX_CAPS_TEXTURE_COMPARE_ALL),
-    CAPS_FLAGS(BGFX_CAPS_TEXTURE_COMPARE_LEQUAL),
-    CAPS_FLAGS(BGFX_CAPS_TEXTURE_CUBE_ARRAY),
-    CAPS_FLAGS(BGFX_CAPS_TEXTURE_DIRECT_ACCESS),
-    CAPS_FLAGS(BGFX_CAPS_TEXTURE_READ_BACK),
-    CAPS_FLAGS(BGFX_CAPS_VERTEX_ATTRIB_HALF),
-    CAPS_FLAGS(BGFX_CAPS_VERTEX_ATTRIB_UINT10),
-    CAPS_FLAGS(BGFX_CAPS_VERTEX_ID),
-#undef CAPS_FLAGS
-};
+// static const CapsFlags s_capsFlags[] = {
+// #define CAPS_FLAGS(_x)                                                                                                 \
+//     {                                                                                                                  \
+//         _x, #_x                                                                                                        \
+//     }
+//     CAPS_FLAGS(BGFX_CAPS_ALPHA_TO_COVERAGE),
+//     CAPS_FLAGS(BGFX_CAPS_BLEND_INDEPENDENT),
+//     CAPS_FLAGS(BGFX_CAPS_COMPUTE),
+//     CAPS_FLAGS(BGFX_CAPS_CONSERVATIVE_RASTER),
+//     CAPS_FLAGS(BGFX_CAPS_DRAW_INDIRECT),
+//     CAPS_FLAGS(BGFX_CAPS_FRAGMENT_DEPTH),
+//     CAPS_FLAGS(BGFX_CAPS_FRAGMENT_ORDERING),
+//     CAPS_FLAGS(BGFX_CAPS_GRAPHICS_DEBUGGER),
+//     CAPS_FLAGS(BGFX_CAPS_HDR10),
+//     CAPS_FLAGS(BGFX_CAPS_HIDPI),
+//     CAPS_FLAGS(BGFX_CAPS_INDEX32),
+//     CAPS_FLAGS(BGFX_CAPS_INSTANCING),
+//     CAPS_FLAGS(BGFX_CAPS_OCCLUSION_QUERY),
+//     CAPS_FLAGS(BGFX_CAPS_RENDERER_MULTITHREADED),
+//     CAPS_FLAGS(BGFX_CAPS_SWAP_CHAIN),
+//     CAPS_FLAGS(BGFX_CAPS_TEXTURE_2D_ARRAY),
+//     CAPS_FLAGS(BGFX_CAPS_TEXTURE_3D),
+//     CAPS_FLAGS(BGFX_CAPS_TEXTURE_BLIT),
+//     CAPS_FLAGS(BGFX_CAPS_TEXTURE_COMPARE_ALL),
+//     CAPS_FLAGS(BGFX_CAPS_TEXTURE_COMPARE_LEQUAL),
+//     CAPS_FLAGS(BGFX_CAPS_TEXTURE_CUBE_ARRAY),
+//     CAPS_FLAGS(BGFX_CAPS_TEXTURE_DIRECT_ACCESS),
+//     CAPS_FLAGS(BGFX_CAPS_TEXTURE_READ_BACK),
+//     CAPS_FLAGS(BGFX_CAPS_VERTEX_ATTRIB_HALF),
+//     CAPS_FLAGS(BGFX_CAPS_VERTEX_ATTRIB_UINT10),
+//     CAPS_FLAGS(BGFX_CAPS_VERTEX_ID),
+// #undef CAPS_FLAGS
+// };
 
 
 // static const char *s_topologyName[] = {
@@ -495,16 +527,16 @@ static const CapsFlags s_capsFlags[] = {
 // };
 // BX_STATIC_ASSERT(Topology::Count == BX_COUNTOF(s_topologyName));
 
-static TextureFormat::Enum s_emulatedFormats[] = {
-    TextureFormat::BC1,     TextureFormat::BC2,     TextureFormat::BC3,     TextureFormat::BC4,
-    TextureFormat::BC5,     TextureFormat::ETC1,    TextureFormat::ETC2,    TextureFormat::ETC2A,
-    TextureFormat::ETC2A1,  TextureFormat::PTC12,   TextureFormat::PTC14,   TextureFormat::PTC12A,
-    TextureFormat::PTC14A,  TextureFormat::PTC22,   TextureFormat::PTC24,   TextureFormat::ATC,
-    TextureFormat::ATCE,    TextureFormat::ATCI,    TextureFormat::ASTC4x4, TextureFormat::ASTC5x5,
-    TextureFormat::ASTC6x6, TextureFormat::ASTC8x5, TextureFormat::ASTC8x6, TextureFormat::ASTC10x5,
-    TextureFormat::BGRA8, // GL doesn't support BGRA8 without extensions.
-    TextureFormat::RGBA8, // D3D9 doesn't support RGBA8
-};
+// static TextureFormat::Enum s_emulatedFormats[] = {
+//     TextureFormat::BC1,     TextureFormat::BC2,     TextureFormat::BC3,     TextureFormat::BC4,
+//     TextureFormat::BC5,     TextureFormat::ETC1,    TextureFormat::ETC2,    TextureFormat::ETC2A,
+//     TextureFormat::ETC2A1,  TextureFormat::PTC12,   TextureFormat::PTC14,   TextureFormat::PTC12A,
+//     TextureFormat::PTC14A,  TextureFormat::PTC22,   TextureFormat::PTC24,   TextureFormat::ATC,
+//     TextureFormat::ATCE,    TextureFormat::ATCI,    TextureFormat::ASTC4x4, TextureFormat::ASTC5x5,
+//     TextureFormat::ASTC6x6, TextureFormat::ASTC8x5, TextureFormat::ASTC8x6, TextureFormat::ASTC10x5,
+//     TextureFormat::BGRA8, // GL doesn't support BGRA8 without extensions.
+//     TextureFormat::RGBA8, // D3D9 doesn't support RGBA8
+// };
 
 } // namespace bgfx
 

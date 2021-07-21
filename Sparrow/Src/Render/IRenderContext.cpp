@@ -52,7 +52,8 @@ void rendererUpdateUniforms(RendererContextI *_renderCtx, UniformBuffer *_unifor
 //     bool supported;
 // };
 
-static RendererCreator s_rendererCreator[] = {
+// static RendererCreator s_rendererCreator[] = {
+ RendererCreator s_rendererCreator[] = {
     {noop::rendererCreate, noop::rendererDestroy, BGFX_RENDERER_NOOP_NAME, true}, // Noop
     {d3d9::rendererCreate, d3d9::rendererDestroy, BGFX_RENDERER_DIRECT3D9_NAME,
      !!BGFX_CONFIG_RENDERER_DIRECT3D9}, // Direct3D9

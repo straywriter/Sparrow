@@ -1,7 +1,10 @@
 #include "Render/RTemp.h"
 
+#include "RenderContext.h"
 namespace bgfx
 {
+extern    Context *s_ctx;
+extern  bool s_graphicsDebuggerPresent;
 bool windowsVersionIs(Condition::Enum _op, uint32_t _version)
 {
 #if BX_PLATFORM_WINDOWS

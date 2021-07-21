@@ -1,9 +1,13 @@
 #pragma once
 
 #include "Render/RenderConfig.h"
+#include "StaticVariable.h"
+
+#include "bx/allocator.h"
 
 namespace bgfx
 {
+extern bx::AllocatorI *g_allocator;
 
     class CommandBuffer
 {

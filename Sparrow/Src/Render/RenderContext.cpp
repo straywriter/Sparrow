@@ -1,13 +1,22 @@
 #include "Render/RenderContext.h"
 #include "Render/IRenderContext.h"
 
+#include "bx/bx.h"
+
+#include "Render/StaticVariable.h"
+#include "RenderDefine.h"
+#include "RenderEnum.h"
+#include "Render/Tools/VertexLayout/VertexLayout.h"
+#include "RenderContext.h"
+
 namespace bgfx
 {
 
-
-
-
-
+extern Context *s_ctx;
+// extern const CapsFlags s_capsFlags[];
+extern bool s_renderFrameCalled;
+extern uint32_t s_threadIndex;
+//  extern const TextureFormat::Enum s_emulatedFormats[];
 
 static void dumpCaps()
 {

@@ -5,6 +5,7 @@
 #ifndef __dxgicommon_h__
 #define __dxgicommon_h__
 
+typedef unsigned int UINT;
 
 typedef struct DXGI_RATIONAL
 {

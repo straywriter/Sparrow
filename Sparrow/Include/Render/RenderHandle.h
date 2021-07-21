@@ -1,19 +1,18 @@
 #pragma once
 
-#include "RenderVertexLayout.h"
 #include "Render/RenderConfig.h"
-
+#include "Render/RenderVertexLayout.h"
 
 ///
-#define BGFX_HANDLE(_name)                                                                                             \
-    struct _name                                                                                                       \
-    {                                                                                                                  \
-        uint16_t idx;                                                                                                  \
-    };                                                                                                                 \
-    inline bool isValid(_name _handle)                                                                                 \
-    {                                                                                                                  \
-        return bgfx::kInvalidHandle != _handle.idx;                                                                    \
-    }
+// #define BGFX_HANDLE(_name) \
+//     struct _name \
+//     { \
+//         uint16_t idx; \
+//     }; \
+//     inline bool isValid(_name _handle) \
+//     { \
+//         return bgfx::kInvalidHandle != _handle.idx; \
+//     }
 
 #define BGFX_INVALID_HANDLE                                                                                            \
     {                                                                                                                  \
@@ -25,18 +24,115 @@ namespace bgfx
 
 static const uint16_t kInvalidHandle = UINT16_MAX;
 
-BGFX_HANDLE(DynamicIndexBufferHandle)
-BGFX_HANDLE(DynamicVertexBufferHandle)
-BGFX_HANDLE(FrameBufferHandle)
-BGFX_HANDLE(IndexBufferHandle)
-BGFX_HANDLE(IndirectBufferHandle)
-BGFX_HANDLE(OcclusionQueryHandle)
-BGFX_HANDLE(ProgramHandle)
-BGFX_HANDLE(ShaderHandle)
-BGFX_HANDLE(TextureHandle)
-BGFX_HANDLE(UniformHandle)
-BGFX_HANDLE(VertexBufferHandle)
-BGFX_HANDLE(VertexLayoutHandle)
+// BGFX_HANDLE(DynamicIndexBufferHandle)
+// BGFX_HANDLE(DynamicVertexBufferHandle)
+// BGFX_HANDLE(FrameBufferHandle)
+// BGFX_HANDLE(IndexBufferHandle)
+// BGFX_HANDLE(IndirectBufferHandle)
+// BGFX_HANDLE(OcclusionQueryHandle)
+// BGFX_HANDLE(ProgramHandle)
+// BGFX_HANDLE(ShaderHandle)
+// BGFX_HANDLE(TextureHandle)
+// BGFX_HANDLE(UniformHandle)
+// BGFX_HANDLE(VertexBufferHandle)
+// BGFX_HANDLE(VertexLayoutHandle)
+
+struct DynamicIndexBufferHandle
+{
+    uint16_t idx;
+};
+inline bool isValid(DynamicIndexBufferHandle _handle)
+{
+    return bgfx::kInvalidHandle != _handle.idx;
+}
+struct DynamicVertexBufferHandle
+{
+    uint16_t idx;
+};
+inline bool isValid(DynamicVertexBufferHandle _handle)
+{
+    return bgfx::kInvalidHandle != _handle.idx;
+}
+struct FrameBufferHandle
+{
+    uint16_t idx;
+};
+inline bool isValid(FrameBufferHandle _handle)
+{
+    return bgfx::kInvalidHandle != _handle.idx;
+}
+struct IndexBufferHandle
+{
+    uint16_t idx;
+};
+inline bool isValid(IndexBufferHandle _handle)
+{
+    return bgfx::kInvalidHandle != _handle.idx;
+}
+struct IndirectBufferHandle
+{
+    uint16_t idx;
+};
+inline bool isValid(IndirectBufferHandle _handle)
+{
+    return bgfx::kInvalidHandle != _handle.idx;
+}
+struct OcclusionQueryHandle
+{
+    uint16_t idx;
+};
+inline bool isValid(OcclusionQueryHandle _handle)
+{
+    return bgfx::kInvalidHandle != _handle.idx;
+}
+struct ProgramHandle
+{
+    uint16_t idx;
+};
+inline bool isValid(ProgramHandle _handle)
+{
+    return bgfx::kInvalidHandle != _handle.idx;
+}
+struct ShaderHandle
+{
+    uint16_t idx;
+};
+inline bool isValid(ShaderHandle _handle)
+{
+    return bgfx::kInvalidHandle != _handle.idx;
+}
+struct TextureHandle
+{
+    uint16_t idx;
+};
+inline bool isValid(TextureHandle _handle)
+{
+    return bgfx::kInvalidHandle != _handle.idx;
+}
+struct UniformHandle
+{
+    uint16_t idx;
+};
+inline bool isValid(UniformHandle _handle)
+{
+    return bgfx::kInvalidHandle != _handle.idx;
+}
+struct VertexBufferHandle
+{
+    uint16_t idx;
+};
+inline bool isValid(VertexBufferHandle _handle)
+{
+    return bgfx::kInvalidHandle != _handle.idx;
+}
+struct VertexLayoutHandle
+{
+    uint16_t idx;
+};
+inline bool isValid(VertexLayoutHandle _handle)
+{
+    return bgfx::kInvalidHandle != _handle.idx;
+}
 
 struct Handle
 {
@@ -93,6 +189,5 @@ inline bool operator==(const UniformHandle &_lhs, const UniformHandle &_rhs)
 {
     return _lhs.idx == _rhs.idx;
 }
-
 
 } // namespace bgfx

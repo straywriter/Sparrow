@@ -1,7 +1,16 @@
 #include "Render/Platform.h"
 
+#include "RenderContext.h"
+#include "RenderFunction.h"
+
+#include "IRenderContext.h"
 namespace bgfx
 {
+
+extern Context *s_ctx;
+extern bool s_renderFrameCalled;
+extern uint32_t s_threadIndex;
+
 void setPlatformData(const PlatformData &_data)
 {
     if (NULL != s_ctx)

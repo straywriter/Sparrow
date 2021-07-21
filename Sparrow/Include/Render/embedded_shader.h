@@ -7,7 +7,9 @@
 #define BGFX_EMBEDDED_SHADER_H_HEADER_GUARD
 
 #include <bx/bx.h>
-#include "Render/Render.h"
+#include <Render/RenderEnum.h>
+#include <Render/RenderHandle.h>
+// #include "Render/Render.h"
 
 #define BGFX_EMBEDDED_SHADER_DXBC(...)
 #define BGFX_EMBEDDED_SHADER_DX9BC(...)

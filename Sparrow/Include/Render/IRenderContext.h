@@ -2,8 +2,11 @@
 
 #include "RenderHandle.h"
 #include "RenderObject.h"
-#include "Render/Render.h"
+// #include "Render/Render.h"
 #include "Render/RenderConfig.h"
+#include "RenderHandle.h"
+#include "RenderStructInternal.h"
+#include "RenderObject.h"
 
 // #include "Render/RTemp.h"
 

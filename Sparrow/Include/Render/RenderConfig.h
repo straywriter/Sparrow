@@ -179,6 +179,58 @@
 #	define BGFX_CONFIG_USE_TINYSTL 1
 #endif // BGFX_CONFIG_USE_TINYSTL
 
+#if BGFX_CONFIG_USE_TINYSTL
+namespace bgfx
+{
+struct TinyStlAllocator
+{
+    static void *static_allocate(size_t _bytes);
+    static void static_deallocate(void *_ptr, size_t /*_bytes*/);
+};
+} // namespace bgfx
+#define TINYSTL_ALLOCATOR bgfx::TinyStlAllocator
+#include <tinystl/string.h>
+#include <tinystl/unordered_map.h>
+#include <tinystl/unordered_set.h>
+#include <tinystl/vector.h>
+
+namespace tinystl
+{
+template <typename T, typename Alloc = TINYSTL_ALLOCATOR> class list : public vector<T, Alloc>
+{
+  public:
+    void push_front(const T &_value)
+    {
+        this->insert(this->begin(), _value);
+    }
+
+    void pop_front()
+    {
+        this->erase(this->begin());
+    }
+
+    void sort()
+    {
+        bx::quickSort(this->begin(), uint32_t(this->end() - this->begin()), sizeof(T),
+                      [](const void *_a, const void *_b) -> int32_t {
+                          const T &lhs = *(const T *)(_a);
+                          const T &rhs = *(const T *)(_b);
+                          return lhs < rhs ? -1 : 1;
+                      });
+    }
+};
+} // namespace tinystl
+namespace stl = tinystl;
+#else
+#include <list>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+namespace stl = std;
+#endif // BGFX_CONFIG_USE_TINYSTL
+
+
 /// Enable nVidia PerfHUD integration.
 #ifndef BGFX_CONFIG_DEBUG_PERFHUD
 #	define BGFX_CONFIG_DEBUG_PERFHUD 0

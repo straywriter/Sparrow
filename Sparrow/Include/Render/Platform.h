@@ -11,7 +11,10 @@
 // necessary to use this header in conjunction with creating windows.
 
 #include <bx/platform.h>
-#include "Render/Render.h"
+#include <stdint.h>
+#include <Render/RenderStruct.h>
+#include <Render/RenderHandle.h>
+// #include "Render/Render.h"
 
 namespace bgfx
 {
