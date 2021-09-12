@@ -1,6 +1,9 @@
 #pragma once
 
-class IWindow
+
+
+
+class Window
 {
 
 virtual bool Create();

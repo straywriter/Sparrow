@@ -10,7 +10,7 @@ set(CppStrict)
 
 include_directories(${GoogleTestIncludeDir})
 
-add_library(gtest SHARED)
+add_library(gtest )
 target_include_directories(gtest PUBLIC ${GoogleTestIncludeDir})
 target_sources(gtest PUBLIC ${GoogleTestSourceDir}/gtest-all.cc)
 set_target_properties(gtest PROPERTIES VERSION ${GOOGLETEST_VERSION})
@@ -67,7 +67,7 @@ target_compile_options(
          >)
 # endif()
 
-add_library(gtest_main SHARED)
+add_library(gtest_main )
 target_sources(gtest_main PUBLIC ${GoogleTestSourceDir}/gtest_main.cc ${GoogleTestSourceDir}/gtest-all.cc)
 set_target_properties(gtest_main PROPERTIES VERSION ${GOOGLETEST_VERSION})
 # target_link_libraries(gtest_main PUBLIC gtest)
