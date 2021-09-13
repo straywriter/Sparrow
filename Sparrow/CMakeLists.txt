@@ -21,6 +21,16 @@ target_include_directories(Core PUBLIC ${IncludeDir})
 target_link_libraries(Core PUBLIC spdlog)
 set_target_properties(Core PROPERTIES FOLDER "Sparrow/")
 
+
+# Core
+file(GLOB_RECURSE BaseIncludeFile ${CMAKE_CURRENT_SOURCE_DIR}/Include/Base/*.h)
+file(GLOB_RECURSE BaseSourceFile ${CMAKE_CURRENT_SOURCE_DIR}/Src/Base/*.cpp)
+add_library(SparrowBase)
+target_sources(SparrowBase PUBLIC ${BaseIncludeFile} ${BaseSourceFile})
+target_include_directories(SparrowBase PUBLIC ${IncludeDir} ${CMAKE_CURRENT_SOURCE_DIR}/Inline)
+target_link_libraries(SparrowBase PUBLIC spdlog folly)
+set_target_properties(SparrowBase PROPERTIES FOLDER "Sparrow/")
+
 # Render file(GLOB_RECURSE RenderIncludeFile
 # ${CMAKE_CURRENT_SOURCE_DIR}/Include/Render/*.h) file(GLOB_RECURSE
 # RenderSourceFile ${CMAKE_CURRENT_SOURCE_DIR}/Src/Render/*.cpp) message(STATUS

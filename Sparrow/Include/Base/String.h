@@ -1,10 +1,159 @@
 
 #pragma once
+#include <initializer_list>
+#include <string>
+
+// if folly
+#include <External/folly.h>
 
 namespace Sparrow
 {
 
+template <typename T> class TString : protected folly::basic_fbstring<T>
+{
+  public:
+    // typedef std::char_traits<T> traits_type;
+    // typedef typename traits_type::char_type value_type;
+    // using value_type=folly::basic_fbstring<T>::value_type;
+
+  public:
+    /**
+     *
+     *
+     * @return * Construct
+     */
+    TString();
+
+    /** Copy Construct */
+    TString(const TString &str);
+
+    /** Move Construct */
+    TString(TString &&str);
+
+    /** Copy string from stl string */
+    TString(const std::basic_string<T> &str);
+
+    TString(const TString &str, size_type pos);
+
+    TString(const value_type *str);
+
+    TString(const value_type *s, size_type n);
+
+    // TString(size_type n, value_type c);
+
+    TString(std::initializer_list<value_type> init_list);
+
+    TString &operator=(const TString &str);
+
+    TString &operator=(TString &&str);
+
+    TString &operator=(const std::basic_string<T> &str);
+
+  public:
+    std::basic_string<T> ToStdString();
+
+    const T *Data() const;
+
+    const T &Front() const;
+
+    const T &Back() const;
+
+    T &Front();
+
+    T &Back();
+
+    void PopBack();
+
+    T Size() const;
+
+    T Length() const;
+
+    T MaxSize() const;
+
+    void Resize(size_type size);
+
+    void Reserve(size_type res_arg = 0);
+
+    void Clear();
+
+    bool Empty() const;
+
+    const_reference At(size_type n) const;
+
+    reference At(size_type n);
+
+  public:
+    iterator begin();
+
+    const_iterator begin() const;
+
+    const_iterator cbegin() const;
+
+    iterator end();
+    const_iterator end() const;
+    const_iterator cend() const;
+    reverse_iterator rbegin();
+    const_reverse_iterator rbegin() const;
+
+    TString &Append(const TString &str);
+
+    TString &Append(const TString &str, const size_type pos, size_type n);
+
+    TString &Append(const value_type *s, size_type n);
+
+    TString &Append(const value_type *str_char);
+
+    TString &Append(size_type n, value_type c);
+
+    TString &Append(std::initializer_list<value_type> init_list);
+
+    void PushBack(const value_type str_char);
+
+    TString &Assign(const TString &str);
+
+    TString &Assign(TString &&str);
+
+    // basic_fbstring &assign(const basic_fbstring &str, const size_type pos, size_type n);
+
+    // basic_fbstring &assign(const value_type *s, const size_type n);
+
+    // basic_fbstring &assign(const value_type *s);
+
+    // basic_fbstring &assign(std::initializer_list<value_type> il);
+
+    // basic_fbstring &insert(size_type pos1, const basic_fbstring &str)
+
+  public:
+    const_reference operator[](size_type pos) const;
+
+    reference operator[](size_type pos);
+
+    TString &operator=(const value_type *str);
+
+    TString &operator=(value_type str_char);
+
+    TString &operator=(std::initializer_list<value_type> init_list);
+
+    TString &operator+=(const TString &str);
+    TString &operator+=(const value_type *str);
+    TString &operator+=(const value_type str_char);
+    TString &operator+=(std::initializer_list<value_type> init_list);
+};
+
+using String = TString<char>;
+// class String :protected folly::fbstring
+// class String : public folly::fbstring
+// {
+//   public:
+//     String(const char *str) : folly::fbstring(str)
+//     {
+//     }
+// };
+
 } // namespace Sparrow
+
+
+#include <Inline/Base/StringFBString.inl
 
 /* my string function
 Append

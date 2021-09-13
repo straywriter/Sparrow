@@ -1066,7 +1066,7 @@ class basic_fbstring
 
   public:
     // types
-    typedef T traits_type;
+    typedef  std::char_traits<T> traits_type;
     typedef typename traits_type::char_type value_type;
     typedef A allocator_type;
     typedef typename std::allocator_traits<A>::size_type size_type;
