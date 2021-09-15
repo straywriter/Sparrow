@@ -95,5 +95,4 @@ extern bool (*MallocExtension_Internal_GetNumericProperty)(
 #endif
 #endif
 }
-
 #include "folly/memory/detail/MallocImpl.inl"

@@ -9,12 +9,12 @@
 namespace Sparrow
 {
 
-template <typename T> class TString : protected folly::basic_fbstring<T>
+template <typename CharType> class TString : protected folly::basic_fbstring<CharType>
 {
   public:
-    // typedef std::char_traits<T> traits_type;
+    // typedef std::char_traits<CharType> traits_type;
     // typedef typename traits_type::char_type value_type;
-    // using value_type=folly::basic_fbstring<T>::value_type;
+    // using value_type=folly::basic_fbstring<CharType>::value_type;
 
   public:
     /**
@@ -31,48 +31,48 @@ template <typename T> class TString : protected folly::basic_fbstring<T>
     TString(TString &&str);
 
     /** Copy string from stl string */
-    TString(const std::basic_string<T> &str);
+    TString(const std::basic_string<CharType> &str);
 
-    TString(const TString &str, size_type pos);
+    TString(const TString &str, size_t pos);
 
-    TString(const value_type *str);
+    TString(const CharType *str);
 
-    TString(const value_type *s, size_type n);
+    TString(const CharType *s, size_t n);
 
     // TString(size_type n, value_type c);
 
-    TString(std::initializer_list<value_type> init_list);
+    TString(std::initializer_list<CharType> init_list);
 
     TString &operator=(const TString &str);
 
     TString &operator=(TString &&str);
 
-    TString &operator=(const std::basic_string<T> &str);
+    TString &operator=(const std::basic_string<CharType> &str);
 
   public:
-    std::basic_string<T> ToStdString();
+    std::basic_string<CharType> ToStdString();
 
-    const T *Data() const;
+    const CharType *Data() const;
 
-    const T &Front() const;
+    const CharType &Front() const;
 
-    const T &Back() const;
+    const CharType &Back() const;
 
-    T &Front();
+    CharType &Front();
 
-    T &Back();
+    CharType &Back();
 
     void PopBack();
 
-    T Size() const;
+    CharType Size() const;
 
-    T Length() const;
+    CharType Length() const;
 
-    T MaxSize() const;
+    CharType MaxSize() const;
 
     void Resize(size_type size);
 
-    void Reserve(size_type res_arg = 0);
+    void Reserve(size_t res_arg = 0);
 
     void Clear();
 
@@ -80,7 +80,7 @@ template <typename T> class TString : protected folly::basic_fbstring<T>
 
     const_reference At(size_type n) const;
 
-    reference At(size_type n);
+    CharType At(size_type n);
 
   public:
     iterator begin();
@@ -153,7 +153,7 @@ using String = TString<char>;
 } // namespace Sparrow
 
 
-#include <Inline/Base/StringFBString.inl
+#include <Base/StringFBString.inl>
 
 /* my string function
 Append

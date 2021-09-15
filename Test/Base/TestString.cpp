@@ -25,13 +25,16 @@ using namespace Sparrow;
 TEST(test, test)
 {
 	
-String a("abcasdfasd");
+String a("abcasdfasd\n");
 
 	
-String b("abc");
+String b("abc\n");
 auto c(b);
 std::cout<<c.Data();
 std::cout<<a.ToStdString();
+std::cout<<a.At(2);
+// a.Reserve(2);
+// std::cout<<a.ToStdString();
 // std::cout<<a.c_str();
 
 //     std::string ss("abcd");

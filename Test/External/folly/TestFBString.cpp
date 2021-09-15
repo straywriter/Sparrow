@@ -1,4 +1,5 @@
 
+#include <string>
 #include "folly/FBString.h"
 #include "gtest/gtest.h"
 
@@ -8,7 +9,6 @@
 #include <list>
 #include <random>
 #include <sstream>
-#include <string>
 
 using namespace std;
 using namespace folly;
@@ -17,9 +17,9 @@ using namespace folly;
 TEST(test, test)
 {
     std::string ss("abcd");
-    fbstring fs("asdfafs");
+    fbstring fs("asdfafsasdf");
     // randomString<std::string>(&ss);
-    std::cout << fs;
+    std::cout << fs.c_str();
     // clause11_21_4_2_a(ss);
     // clause11_21_4_2_a(fs);
     // auto x = random(0, 9);
