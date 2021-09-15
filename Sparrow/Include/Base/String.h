@@ -15,17 +15,16 @@ template <typename CharType> class TString : protected folly::basic_fbstring<Cha
     // typedef std::char_traits<CharType> traits_type;
     // typedef typename traits_type::char_type value_type;
     // using value_type=folly::basic_fbstring<CharType>::value_type;
+    using StringType = TString<CharType>;
 
   public:
-    /**
-     *
-     *
-     * @return * Construct
-     */
+    /** Construct */
     TString();
 
     /** Copy Construct */
     TString(const TString &str);
+
+    TString(const TString &str, size_t start, size_t num = size_t(-1));
 
     /** Move Construct */
     TString(TString &&str);
@@ -33,15 +32,21 @@ template <typename CharType> class TString : protected folly::basic_fbstring<Cha
     /** Copy string from stl string */
     TString(const std::basic_string<CharType> &str);
 
-    TString(const TString &str, size_t pos);
-
     TString(const CharType *str);
 
-    TString(const CharType *s, size_t n);
+    TString(const CharType *str, size_t num);
 
-    // TString(size_type n, value_type c);
+    TString(size_t start, size_t num);
+
+    template <typename Iterator> TString(Iterator begin, Iterator end);
+
+    TString(const CharType *begin, const CharType *end);
+
+    TString(size_t num, CharType str_char);
 
     TString(std::initializer_list<CharType> init_list);
+
+    ~TString();
 
     TString &operator=(const TString &str);
 
@@ -49,10 +54,16 @@ template <typename CharType> class TString : protected folly::basic_fbstring<Cha
 
     TString &operator=(const std::basic_string<CharType> &str);
 
+    TString &operator=(const CharType *str);
+
+    TString &operator=(std::initializer_list<CharType> init_list);
+
   public:
     std::basic_string<CharType> ToStdString();
 
     const CharType *Data() const;
+
+    CharType *Data();
 
     const CharType &Front() const;
 
@@ -64,80 +75,155 @@ template <typename CharType> class TString : protected folly::basic_fbstring<Cha
 
     void PopBack();
 
-    CharType Size() const;
+    size_t Size() const;
 
-    CharType Length() const;
+    size_t Length() const;
 
-    CharType MaxSize() const;
+    size_t MaxSize() const;
 
-    void Resize(size_type size);
+    size_t Capacity() const;
+
+    void Resize(size_t size);
 
     void Reserve(size_t res_arg = 0);
+
+    void ShrinkToFit();
 
     void Clear();
 
     bool Empty() const;
 
-    const_reference At(size_type n) const;
+    const CharType At(size_t pos) const;
 
-    CharType At(size_type n);
-
-  public:
-    iterator begin();
-
-    const_iterator begin() const;
-
-    const_iterator cbegin() const;
-
-    iterator end();
-    const_iterator end() const;
-    const_iterator cend() const;
-    reverse_iterator rbegin();
-    const_reverse_iterator rbegin() const;
+    CharType At(size_t pos);
 
     TString &Append(const TString &str);
 
-    TString &Append(const TString &str, const size_type pos, size_type n);
+    TString &Append(const TString &str, const size_t start, size_t num);
 
-    TString &Append(const value_type *s, size_type n);
+    TString &Append(const CharType *str, size_t num);
 
-    TString &Append(const value_type *str_char);
+    TString &Append(const CharType *str);
 
-    TString &Append(size_type n, value_type c);
+    TString &Append(size_t num, CharType str_char);
 
-    TString &Append(std::initializer_list<value_type> init_list);
+    template <class InputIterator> TString &Append(InputIterator first, InputIterator last);
 
-    void PushBack(const value_type str_char);
+    TString &Append(std::initializer_list<CharType> init_list);
+
+    void PushBack(const CharType str_char);
 
     TString &Assign(const TString &str);
 
     TString &Assign(TString &&str);
 
-    // basic_fbstring &assign(const basic_fbstring &str, const size_type pos, size_type n);
+    TString &Assign(const TString &str, const size_t start, size_t num);
 
-    // basic_fbstring &assign(const value_type *s, const size_type n);
+    TString &Assign(const CharType *str, size_t num);
 
-    // basic_fbstring &assign(const value_type *s);
+    TString &Assign(std::initializer_list<CharType> init_list);
 
-    // basic_fbstring &assign(std::initializer_list<value_type> il);
+    TString &Assign(size_t num, CharType str_char);
 
-    // basic_fbstring &insert(size_type pos1, const basic_fbstring &str)
+    template <class InputIterator> TString &Assign(InputIterator first, InputIterator last);
+
+    TString &Insert(size_t index, const TString &str);
+
+    TString &Insert(size_t index, const TString &str, size_t pos, size_t num);
+
+    TString &Insert(size_t index, const CharType *str, size_t num);
+
+    TString &Insert(size_t index, const CharType *str);
+
+    TString &Insert(size_t index, size_t num, CharType str_char);
+
+    TString &Insert(size_t index, const CharType str_char);
+
+    TString &Erase(size_t index = size_t(0), size_t num = size_t(-1));
+
+    CharType *Erase(CharType *pos);
+
+    CharType *Erase(CharType *first, CharType *lase);
+
+    TString &Replace(size_t index, size_t num, const TString &str, size_t pos, size_t count);
+
+    TString &Replace(size_t index, size_t num, const TString &str);
+
+    TString &Replace(size_t index, size_t num, const CharType *str);
+
+    size_t Copy(CharType *str, size_t num, size_t pos = size_t(0));
+
+    void Swap(TString &str);
+
+    size_t Find(const TString &str, size_t pos = size_t(0)) const;
+    size_t Find(const char *str, size_t pos, size_t num) const;
+    size_t Find(const CharType *str, size_t pos = size_t(0)) const;
+    size_t Find(const CharType str_char, size_t pos = size_t(0)) const;
+
+    size_t ReverseFind(const TString &str, size_t pos = size_t(-1)) const;
+    size_t ReverseFind(const char *str, size_t pos, size_t num) const;
+    size_t ReverseFind(const CharType *str, size_t pos = size_t(-1)) const;
+    size_t ReverseFind(const CharType str_char, size_t pos = size_t(-1)) const;
+
+    size_t FindFirst(const TString &str, size_t pos = size_t(0)) const;
+    size_t FindFirst(const char *str, size_t pos, size_t num) const;
+    size_t FindFirst(const CharType *str, size_t pos = size_t(0)) const;
+    size_t FindFirst(const CharType str_char, size_t pos = size_t(0)) const;
+
+    size_t FindLast(const TString &str, size_t pos = size_t(-1)) const;
+    size_t FindLast(const char *str, size_t pos, size_t num) const;
+    size_t FindLast(const CharType *str, size_t pos = size_t(-1)) const;
+    size_t FindLast(const CharType str_char, size_t pos = size_t(-1)) const;
+
+    size_t FindFirst(const TString &str, size_t pos = size_t(0)) const;
+    size_t FindFirst(const char *str, size_t pos, size_t num) const;
+    size_t FindFirst(const CharType *str, size_t pos = size_t(0)) const;
+    size_t FindFirst(const CharType str_char, size_t pos = size_t(0)) const;
+
+    size_t FindFirstNot(const TString &str, size_t pos = size_t(-1)) const;
+    size_t FindFirstNot(const char *str, size_t pos, size_t num) const;
+    size_t FindFirstNot(const CharType *str, size_t pos = size_t(-1)) const;
+    size_t FindFirstNot(const CharType str_char, size_t pos = size_t(-1)) const;
+
+    size_t FindLastNot(const TString &str, size_t pos = size_t(0)) const;
+    size_t FindLastNot(const char *str, size_t pos, size_t num) const;
+    size_t FindLastNot(const CharType *str, size_t pos = size_t(0)) const;
+    size_t FindLastNot(const CharType str_char, size_t pos = size_t(0)) const;
+
+    TString SubString(size_t start = 0, size_t = size_t(-1)) const &;
+    TString SubString(size_t start = 0, size_t = size_t(-1)) &&;
+
+    int Compare(const TString &str) const;
+    int Compare(size_t start, size_t num, const TString &str) const;
+    int Compare(size_t start, size_t num, const CharType *str) const;
+    int Compare(size_t start, size_t num, const CharType *str, size_t count) const;
+    int Compare(size_t start, size_t num, const TString &str, size_t pos, size_t count) const;
+    int Compare(const CharType *str) const;
 
   public:
-    const_reference operator[](size_type pos) const;
+    CharType *begin();
 
-    reference operator[](size_type pos);
+    CharType *end();
 
-    TString &operator=(const value_type *str);
+  public:
+    const CharType operator[](size_t pos) const;
 
-    TString &operator=(value_type str_char);
-
-    TString &operator=(std::initializer_list<value_type> init_list);
+    CharType operator[](size_t pos);
 
     TString &operator+=(const TString &str);
-    TString &operator+=(const value_type *str);
-    TString &operator+=(const value_type str_char);
-    TString &operator+=(std::initializer_list<value_type> init_list);
+
+    TString &operator+=(const CharType *str_char);
+
+    TString &operator+=(const CharType str_char);
+
+    TString &operator+=(std::initializer_list<CharType> init_list);
+
+  public:
+    friend std::basic_istream<CharType, std::char_traits<CharType>> &getline(
+        std::basic_istream<CharType, std::char_traits<CharType>> in_stream, TString &str);
+
+    friend std::basic_istream<CharType, std::char_traits<CharType>> &getline(
+        std::basic_istream<CharType, std::char_traits<CharType>> in_stream, TString &str, CharType delim);
 };
 
 using String = TString<char>;
@@ -151,7 +237,6 @@ using String = TString<char>;
 // };
 
 } // namespace Sparrow
-
 
 #include <Base/StringFBString.inl>
 
