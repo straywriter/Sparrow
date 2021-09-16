@@ -1,9 +1,6 @@
-// #include "Core/Log.h"
+
 #include <Base/String.h>
-// #include <Inline/Inline.h>
-
 #include "gtest/gtest.h"
-
 #include <atomic>
 #include <cstdlib>
 #include <iomanip>
@@ -13,17 +10,34 @@
 #include <string>
 
 using namespace std;
-//using namespace folly;
 
 using namespace Sparrow;
 #include <memory>
 #include <iostream>
 
+using TestString = Sparrow::TString<char>;
+
+
+template <class String>
+void ReBuild(String& test) {
+  test.String::~String();
+  new (&test) String();
+}
+
+TEST(String, Rebuild)
+{
+    
+
+}
+
+
 TEST(test, test)
 {
 	TestString a("abcasdfasd\n");
 	TestString b("ccc;ll");
-	std::cout << a+b<<'\n';
+	TestString c(b);
+	auto xx = TestString("asdfll");
+	std::cout << a+b<<b<<'\n';
 	std::cout << *a.begin();
 	b.reserve();
 	/*
