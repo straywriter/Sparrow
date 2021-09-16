@@ -1,3 +1,4 @@
+#include "..\..\Include\Base\String.h"
 // #include
 //#include <Base/String.h>
 
@@ -7,14 +8,14 @@ template <typename CharType,
           class Storage /*= folly::fbstring_core<CharType>*/>
 CharType *Sparrow::TString<CharType, TraitType, Allocator, Storage>::begin()
 {
-  return store_.mutableData();
+  return storage.mutableData();
 }
 
 template <typename CharType,
           class TraitType /*= std::char_traits<CharType>*/,
           class Allocator /*= std::allocator<CharType>*/,
           class Storage /*= folly::fbstring_core<CharType>*/>
-Sparrow::TString<CharType, TraitType, Allocator, Storage>::TString(const TString &str) : store_(str.store_)
+Sparrow::TString<CharType, TraitType, Allocator, Storage>::TString(const TString &str) : storage(str.storage)
 {}
 
 template <typename CharType,
@@ -23,8 +24,49 @@ template <typename CharType,
           class Storage /*= folly::fbstring_core<CharType>*/>
 Sparrow::TString<CharType, TraitType, Allocator, Storage>::TString(const value_type *s,
                                                                    const Allocator & /*a*/ /*= Allocator()*/) :
-    store_(s, traitsLength(s))
+    storage(s, traitsLength(s))
 {}
+
+template <typename CharType,
+          class TraitType, //*= std::char_traits<CharType>*/
+          class Allocator, //*= std::allocator<CharType>*/
+          class Storage>   //*= folly::fbstring_core<CharType>*/
+Sparrow::TString<CharType, TraitType, Allocator, Storage>::TString(TString &&goner) noexcept :
+    storage(std::move(goner.storage))
+{}
+
+template <typename CharType,
+          class TraitType /*= std::char_traits<CharType>*/,
+          class Allocator /*= std::allocator<CharType>*/,
+          class Storage /*= folly::fbstring_core<CharType>*/>
+Sparrow::TString<CharType, TraitType, Allocator, Storage>::TString(const TString &str,
+                                                                   size_type      pos,
+                                                                   size_type      n /*= npos*/,
+                                                                   const Allocator & /* a */ /*= Allocator()*/)
+{
+  assign(str, pos, n);
+}
+
+template <typename CharType,
+          class TraitType /*= std::char_traits<CharType>*/,
+          class Allocator /*= std::allocator<CharType>*/,
+          class Storage /*= folly::fbstring_core<CharType>*/>
+Sparrow::TString<CharType, TraitType, Allocator, Storage>::TString(const value_type *s,
+                                                                   size_type         n,
+                                                                   const Allocator & /*a*/ /*= Allocator()*/) :
+    storage(s, n)
+{}
+
+template <typename CharType,
+          class TraitType /*= std::char_traits<CharType>*/,
+          class Allocator /*= std::allocator<CharType>*/,
+          class Storage /*= folly::fbstring_core<CharType>*/>
+FOLLY_NOINLINE Sparrow::TString<CharType, TraitType, Allocator, Storage>::TString(
+    size_type n, value_type c, const Allocator & /*a*/ /*= Allocator()*/)
+{
+  auto const pData = storage.expandNoinit(n);
+  fbstring_detail::podFill(pData, pData + n, c);
+}
 
 template <typename CharType,
           class TraitType /*= std::char_traits<CharType>*/,
@@ -34,10 +76,24 @@ void Sparrow::TString<CharType, TraitType, Allocator, Storage>::procrustes(size_
 {
   if (n > nmax) { n = nmax; }
 }
+
+// template <typename CharType,
+//           class TraitType /*= std::char_traits<CharType>*/,
+//           class Allocator /*= std::allocator<CharType>*/,
+//           class Storage /*= folly::fbstring_core<CharType>*/>
+// Sparrow::TString<CharType, TraitType, Allocator, Storage>::TString() noexcept : TString(Allocator())
+// {}
+
+template <typename CharType, class TraitType, class Allocator, class Storage>
+inline Sparrow::TString<CharType, TraitType, Allocator, Storage>::TString() noexcept : TString(Allocator())
+{}
+
+template <typename CharType, class TraitType, class Allocator, class Storage>
+inline Sparrow::TString<CharType, TraitType, Allocator, Storage>::TString(const Allocator &) noexcept
+{}
+
 namespace Sparrow
 {
-
-
 
 template <typename CharType, class TraitType, class Allocator, class S>
 FOLLY_NOINLINE typename TString<CharType, TraitType, Allocator, S>::size_type
@@ -46,18 +102,6 @@ TString<CharType, TraitType, Allocator, S>::traitsLength(const value_type *s)
   return s ? traits_type::length(s)
            : (folly::throw_exception<std::logic_error>("basic_fbstring: null pointer initializer not valid"), 0);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 template <typename CharType, class TraitType, class Allocator, class S>
 inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, Allocator, S>::operator=(
@@ -82,9 +126,9 @@ inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, 
     return *this;
   }
   // No need of this anymore
-  this->~basic_fbstring();
+  this->~TString();
   // Move the goner into this
-  new (&store_) S(std::move(goner.store_));
+  new (&storage) S(std::move(goner.storage));
   return *this;
 }
 
@@ -93,15 +137,15 @@ inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, 
 {
   Invariant checker(*this);
 
-  if (empty()) { store_.expandNoinit(1); }
-  else if (store_.isShared())
+  if (empty()) { storage.expandNoinit(1); }
+  else if (storage.isShared())
   {
     basic_fbstring(1, c).swap(*this);
     return *this;
   }
   else
   {
-    store_.shrink(size() - 1);
+    storage.shrink(size() - 1);
   }
   front() = c;
   return *this;
@@ -113,12 +157,12 @@ inline void TString<CharType, TraitType, Allocator, S>::resize(const size_type n
   Invariant checker(*this);
 
   auto size = this->size();
-  if (n <= size) { store_.shrink(size - n); }
+  if (n <= size) { storage.shrink(size - n); }
   else
   {
     auto const delta = n - size;
-    auto       pData = store_.expandNoinit(delta);
-    fbstring_detail::podFill(pData, pData + delta, c);
+    auto       pData = storage.expandNoinit(delta);
+    folly::fbstring_detail::podFill(pData, pData + delta, c);
   }
   assert(this->size() == n);
 }
@@ -158,7 +202,7 @@ FOLLY_NOINLINE TString<CharType, TraitType, Allocator, S> &TString<CharType, Tra
   }
   auto const oldSize = size();
   auto const oldData = data();
-  auto       pData   = store_.expandNoinit(n, /* expGrowth = */ true);
+  auto       pData   = storage.expandNoinit(n, /* expGrowth = */ true);
 
   // Check for aliasing (rare). We could use "<=" here but in theory
   // those do not work for pointers unless the pointers point to
@@ -188,7 +232,7 @@ inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, 
                                                                                                       value_type c)
 {
   Invariant checker(*this);
-  auto      pData = store_.expandNoinit(n, /* expGrowth = */ true);
+  auto      pData = storage.expandNoinit(n, /* expGrowth = */ true);
   fbstring_detail::podFill(pData, pData + n, c);
   return *this;
 }
@@ -213,8 +257,8 @@ FOLLY_NOINLINE TString<CharType, TraitType, Allocator, S> &TString<CharType, Tra
   else if (size() >= n)
   {
     // s can alias this, we need to use podMove.
-    fbstring_detail::podMove(s, s + n, store_.mutableData());
-    store_.shrink(size() - n);
+    fbstring_detail::podMove(s, s + n, storage.mutableData());
+    storage.shrink(size() - n);
     assert(size() == n);
   }
   else
@@ -224,7 +268,7 @@ FOLLY_NOINLINE TString<CharType, TraitType, Allocator, S> &TString<CharType, Tra
     resize(0);
     // Do not use exponential growth here: assign() should be tight,
     // to mirror the behavior of the equivalent constructor.
-    fbstring_detail::podCopy(s, s + n, store_.expandNoinit(n));
+    fbstring_detail::podCopy(s, s + n, storage.expandNoinit(n));
   }
 
   assert(size() == n);
@@ -244,7 +288,7 @@ inline typename TString<CharType, TraitType, Allocator, S>::istream_type &TStrin
     size_t avail = capacity() - size;
     // fbstring has 1 byte extra capacity for the null terminator,
     // and getline null-terminates the read string.
-    is.getline(store_.expandNoinit(avail), avail + 1, delim);
+    is.getline(storage.expandNoinit(avail), avail + 1, delim);
     size += is.gcount();
 
     if (is.bad() || is.eof() || !is.fail())
@@ -344,7 +388,7 @@ inline typename TString<CharType, TraitType, Allocator, S>::iterator TString<Cha
   const size_type pos = i - cbegin();
 
   auto oldSize = size();
-  store_.expandNoinit(n, /* expGrowth = */ true);
+  storage.expandNoinit(n, /* expGrowth = */ true);
   auto b = begin();
   fbstring_detail::podMove(b + pos, b + oldSize, b + pos + n);
   fbstring_detail::podFill(b + pos, b + pos + n, c);
@@ -373,9 +417,9 @@ inline typename TString<CharType, TraitType, Allocator, S>::iterator TString<Cha
   assert(n >= 0);
 
   auto oldSize = size();
-  store_.expandNoinit(n, /* expGrowth = */ true);
+  storage.expandNoinit(n, /* expGrowth = */ true);
   auto b = begin();
-  fbstring_detail::podMove(b + pos, b + oldSize, b + pos + n);
+  folly::fbstring_detail::podMove(b + pos, b + oldSize, b + pos + n);
   std::copy(s1, s2, b + pos);
 
   return b + pos;
@@ -478,7 +522,7 @@ inline void TString<CharType, TraitType, Allocator, S>::replaceImpl(
   else
   {
     // grows
-    s1 = fbstring_detail::copy_n(s1, n1, i1).first;
+    s1 = folly::fbstring_detail::copy_n(s1, n1, i1).first;
     insert(i2, s1, s2);
   }
   assert(isSane());
@@ -1034,10 +1078,5 @@ inline const std::string &toStdString(const std::string &s) { return s; }
 // If called with a temporary, the compiler will select this overload instead
 // of the above, so we don't return a (lvalue) reference to a temporary.
 inline std::string &&toStdString(std::string &&s) { return std::move(s); }
-
-
-
-
-
 
 } // namespace Sparrow

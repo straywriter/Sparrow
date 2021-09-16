@@ -19,6 +19,9 @@ TEST(test, test)
     std::string ss("abcd");
     fbstring fs("asdfafsasdf");
     fbstring fa("ccf");
+    istringstream s1(ss);
+    fbstring re;
+  //  getline(ss, re);
     // randomString<std::string>(&ss);
     std::cout << fs.c_str();
     std::cout << fs + fa;
@@ -28,6 +31,8 @@ TEST(test, test)
 
     // clause11_21_4_2_a(basic_fbstring<wchar_t>("asdfasdf"));
 }
+
+
 
 // #define FOR_EACH_RANGE(v, init, size) for (auto v = init; v < size; v++)
 

@@ -29,7 +29,7 @@ file(GLOB_RECURSE BaseInlineFile ${CMAKE_CURRENT_SOURCE_DIR}/Inline/Base/*.inl)
 add_library(SparrowBase)
 target_sources(SparrowBase PUBLIC ${BaseIncludeFile} ${BaseSourceFile} ${BaseInlineFile})
 target_include_directories(SparrowBase PUBLIC ${IncludeDir} ${CMAKE_CURRENT_SOURCE_DIR}/Inline)
-target_link_libraries(SparrowBase PUBLIC spdlog FBString)
+target_link_libraries(SparrowBase PUBLIC spdlog FBString Boost::algorithm)
 set_target_properties(SparrowBase PROPERTIES FOLDER "Sparrow/")
 
 # Render file(GLOB_RECURSE RenderIncludeFile
