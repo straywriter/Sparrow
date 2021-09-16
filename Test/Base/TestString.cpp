@@ -31,7 +31,9 @@ TEST(test, test)
 	std::cout << a.ToStdString();
 	std::cout << a.At(2);
 	a.Front() = 'x';
-	std::cout << *a.begin();
+	std::cout << *a.begin()<<'\n';
+	String  sst = a + b;
+	std::cout << sst.Data();
 //	String lc = { 'c','b','a'
 	//};
 	//std::cout << lc;
