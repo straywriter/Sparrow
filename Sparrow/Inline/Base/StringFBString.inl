@@ -37,7 +37,7 @@ Sparrow::TString<CharType, TraitType, Allocator, Storage>::TString(const TString
                                                                    size_type      n /*= npos*/,
                                                                    const Allocator & /* a */ /*= Allocator()*/)
 {
-  assign(str, pos, n);
+  Assign(str, pos, n);
 }
 
 template <typename CharType,
@@ -104,7 +104,7 @@ inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, 
 
   if (FOLLY_UNLIKELY(&lhs == this)) { return *this; }
 
-  return assign(lhs.data(), lhs.size());
+  return Assign(lhs.data(), lhs.size());
 }
 
 // Move assignment
@@ -231,17 +231,17 @@ inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, 
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
-inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, Allocator, S>::assign(
+inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, Allocator, S>::Assign(
     const TString &str, const size_type pos, size_type n)
 {
   const size_type sz = str.size();
   enforce<std::out_of_range>(pos <= sz, "");
   procrustes(n, sz - pos);
-  return assign(str.data() + pos, n);
+  return Assign(str.data() + pos, n);
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
-FOLLY_NOINLINE TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, Allocator, S>::assign(
+FOLLY_NOINLINE TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, Allocator, S>::Assign(
     const value_type *s, const size_type n)
 {
   Invariant checker(*this);
@@ -270,7 +270,7 @@ FOLLY_NOINLINE TString<CharType, TraitType, Allocator, S> &TString<CharType, Tra
 
 template <typename CharType, class TraitType, class Allocator, class S>
 inline typename TString<CharType, TraitType, Allocator, S>::istream_type &TString<CharType, TraitType, Allocator, S>::
-    getlineImpl(istream_type &is, value_type delim)
+    GetlLineImpl(istream_type &is, value_type delim)
 {
   Invariant checker(*this);
 
@@ -373,7 +373,7 @@ inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<Ch
 
 template <typename CharType, class TraitType, class Allocator, class S>
 inline typename TString<CharType, TraitType, Allocator, S>::iterator TString<CharType, TraitType, Allocator, S>::
-    insertImplDiscr(const_iterator i, size_type n, value_type c, std::true_type)
+    InsertImplDiscr(const_iterator i, size_type n, value_type c, std::true_type)
 {
   Invariant checker(*this);
 
@@ -392,15 +392,15 @@ inline typename TString<CharType, TraitType, Allocator, S>::iterator TString<Cha
 template <typename CharType, class TraitType, class Allocator, class S>
 template <class InputIter>
 inline typename TString<CharType, TraitType, Allocator, S>::iterator TString<CharType, TraitType, Allocator, S>::
-    insertImplDiscr(const_iterator i, InputIter b, InputIter e, std::false_type)
+    InsertImplDiscr(const_iterator i, InputIter b, InputIter e, std::false_type)
 {
-  return insertImpl(i, b, e, typename std::iterator_traits<InputIter>::iterator_category());
+  return InsertImpl(i, b, e, typename std::iterator_traits<InputIter>::iterator_category());
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
 template <class FwdIterator>
 inline typename TString<CharType, TraitType, Allocator, S>::iterator TString<CharType, TraitType, Allocator, S>::
-    insertImpl(const_iterator i, FwdIterator s1, FwdIterator s2, std::forward_iterator_tag)
+    InsertImpl(const_iterator i, FwdIterator s1, FwdIterator s2, std::forward_iterator_tag)
 {
   Invariant checker(*this);
 
@@ -421,7 +421,7 @@ inline typename TString<CharType, TraitType, Allocator, S>::iterator TString<Cha
 template <typename CharType, class TraitType, class Allocator, class S>
 template <class InputIterator>
 inline typename TString<CharType, TraitType, Allocator, S>::iterator TString<CharType, TraitType, Allocator, S>::
-    insertImpl(const_iterator i, InputIterator b, InputIterator e, std::input_iterator_tag)
+    InsertImpl(const_iterator i, InputIterator b, InputIterator e, std::input_iterator_tag)
 {
   const auto pos = i - cbegin();
   TString    temp(cbegin(), i);
@@ -457,7 +457,7 @@ inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, 
   else
   {
     std::fill(i1, i2, c);
-    insert(i2, n2 - n1, c);
+    Insert(i2, n2 - n1, c);
   }
   assert(isSane());
   return *this;
@@ -516,7 +516,7 @@ inline void TString<CharType, TraitType, Allocator, S>::replaceImpl(
   {
     // grows
     s1 = folly::fbstring_detail::copy_n(s1, n1, i1).first;
-    insert(i2, s1, s2);
+    Insert(i2, s1, s2);
   }
   assert(isSane());
 }
@@ -638,7 +638,7 @@ inline TString<CharType, TraitType, Allocator, S> operator+(const TString<CharTy
   if (rhs.Capacity() >= lhs.Size() + rhs.Size())
   {
     // Good, at least we don't need to reallocate
-    return std::move(rhs.insert(0, lhs));
+    return std::move(rhs.Insert(0, lhs));
   }
   // Meh, no go. Forward to operator+(const&, const&).
   auto const &rhsC = rhs;
@@ -676,7 +676,7 @@ inline TString<CharType, TraitType, Allocator, S> operator+(const CharType *    
   if (rhs.Capacity() >= len + rhs.Size())
   {
     // Good, at least we don't need to reallocate
-    rhs.insert(rhs.begin(), lhs, lhs + len);
+    rhs.Insert(rhs.begin(), lhs, lhs + len);
     return std::move(rhs);
   }
   // Meh, no go. Do it by hand since we have len already.
@@ -707,7 +707,7 @@ inline TString<CharType, TraitType, Allocator, S> operator+(CharType            
   if (rhs.Capacity() > rhs.Size())
   {
     // Good, at least we don't need to reallocate
-    rhs.insert(rhs.begin(), lhs);
+    rhs.Insert(rhs.begin(), lhs);
     return std::move(rhs);
   }
   // Meh, no go. Forward to operator+(E, const&).

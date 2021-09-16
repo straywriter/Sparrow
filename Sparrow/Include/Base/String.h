@@ -300,7 +300,7 @@ public:
       typename std::enable_if<!std::is_same<InIt, value_type *>::value, const Allocator>::type & /*a*/
       = Allocator())
   {
-    assign(begin, end);
+    Assign(begin, end);
   }
 
   // Specialization for const char*, const char*
@@ -314,7 +314,7 @@ public:
 
   // Construction from initialization list
   FOLLY_NOINLINE
-  TString(std::initializer_list<value_type> il) { assign(il.begin(), il.end()); }
+  TString(std::initializer_list<value_type> il) { Assign(il.begin(), il.end()); }
 
   ~TString() noexcept {}
 
@@ -327,7 +327,7 @@ public:
   template <typename A2>
   TString &operator=(const std::basic_string<CharType, TraitType, A2> &rhs)
   {
-    return assign(rhs.data(), rhs.size());
+    return Assign(rhs.data(), rhs.size());
   }
 
   // Compatibility with std::string
@@ -336,7 +336,7 @@ public:
     return std::basic_string<CharType, TraitType, Allocator>(data(), Size());
   }
 
-  TString &operator=(const value_type *s) { return assign(s); }
+  TString &operator=(const value_type *s) { return Assign(s); }
 
   TString &operator=(value_type c);
 
@@ -357,7 +357,7 @@ public:
   operator=(TP c)
       = delete;
 
-  TString &operator=(std::initializer_list<value_type> il) { return assign(il.begin(), il.end()); }
+  TString &operator=(std::initializer_list<value_type> il) { return Assign(il.begin(), il.end()); }
 
 #if FOLLY_HAS_STRING_VIEW
   operator std::basic_string_view<value_type, traits_type>() const noexcept { return {data(), Size()}; }
@@ -496,7 +496,7 @@ public:
   template <class InputIterator>
   TString &Append(InputIterator first, InputIterator last)
   {
-    insert(end(), first, last);
+    Insert(end(), first, last);
     return *this;
   }
 
@@ -507,93 +507,93 @@ public:
     storage.push_back(c);
   }
 
-  TString &assign(const TString &str)
+  TString &Assign(const TString &str)
   {
     if (&str == this) { return *this; }
-    return assign(str.data(), str.Size());
+    return Assign(str.data(), str.Size());
   }
 
-  TString &assign(TString &&str) { return *this = std::move(str); }
+  TString &Assign(TString &&str) { return *this = std::move(str); }
 
-  TString &assign(const TString &str, const size_type pos, size_type n);
+  TString &Assign(const TString &str, const size_type pos, size_type n);
 
-  TString &assign(const value_type *s, const size_type n);
+  TString &Assign(const value_type *s, const size_type n);
 
-  TString &assign(const value_type *s) { return assign(s, traitsLength(s)); }
+  TString &Assign(const value_type *s) { return Assign(s, traitsLength(s)); }
 
-  TString &assign(std::initializer_list<value_type> il) { return assign(il.begin(), il.end()); }
+  TString &Assign(std::initializer_list<value_type> il) { return Assign(il.begin(), il.end()); }
 
   template <class ItOrLength, class ItOrChar>
-  TString &assign(ItOrLength first_or_n, ItOrChar last_or_c)
+  TString &Assign(ItOrLength first_or_n, ItOrChar last_or_c)
   {
     return replace(begin(), end(), first_or_n, last_or_c);
   }
 
-  TString &insert(size_type pos1, const TString &str) { return insert(pos1, str.data(), str.Size()); }
+  TString &Insert(size_type pos1, const TString &str) { return Insert(pos1, str.data(), str.Size()); }
 
-  TString &insert(size_type pos1, const TString &str, size_type pos2, size_type n)
+  TString &Insert(size_type pos1, const TString &str, size_type pos2, size_type n)
   {
     enforce<std::out_of_range>(pos2 <= str.Length(), "");
     procrustes(n, str.Length() - pos2);
-    return insert(pos1, str.data() + pos2, n);
+    return Insert(pos1, str.data() + pos2, n);
   }
 
-  TString &insert(size_type pos, const value_type *s, size_type n)
+  TString &Insert(size_type pos, const value_type *s, size_type n)
   {
     enforce<std::out_of_range>(pos <= Length(), "");
-    insert(begin() + pos, s, s + n);
+    Insert(begin() + pos, s, s + n);
     return *this;
   }
 
-  TString &insert(size_type pos, const value_type *s) { return insert(pos, s, traitsLength(s)); }
+  TString &Insert(size_type pos, const value_type *s) { return Insert(pos, s, traitsLength(s)); }
 
-  TString &insert(size_type pos, size_type n, value_type c)
+  TString &Insert(size_type pos, size_type n, value_type c)
   {
     enforce<std::out_of_range>(pos <= Length(), "");
-    insert(begin() + pos, n, c);
+    Insert(begin() + pos, n, c);
     return *this;
   }
 
-  iterator insert(const_iterator p, const value_type c)
+  iterator Insert(const_iterator p, const value_type c)
   {
     const size_type pos = p - cbegin();
-    insert(p, 1, c);
+    Insert(p, 1, c);
     return begin() + pos;
   }
 
 private:
   typedef std::basic_istream<value_type, traits_type> istream_type;
-  istream_type &                                      getlineImpl(istream_type &is, value_type delim);
+  istream_type &                                      GetlLineImpl(istream_type &is, value_type delim);
 
 public:
   friend inline istream_type &getline(istream_type &is, TString &str, value_type delim)
   {
-    return str.getlineImpl(is, delim);
+    return str.GetlLineImpl(is, delim);
   }
 
   friend inline istream_type &getline(istream_type &is, TString &str) { return getline(is, str, '\n'); }
 
 private:
-  iterator insertImplDiscr(const_iterator i, size_type n, value_type c, std::true_type);
+  iterator InsertImplDiscr(const_iterator i, size_type n, value_type c, std::true_type);
 
   template <class InputIter>
-  iterator insertImplDiscr(const_iterator i, InputIter b, InputIter e, std::false_type);
+  iterator InsertImplDiscr(const_iterator i, InputIter b, InputIter e, std::false_type);
 
   template <class FwdIterator>
-  iterator insertImpl(const_iterator i, FwdIterator s1, FwdIterator s2, std::forward_iterator_tag);
+  iterator InsertImpl(const_iterator i, FwdIterator s1, FwdIterator s2, std::forward_iterator_tag);
 
   template <class InputIterator>
-  iterator insertImpl(const_iterator i, InputIterator b, InputIterator e, std::input_iterator_tag);
+  iterator InsertImpl(const_iterator i, InputIterator b, InputIterator e, std::input_iterator_tag);
 
 public:
   template <class ItOrLength, class ItOrChar>
-  iterator insert(const_iterator p, ItOrLength first_or_n, ItOrChar last_or_c)
+  iterator Insert(const_iterator p, ItOrLength first_or_n, ItOrChar last_or_c)
   {
     using Sel = bool_constant<std::numeric_limits<ItOrLength>::is_specialized>;
-    return insertImplDiscr(p, first_or_n, last_or_c, Sel());
+    return InsertImplDiscr(p, first_or_n, last_or_c, Sel());
   }
 
-  iterator insert(const_iterator p, std::initializer_list<value_type> il) { return insert(p, il.begin(), il.end()); }
+  iterator Insert(const_iterator p, std::initializer_list<value_type> il) { return Insert(p, il.begin(), il.end()); }
 
   TString &erase(size_type pos = 0, size_type n = npos)
   {
