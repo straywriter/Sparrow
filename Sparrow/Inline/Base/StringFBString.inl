@@ -2,14 +2,7 @@
 // #include
 //#include <Base/String.h>
 
-template <typename CharType,
-          class TraitType /*= std::char_traits<CharType>*/,
-          class Allocator /*= std::allocator<CharType>*/,
-          class Storage /*= folly::fbstring_core<CharType>*/>
-CharType *Sparrow::TString<CharType, TraitType, Allocator, Storage>::begin()
-{
-  return storage.mutableData();
-}
+
 
 template <typename CharType,
           class TraitType /*= std::char_traits<CharType>*/,
@@ -137,7 +130,7 @@ inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, 
 {
   Invariant checker(*this);
 
-  if (empty()) { storage.expandNoinit(1); }
+  if (Empty()) { storage.expandNoinit(1); }
   else if (storage.isShared())
   {
     basic_fbstring(1, c).swap(*this);
@@ -145,18 +138,18 @@ inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, 
   }
   else
   {
-    storage.shrink(size() - 1);
+    storage.shrink(Size() - 1);
   }
-  front() = c;
+  Front() = c;
   return *this;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
-inline void TString<CharType, TraitType, Allocator, S>::resize(const size_type n, const value_type c /*= value_type()*/)
+inline void TString<CharType, TraitType, Allocator, S>::Resize(const size_type n, const value_type c /*= value_type()*/)
 {
   Invariant checker(*this);
 
-  auto size = this->size();
+  auto size = this->Size();
   if (n <= size) { storage.shrink(size - n); }
   else
   {
@@ -164,7 +157,7 @@ inline void TString<CharType, TraitType, Allocator, S>::resize(const size_type n
     auto       pData = storage.expandNoinit(delta);
     folly::fbstring_detail::podFill(pData, pData + delta, c);
   }
-  assert(this->size() == n);
+  assert(this->Size() == n);
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
@@ -172,10 +165,10 @@ inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, 
     const TString &str)
 {
 #ifndef NDEBUG
-  auto desiredSize = size() + str.size();
+  auto desiredSize = Size() + str.Size();
 #endif
-  append(str.data(), str.size());
-  assert(size() == desiredSize);
+  append(str.data(), str.Size());
+  assert(Size() == desiredSize);
   return *this;
 }
 
@@ -200,7 +193,7 @@ FOLLY_NOINLINE TString<CharType, TraitType, Allocator, S> &TString<CharType, Tra
     // Unlikely but must be done
     return *this;
   }
-  auto const oldSize = size();
+  auto const oldSize = Size();
   auto const oldData = data();
   auto       pData   = storage.expandNoinit(n, /* expGrowth = */ true);
 
@@ -223,7 +216,7 @@ FOLLY_NOINLINE TString<CharType, TraitType, Allocator, S> &TString<CharType, Tra
     folly::fbstring_detail::podCopy(s, s + n, pData);
   }
 
-  assert(size() == oldSize + n);
+  assert(Size() == oldSize + n);
   return *this;
 }
 
@@ -253,25 +246,25 @@ FOLLY_NOINLINE TString<CharType, TraitType, Allocator, S> &TString<CharType, Tra
 {
   Invariant checker(*this);
 
-  if (n == 0) { resize(0); }
-  else if (size() >= n)
+  if (n == 0) { Resize(0); }
+  else if (Size() >= n)
   {
     // s can alias this, we need to use podMove.
     fbstring_detail::podMove(s, s + n, storage.mutableData());
-    storage.shrink(size() - n);
-    assert(size() == n);
+    storage.shrink(Size() - n);
+    assert(Size() == n);
   }
   else
   {
     // If n is larger than size(), s cannot alias this string's
     // storage.
-    resize(0);
+    Resize(0);
     // Do not use exponential growth here: assign() should be tight,
     // to mirror the behavior of the equivalent constructor.
     fbstring_detail::podCopy(s, s + n, storage.expandNoinit(n));
   }
 
-  assert(size() == n);
+  assert(Size() == n);
   return *this;
 }
 
@@ -281,11 +274,11 @@ inline typename TString<CharType, TraitType, Allocator, S>::istream_type &TStrin
 {
   Invariant checker(*this);
 
-  clear();
+  Clear();
   size_t size = 0;
   while (true)
   {
-    size_t avail = capacity() - size;
+    size_t avail = Capacity() - size;
     // fbstring has 1 byte extra capacity for the null terminator,
     // and getline null-terminates the read string.
     is.getline(storage.expandNoinit(avail), avail + 1, delim);
@@ -298,14 +291,14 @@ inline typename TString<CharType, TraitType, Allocator, S>::istream_type &TStrin
       {
         --size; // gcount() also accounts for the delimiter.
       }
-      resize(size);
+      Resize(size);
       break;
     }
 
-    assert(size == this->size());
-    assert(size == capacity());
+    assert(size == this->Size());
+    assert(size == Capacity());
     // Start at minimum allocation 63 + terminator = 64.
-    reserve(std::max<size_t>(63, 3 * size / 2));
+    Reserve(std::max<size_t>(63, 3 * size / 2));
     // Clear the error so we can continue reading.
     is.clear();
   }
@@ -316,7 +309,7 @@ template <typename CharType, class TraitType, class Allocator, class S>
 inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<CharType, TraitType, Allocator, S>::find(
     const value_type *needle, const size_type pos, const size_type nsize) const
 {
-  auto const size = this->size();
+  auto const size = this->Size();
   // nsize + pos can overflow (eg pos == npos), guard against that by checking
   // that nsize + pos does not wrap around.
   if (nsize + pos > size || nsize + pos < pos) { return npos; }
@@ -387,7 +380,7 @@ inline typename TString<CharType, TraitType, Allocator, S>::iterator TString<Cha
   assert(i >= cbegin() && i <= cend());
   const size_type pos = i - cbegin();
 
-  auto oldSize = size();
+  auto oldSize = Size();
   storage.expandNoinit(n, /* expGrowth = */ true);
   auto b = begin();
   fbstring_detail::podMove(b + pos, b + oldSize, b + pos + n);
@@ -416,7 +409,7 @@ inline typename TString<CharType, TraitType, Allocator, S>::iterator TString<Cha
   auto            n   = std::distance(s1, s2);
   assert(n >= 0);
 
-  auto oldSize = size();
+  auto oldSize = Size();
   storage.expandNoinit(n, /* expGrowth = */ true);
   auto b = begin();
   folly::fbstring_detail::podMove(b + pos, b + oldSize, b + pos + n);
@@ -490,7 +483,7 @@ inline bool TString<CharType, TraitType, Allocator, S>::replaceAliased(
   if (!aliased) { return false; }
   // Aliased replace, copy to new string
   TString temp;
-  temp.reserve(size() - (i2 - i1) + std::distance(s1, s2));
+  temp.Reserve(Size() - (i2 - i1) + std::distance(s1, s2));
   temp.append(begin(), i1).append(s1, s2).append(i2, end());
   swap(temp);
   return true;
@@ -542,8 +535,8 @@ template <typename CharType, class TraitType, class Allocator, class S>
 inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<CharType, TraitType, Allocator, S>::rfind(
     const value_type *s, size_type pos, size_type n) const
 {
-  if (n > length()) { return npos; }
-  pos = std::min(pos, length() - n);
+  if (n > Length()) { return npos; }
+  pos = std::min(pos, Length() - n);
   if (n == 0) { return pos; }
 
   const_iterator i(begin() + pos);
@@ -559,7 +552,7 @@ template <typename CharType, class TraitType, class Allocator, class S>
 inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<CharType, TraitType, Allocator, S>::
     find_first_of(const value_type *s, size_type pos, size_type n) const
 {
-  if (pos > length() || n == 0) { return npos; }
+  if (pos > Length() || n == 0) { return npos; }
   const_iterator i(begin() + pos), finish(end());
   for (; i != finish; ++i)
   {
@@ -572,9 +565,9 @@ template <typename CharType, class TraitType, class Allocator, class S>
 inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<CharType, TraitType, Allocator, S>::
     find_last_of(const value_type *s, size_type pos, size_type n) const
 {
-  if (!empty() && n > 0)
+  if (!Empty() && n > 0)
   {
-    pos = std::min(pos, length() - 1);
+    pos = std::min(pos, Length() - 1);
     const_iterator i(begin() + pos);
     for (;; --i)
     {
@@ -589,7 +582,7 @@ template <typename CharType, class TraitType, class Allocator, class S>
 inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<CharType, TraitType, Allocator, S>::
     find_first_not_of(const value_type *s, size_type pos, size_type n) const
 {
-  if (pos < length())
+  if (pos < Length())
   {
     const_iterator i(begin() + pos), finish(end());
     for (; i != finish; ++i)
@@ -604,9 +597,9 @@ template <typename CharType, class TraitType, class Allocator, class S>
 inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<CharType, TraitType, Allocator, S>::
     find_last_not_of(const value_type *s, size_type pos, size_type n) const
 {
-  if (!this->empty())
+  if (!this->Empty())
   {
-    pos = std::min(pos, size() - 1);
+    pos = std::min(pos, Size() - 1);
     const_iterator i(begin() + pos);
     for (;; --i)
     {
@@ -624,7 +617,7 @@ inline TString<CharType, TraitType, Allocator, S> operator+(const TString<CharTy
                                                             const TString<CharType, TraitType, Allocator, S> &rhs)
 {
   TString<CharType, TraitType, Allocator, S> result;
-  result.reserve(lhs.size() + rhs.size());
+  result.Reserve(lhs.Size() + rhs.Size());
   result.append(lhs).append(rhs);
   return result;
 }
@@ -642,7 +635,7 @@ template <typename CharType, class TraitType, class Allocator, class S>
 inline TString<CharType, TraitType, Allocator, S> operator+(const TString<CharType, TraitType, Allocator, S> &lhs,
                                                             TString<CharType, TraitType, Allocator, S> &&     rhs)
 {
-  if (rhs.capacity() >= lhs.size() + rhs.size())
+  if (rhs.Capacity() >= lhs.Size() + rhs.Size())
   {
     // Good, at least we don't need to reallocate
     return std::move(rhs.insert(0, lhs));
@@ -668,7 +661,7 @@ inline TString<CharType, TraitType, Allocator, S> operator+(const CharType *    
   //
   TString<CharType, TraitType, Allocator, S> result;
   const auto                                 len = TString<CharType, TraitType, Allocator, S>::traits_type::length(lhs);
-  result.reserve(len + rhs.size());
+  result.Reserve(len + rhs.Size());
   result.append(lhs, len).append(rhs);
   return result;
 }
@@ -680,7 +673,7 @@ inline TString<CharType, TraitType, Allocator, S> operator+(const CharType *    
 {
   //
   const auto len = TString<CharType, TraitType, Allocator, S>::traits_type::length(lhs);
-  if (rhs.capacity() >= len + rhs.size())
+  if (rhs.Capacity() >= len + rhs.Size())
   {
     // Good, at least we don't need to reallocate
     rhs.insert(rhs.begin(), lhs, lhs + len);
@@ -688,7 +681,7 @@ inline TString<CharType, TraitType, Allocator, S> operator+(const CharType *    
   }
   // Meh, no go. Do it by hand since we have len already.
   TString<CharType, TraitType, Allocator, S> result;
-  result.reserve(len + rhs.size());
+  result.Reserve(len + rhs.Size());
   result.append(lhs, len).append(rhs);
   return result;
 }
@@ -699,7 +692,7 @@ inline TString<CharType, TraitType, Allocator, S> operator+(CharType            
                                                             const TString<CharType, TraitType, Allocator, S> &rhs)
 {
   TString<CharType, TraitType, Allocator, S> result;
-  result.reserve(1 + rhs.size());
+  result.Reserve(1 + rhs.Size());
   result.push_back(lhs);
   result.append(rhs);
   return result;
@@ -711,7 +704,7 @@ inline TString<CharType, TraitType, Allocator, S> operator+(CharType            
                                                             TString<CharType, TraitType, Allocator, S> &&rhs)
 {
   //
-  if (rhs.capacity() > rhs.size())
+  if (rhs.Capacity() > rhs.Size())
   {
     // Good, at least we don't need to reallocate
     rhs.insert(rhs.begin(), lhs);
@@ -732,7 +725,7 @@ inline TString<CharType, TraitType, Allocator, S> operator+(const TString<CharTy
 
   TString<CharType, TraitType, Allocator, S> result;
   const size_type                            len = traits_type::length(rhs);
-  result.reserve(lhs.size() + len);
+  result.Reserve(lhs.Size() + len);
   result.append(lhs).append(rhs, len);
   return result;
 }
@@ -752,7 +745,7 @@ inline TString<CharType, TraitType, Allocator, S> operator+(const TString<CharTy
                                                             CharType                                          rhs)
 {
   TString<CharType, TraitType, Allocator, S> result;
-  result.reserve(lhs.size() + 1);
+  result.Reserve(lhs.Size() + 1);
   result.append(lhs);
   result.push_back(rhs);
   return result;
@@ -771,7 +764,7 @@ template <typename CharType, class TraitType, class Allocator, class S>
 inline bool operator==(const TString<CharType, TraitType, Allocator, S> &lhs,
                        const TString<CharType, TraitType, Allocator, S> &rhs)
 {
-  return lhs.size() == rhs.size() && lhs.compare(rhs) == 0;
+  return lhs.Size() == rhs.Size() && lhs.compare(rhs) == 0;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
@@ -917,7 +910,7 @@ inline std::basic_istream<typename TString<CharType, TraitType, Allocator, S>::v
   if (sentry)
   {
     auto n = is.width();
-    if (n <= 0) { n = str.max_size(); }
+    if (n <= 0) { n = str.MaxSize(); }
     str.erase();
     for (auto got = is.rdbuf()->sgetc(); extracted != size_t(n); ++extracted)
     {
@@ -954,7 +947,7 @@ inline std::basic_ostream<typename TString<CharType, TraitType, Allocator, S>::v
     typedef std::ostreambuf_iterator<typename TString<CharType, TraitType, Allocator, S>::value_type,
                                      typename TString<CharType, TraitType, Allocator, S>::traits_type>
            _Ip;
-    size_t __len  = str.size();
+    size_t __len  = str.Size();
     bool   __left = (os.flags() & _ostream_type::adjustfield) == _ostream_type::left;
     if (__pad_and_output(
             _Ip(os), str.data(), __left ? str.data() + __len : str.data(), str.data() + __len, os, os.fill())
@@ -966,9 +959,9 @@ inline std::basic_ostream<typename TString<CharType, TraitType, Allocator, S>::v
 #elif defined(_MSC_VER)
   typedef decltype(os.precision()) streamsize;
   // MSVC doesn't define __ostream_insert
-  os.write(str.data(), static_cast<streamsize>(str.size()));
+  os.write(str.data(), static_cast<streamsize>(str.Size()));
 #else
-  std::__ostream_insert(os, str.data(), str.size());
+  std::__ostream_insert(os, str.data(), str.Size());
 #endif
   return os;
 }
@@ -982,7 +975,7 @@ template <typename CharType, class TraitType, class Allocator, class S, class A2
 inline bool operator==(const TString<CharType, TraitType, Allocator, S> &lhs,
                        const std::basic_string<CharType, TraitType, A2> &rhs)
 {
-  return lhs.compare(0, lhs.size(), rhs.data(), rhs.size()) == 0;
+  return lhs.compare(0, lhs.Size(), rhs.data(), rhs.size()) == 0;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S, class A2>
@@ -1010,14 +1003,14 @@ template <typename CharType, class TraitType, class Allocator, class S, class A2
 inline bool operator<(const TString<CharType, TraitType, Allocator, S> &lhs,
                       const std::basic_string<CharType, TraitType, A2> &rhs)
 {
-  return lhs.compare(0, lhs.size(), rhs.data(), rhs.size()) < 0;
+  return lhs.compare(0, lhs.Size(), rhs.data(), rhs.size()) < 0;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S, class A2>
 inline bool operator>(const TString<CharType, TraitType, Allocator, S> &lhs,
                       const std::basic_string<CharType, TraitType, A2> &rhs)
 {
-  return lhs.compare(0, lhs.size(), rhs.data(), rhs.size()) > 0;
+  return lhs.compare(0, lhs.Size(), rhs.data(), rhs.size()) > 0;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S, class A2>

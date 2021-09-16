@@ -96,8 +96,8 @@ TEST(String, MoveConstructor)
   auto       size = 200;
   TestString s(size, 'a');
   TestString test = std::move(s);
-  EXPECT_TRUE(s.empty());
-  EXPECT_EQ(size, test.size());
+  EXPECT_TRUE(s.Empty());
+  EXPECT_EQ(size, test.Size());
 }
 
 TEST(String, MoveAssign)
@@ -108,8 +108,8 @@ TEST(String, MoveAssign)
   TestString s(size, 'a');
   TestString test;
   test = std::move(s);
-  EXPECT_TRUE(s.empty());
-  EXPECT_EQ(size, test.size());
+  EXPECT_TRUE(s.Empty());
+  EXPECT_EQ(size, test.Size());
 }
 
 TEST(String, testMoveOperatorPlusLhs)
@@ -122,8 +122,8 @@ TEST(String, testMoveOperatorPlusLhs)
   TestString s2(size2, 'b');
   TestString test;
   test = std::move(s1) + s2;
-  EXPECT_TRUE(s1.empty());
-  EXPECT_EQ(size1 + size2, test.size());
+  EXPECT_TRUE(s1.Empty());
+  EXPECT_EQ(size1 + size2, test.Size());
 }
 
 TEST(String, testMoveOperatorPlusRhs)
@@ -136,7 +136,7 @@ TEST(String, testMoveOperatorPlusRhs)
   TestString s2(size2, 'b');
   TestString test;
   test = s1 + std::move(s2);
-  EXPECT_EQ(size1 + size2, test.size());
+  EXPECT_EQ(size1 + size2, test.Size());
 }
 
 TEST(String, findWithNpos)
@@ -161,12 +161,12 @@ TEST(String, testHash) {
 TEST(String, testFrontBack)
 {
   TestString str("hello");
-  EXPECT_EQ(str.front(), 'h');
-  EXPECT_EQ(str.back(), 'o');
-  str.front() = 'H';
-  EXPECT_EQ(str.front(), 'H');
-  str.back() = 'O';
-  EXPECT_EQ(str.back(), 'O');
+  EXPECT_EQ(str.Front(), 'h');
+  EXPECT_EQ(str.Back(), 'o');
+  str.Front() = 'H';
+  EXPECT_EQ(str.Front(), 'H');
+  str.Back() = 'O';
+  EXPECT_EQ(str.Back(), 'O');
   EXPECT_EQ(str, "HellO");
 }
 
@@ -231,7 +231,7 @@ TEST(String, moveTerminator)
   TestString k;
   k = std::move(s);
 
-  EXPECT_EQ(0, s.size());
+  EXPECT_EQ(0, s.Size());
   EXPECT_EQ('\0', *s.c_str());
 }
 
@@ -267,7 +267,7 @@ struct TestStructStringAllocator : std::allocator<char>
 TEST(FBStringCtorTest, DefaultInitStructDefaultAlloc)
 {
   TestStructDefaultAllocator t1 {};
-  EXPECT_TRUE(t1.stringMember.empty());
+  EXPECT_TRUE(t1.stringMember.Empty());
 }
 
 TEST(FBStringCtorTest, NullZeroConstruction)
@@ -275,7 +275,7 @@ TEST(FBStringCtorTest, NullZeroConstruction)
   char *     p = nullptr;
   int        n = 0;
   TestString f(p, n);
-  EXPECT_EQ(f.size(), 0);
+  EXPECT_EQ(f.Size(), 0);
 }
 
 TEST(FBString, compareToStdString)
@@ -514,7 +514,7 @@ TEST(test, test)
   auto       xx = TestString("asdfll");
   std::cout << a + b << b << '\n';
   std::cout << *a.begin();
-  b.reserve();
+  b.Reserve();
 }
 
 #define FOR_EACH_RANGE(v, init, size) for (auto v = init; v < size; v++)
@@ -659,7 +659,7 @@ void clause11_21_4_2_b(String &test)
         f_string(r);                                                                                                   \
         rng = RandomT(localSeed);                                                                                      \
         f_fbstring(c);                                                                                                 \
-        EXPECT_EQ(r, c) << "Lengths: " << r.size() << " vs. " << c.size() << "\nReference: '" << r << "'"              \
+        EXPECT_EQ(r, c) << "Lengths: " << r.size() << " vs. " << c.Size() << "\nReference: '" << r << "'"              \
                         << "\nActual:    '" << c.data()[0] << "'";                                                     \
                                                                                                                        \
         rng = RandomT(localSeed);                                                                                      \

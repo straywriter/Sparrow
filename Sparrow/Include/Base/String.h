@@ -282,7 +282,7 @@ public:
   TString(const std::basic_string<CharType, TraitType, A2> &str) : storage(str.data(), str.size())
   {}
 
-  TString(const TString &str, size_type pos, size_type n = npos, const Allocator & /* a */ = Allocator());
+  TString(const TString &str, size_type pos, size_type n = npos, const Allocator &  = Allocator());
 
   FOLLY_NOINLINE
   TString(const value_type *s, const Allocator & /*a*/ = Allocator());
@@ -331,9 +331,9 @@ public:
   }
 
   // Compatibility with std::string
-  std::basic_string<CharType, TraitType, Allocator> toStdString() const
+  std::basic_string<CharType, TraitType, Allocator> ToStdString() const
   {
-    return std::basic_string<CharType, TraitType, Allocator>(data(), size());
+    return std::basic_string<CharType, TraitType, Allocator>(data(), Size());
   }
 
   TString &operator=(const value_type *s) { return assign(s); }
@@ -360,21 +360,28 @@ public:
   TString &operator=(std::initializer_list<value_type> il) { return assign(il.begin(), il.end()); }
 
 #if FOLLY_HAS_STRING_VIEW
-  operator std::basic_string_view<value_type, traits_type>() const noexcept { return {data(), size()}; }
+  operator std::basic_string_view<value_type, traits_type>() const noexcept { return {data(), Size()}; }
 #endif
+public:
+    iterator Begin() { return storage.mutableData(); }
+
+    iterator End() { return storage.mutableData() + storage.size(); }
+    public:
+    iterator begin() { return storage.mutableData(); }
 
   // C++11 21.4.3 iterators:
-  CharType *begin();
-  // iterator begin() { return store_.mutableData(); }
 
   // const_iterator begin() const;
   const_iterator begin() const { return storage.data(); }
 
-  const_iterator cbegin() const { return begin(); }
+
 
   iterator end() { return storage.mutableData() + storage.size(); }
 
   const_iterator end() const { return storage.data() + storage.size(); }
+
+  private:
+  const_iterator cbegin() const { return begin(); }
 
   const_iterator cend() const { return end(); }
 
@@ -390,71 +397,72 @@ public:
 
   const_reverse_iterator crend() const { return rend(); }
 
+  public:
   // Added by C++11
   // C++11 21.4.5, element access:
-  const value_type &front() const { return *begin(); }
+  const value_type &Front() const { return *begin(); }
 
-  const value_type &back() const
+  const value_type &Back() const
   {
-    assert(!empty());
+    assert(!Empty());
     // Should be begin()[size() - 1], but that branches twice
     return *(end() - 1);
   }
-  value_type &front() { return *begin(); }
-  value_type &back()
+  value_type &Front() { return *begin(); }
+  value_type &Back()
   {
-    assert(!empty());
+    assert(!Empty());
     // Should be begin()[size() - 1], but that branches twice
     return *(end() - 1);
   }
-  void pop_back()
+  void PopBack()
   {
-    assert(!empty());
+    assert(!Empty());
     storage.shrink(1);
   }
 
   // C++11 21.4.4 capacity:
-  size_type size() const { return storage.size(); }
+  size_type Size() const { return storage.size(); }
 
-  size_type length() const { return size(); }
+  size_type Length() const { return Size(); }
 
-  size_type max_size() const { return std::numeric_limits<size_type>::max(); }
+  size_type MaxSize() const { return std::numeric_limits<size_type>::max(); }
 
-  void resize(size_type n, value_type c = value_type());
+  void Resize(size_type n, value_type c = value_type());
 
-  size_type capacity() const { return storage.capacity(); }
+  size_type Capacity() const { return storage.capacity(); }
 
-  void reserve(size_type res_arg = 0)
+  void Reserve(size_type res_arg = 0)
   {
-    enforce<std::length_error>(res_arg <= max_size(), "");
+    enforce<std::length_error>(res_arg <= MaxSize(), "");
     storage.reserve(res_arg);
   }
 
-  void shrink_to_fit()
+  void ShrinkToFit()
   {
     // Shrink only if slack memory is sufficiently large
-    if (capacity() < size() * 3 / 2) { return; }
+    if (Capacity() < Size() * 3 / 2) { return; }
     TString(cbegin(), cend()).swap(*this);
   }
 
-  void clear() { resize(0); }
+  void Clear() { Resize(0); }
 
-  bool empty() const { return size() == 0; }
+  bool Empty() const { return Size() == 0; }
 
   // C++11 21.4.5 element access:
   const_reference operator[](size_type pos) const { return *(begin() + pos); }
 
   reference operator[](size_type pos) { return *(begin() + pos); }
 
-  const_reference at(size_type n) const
+  const_reference At(size_type n) const
   {
-    enforce<std::out_of_range>(n < size(), "");
+    enforce<std::out_of_range>(n < Size(), "");
     return (*this)[n];
   }
 
-  reference at(size_type n)
+  reference At(size_type n)
   {
-    enforce<std::out_of_range>(n < size(), "");
+    enforce<std::out_of_range>(n < Size(), "");
     return (*this)[n];
   }
 
@@ -502,7 +510,7 @@ public:
   TString &assign(const TString &str)
   {
     if (&str == this) { return *this; }
-    return assign(str.data(), str.size());
+    return assign(str.data(), str.Size());
   }
 
   TString &assign(TString &&str) { return *this = std::move(str); }
@@ -521,18 +529,18 @@ public:
     return replace(begin(), end(), first_or_n, last_or_c);
   }
 
-  TString &insert(size_type pos1, const TString &str) { return insert(pos1, str.data(), str.size()); }
+  TString &insert(size_type pos1, const TString &str) { return insert(pos1, str.data(), str.Size()); }
 
   TString &insert(size_type pos1, const TString &str, size_type pos2, size_type n)
   {
-    enforce<std::out_of_range>(pos2 <= str.length(), "");
-    procrustes(n, str.length() - pos2);
+    enforce<std::out_of_range>(pos2 <= str.Length(), "");
+    procrustes(n, str.Length() - pos2);
     return insert(pos1, str.data() + pos2, n);
   }
 
   TString &insert(size_type pos, const value_type *s, size_type n)
   {
-    enforce<std::out_of_range>(pos <= length(), "");
+    enforce<std::out_of_range>(pos <= Length(), "");
     insert(begin() + pos, s, s + n);
     return *this;
   }
@@ -541,7 +549,7 @@ public:
 
   TString &insert(size_type pos, size_type n, value_type c)
   {
-    enforce<std::out_of_range>(pos <= length(), "");
+    enforce<std::out_of_range>(pos <= Length(), "");
     insert(begin() + pos, n, c);
     return *this;
   }
@@ -591,17 +599,17 @@ public:
   {
     Invariant checker(*this);
 
-    enforce<std::out_of_range>(pos <= length(), "");
-    procrustes(n, length() - pos);
+    enforce<std::out_of_range>(pos <= Length(), "");
+    procrustes(n, Length() - pos);
     std::copy(begin() + pos + n, end(), begin() + pos);
-    resize(length() - n);
+    Resize(Length() - n);
     return *this;
   }
 
   iterator erase(iterator position)
   {
     const size_type pos(position - begin());
-    enforce<std::out_of_range>(pos <= size(), "");
+    enforce<std::out_of_range>(pos <= Size(), "");
     erase(pos, 1);
     return begin() + pos;
   }
@@ -617,15 +625,15 @@ public:
   // content of str
   TString &replace(size_type pos1, size_type n1, const TString &str)
   {
-    return replace(pos1, n1, str.data(), str.size());
+    return replace(pos1, n1, str.data(), str.Size());
   }
 
   // Replaces at most n1 chars of *this, starting with pos1,
   // with at most n2 chars of str starting with pos2
   TString &replace(size_type pos1, size_type n1, const TString &str, size_type pos2, size_type n2)
   {
-    enforce<std::out_of_range>(pos2 <= str.length(), "");
-    return replace(pos1, n1, str.data() + pos2, std::min(n2, str.size() - pos2));
+    enforce<std::out_of_range>(pos2 <= str.Length(), "");
+    return replace(pos1, n1, str.data() + pos2, std::min(n2, str.Size() - pos2));
   }
 
   // Replaces at most n1 chars of *this, starting with pos, with chars from s
@@ -643,13 +651,13 @@ public:
   {
     Invariant checker(*this);
 
-    enforce<std::out_of_range>(pos <= size(), "");
-    procrustes(n1, length() - pos);
+    enforce<std::out_of_range>(pos <= Size(), "");
+    procrustes(n1, Length() - pos);
     const iterator b = begin() + pos;
     return replace(b, b + n1, s_or_n2, n_or_c);
   }
 
-  TString &replace(iterator i1, iterator i2, const TString &str) { return replace(i1, i2, str.data(), str.length()); }
+  TString &replace(iterator i1, iterator i2, const TString &str) { return replace(i1, i2, str.data(), str.Length()); }
 
   TString &replace(iterator i1, iterator i2, const value_type *s) { return replace(i1, i2, s, traitsLength(s)); }
 
@@ -688,8 +696,8 @@ public:
 
   size_type copy(value_type *s, size_type n, size_type pos = 0) const
   {
-    enforce<std::out_of_range>(pos <= size(), "");
-    procrustes(n, size() - pos);
+    enforce<std::out_of_range>(pos <= Size(), "");
+    procrustes(n, Size() - pos);
 
     if (n != 0) { fbstring_detail::podCopy(data() + pos, data() + pos + n, s); }
     return n;
@@ -705,7 +713,7 @@ public:
 
   allocator_type get_allocator() const { return allocator_type(); }
 
-  size_type find(const TString &str, size_type pos = 0) const { return find(str.data(), pos, str.length()); }
+  size_type find(const TString &str, size_type pos = 0) const { return find(str.data(), pos, str.Length()); }
 
   size_type find(const value_type *needle, size_type pos, size_type nsize) const;
 
@@ -713,7 +721,7 @@ public:
 
   size_type find(value_type c, size_type pos = 0) const { return find(&c, pos, 1); }
 
-  size_type rfind(const TString &str, size_type pos = npos) const { return rfind(str.data(), pos, str.length()); }
+  size_type rfind(const TString &str, size_type pos = npos) const { return rfind(str.data(), pos, str.Length()); }
 
   size_type rfind(const value_type *s, size_type pos, size_type n) const;
 
@@ -723,7 +731,7 @@ public:
 
   size_type find_first_of(const TString &str, size_type pos = 0) const
   {
-    return find_first_of(str.data(), pos, str.length());
+    return find_first_of(str.data(), pos, str.Length());
   }
 
   size_type find_first_of(const value_type *s, size_type pos, size_type n) const;
@@ -737,7 +745,7 @@ public:
 
   size_type find_last_of(const TString &str, size_type pos = npos) const
   {
-    return find_last_of(str.data(), pos, str.length());
+    return find_last_of(str.data(), pos, str.Length());
   }
 
   size_type find_last_of(const value_type *s, size_type pos, size_type n) const;
@@ -751,7 +759,7 @@ public:
 
   size_type find_first_not_of(const TString &str, size_type pos = 0) const
   {
-    return find_first_not_of(str.data(), pos, str.size());
+    return find_first_not_of(str.data(), pos, str.Size());
   }
 
   size_type find_first_not_of(const value_type *s, size_type pos, size_type n) const;
@@ -765,7 +773,7 @@ public:
 
   size_type find_last_not_of(const TString &str, size_type pos = npos) const
   {
-    return find_last_not_of(str.data(), pos, str.length());
+    return find_last_not_of(str.data(), pos, str.Length());
   }
 
   size_type find_last_not_of(const value_type *s, size_type pos, size_type n) const;
@@ -779,35 +787,35 @@ public:
 
   TString substr(size_type pos = 0, size_type n = npos) const &
   {
-    enforce<std::out_of_range>(pos <= size(), "");
-    return TString(data() + pos, std::min(n, size() - pos));
+    enforce<std::out_of_range>(pos <= Size(), "");
+    return TString(data() + pos, std::min(n, Size() - pos));
   }
 
   TString substr(size_type pos = 0, size_type n = npos) &&
   {
-    enforce<std::out_of_range>(pos <= size(), "");
+    enforce<std::out_of_range>(pos <= Size(), "");
     erase(0, pos);
-    if (n < size()) { resize(n); }
+    if (n < Size()) { Resize(n); }
     return std::move(*this);
   }
 
   int compare(const TString &str) const
   {
     // FIX due to Goncalo N M de Carvalho July 18, 2005
-    return compare(0, size(), str);
+    return compare(0, Size(), str);
   }
 
   int compare(size_type pos1, size_type n1, const TString &str) const
   {
-    return compare(pos1, n1, str.data(), str.size());
+    return compare(pos1, n1, str.data(), str.Size());
   }
 
   int compare(size_type pos1, size_type n1, const value_type *s) const { return compare(pos1, n1, s, traitsLength(s)); }
 
   int compare(size_type pos1, size_type n1, const value_type *s, size_type n2) const
   {
-    enforce<std::out_of_range>(pos1 <= size(), "");
-    procrustes(n1, size() - pos1);
+    enforce<std::out_of_range>(pos1 <= Size(), "");
+    procrustes(n1, Size() - pos1);
     // The line below fixed by Jean-Francois Bastien, 04-23-2007. Thanks!
     const int r = traits_type::compare(pos1 + data(), s, std::min(n1, n2));
     return r != 0 ? r : n1 > n2 ? 1 : n1 < n2 ? -1 : 0;
@@ -815,8 +823,8 @@ public:
 
   int compare(size_type pos1, size_type n1, const TString &str, size_type pos2, size_type n2) const
   {
-    enforce<std::out_of_range>(pos2 <= str.size(), "");
-    return compare(pos1, n1, str.data() + pos2, std::min(n2, str.size() - pos2));
+    enforce<std::out_of_range>(pos2 <= str.Size(), "");
+    return compare(pos1, n1, str.data() + pos2, std::min(n2, str.Size() - pos2));
   }
 
   // Code from Jean-Francois Bastien (03/26/2007)
@@ -824,7 +832,7 @@ public:
   {
     // Could forward to compare(0, size(), s, traitsLength(s))
     // but that does two extra checks
-    const size_type n1(size()), n2(traitsLength(s));
+    const size_type n1(Size()), n2(traitsLength(s));
     const int       r = traits_type::compare(data(), s, std::min(n1, n2));
     return r != 0 ? r : n1 > n2 ? 1 : n1 < n2 ? -1 : 0;
   }
@@ -840,8 +848,8 @@ private:
 
   bool isSane() const
   {
-    return begin() <= end() && empty() == (size() == 0) && empty() == (begin() == end()) && size() <= max_size()
-           && capacity() <= max_size() && size() <= capacity() && begin()[size()] == '\0';
+    return begin() <= end() && Empty() == (Size() == 0) && Empty() == (begin() == end()) && Size() <= MaxSize()
+           && Capacity() <= MaxSize() && Size() <= Capacity() && begin()[Size()] == '\0';
   }
 
   struct Invariant
