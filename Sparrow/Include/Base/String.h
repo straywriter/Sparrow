@@ -467,42 +467,42 @@ public:
   }
 
   // C++11 21.4.6 modifiers:
-  TString &operator+=(const TString &str) { return append(str); }
+  TString &operator+=(const TString &str) { return Append(str); }
 
-  TString &operator+=(const value_type *s) { return append(s); }
+  TString &operator+=(const value_type *s) { return Append(s); }
 
   TString &operator+=(const value_type c)
   {
-    push_back(c);
+    PushBack(c);
     return *this;
   }
 
   TString &operator+=(std::initializer_list<value_type> il)
   {
-    append(il);
+    Append(il);
     return *this;
   }
 
-  TString &append(const TString &str);
+  TString &Append(const TString &str);
 
-  TString &append(const TString &str, const size_type pos, size_type n);
+  TString &Append(const TString &str, const size_type pos, size_type n);
 
-  TString &append(const value_type *s, size_type n);
+  TString &Append(const value_type *s, size_type n);
 
-  TString &append(const value_type *s) { return append(s, traitsLength(s)); }
+  TString &Append(const value_type *s) { return Append(s, traitsLength(s)); }
 
-  TString &append(size_type n, value_type c);
+  TString &Append(size_type n, value_type c);
 
   template <class InputIterator>
-  TString &append(InputIterator first, InputIterator last)
+  TString &Append(InputIterator first, InputIterator last)
   {
     insert(end(), first, last);
     return *this;
   }
 
-  TString &append(std::initializer_list<value_type> il) { return append(il.begin(), il.end()); }
+  TString &Append(std::initializer_list<value_type> il) { return Append(il.begin(), il.end()); }
 
-  void push_back(const value_type c)
+  void PushBack(const value_type c)
   { // primitive
     storage.push_back(c);
   }

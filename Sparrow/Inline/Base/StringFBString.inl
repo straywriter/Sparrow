@@ -161,29 +161,29 @@ inline void TString<CharType, TraitType, Allocator, S>::Resize(const size_type n
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
-inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, Allocator, S>::append(
+inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, Allocator, S>::Append(
     const TString &str)
 {
 #ifndef NDEBUG
   auto desiredSize = Size() + str.Size();
 #endif
-  append(str.data(), str.Size());
+  Append(str.data(), str.Size());
   assert(Size() == desiredSize);
   return *this;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
-inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, Allocator, S>::append(
+inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, Allocator, S>::Append(
     const TString &str, const size_type pos, size_type n)
 {
   const size_type sz = str.size();
   enforce<std::out_of_range>(pos <= sz, "");
   procrustes(n, sz - pos);
-  return append(str.data() + pos, n);
+  return Append(str.data() + pos, n);
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
-FOLLY_NOINLINE TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, Allocator, S>::append(
+FOLLY_NOINLINE TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, Allocator, S>::Append(
     const value_type *s, size_type n)
 {
   Invariant checker(*this);
@@ -221,7 +221,7 @@ FOLLY_NOINLINE TString<CharType, TraitType, Allocator, S> &TString<CharType, Tra
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
-inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, Allocator, S>::append(size_type  n,
+inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, Allocator, S>::Append(size_type  n,
                                                                                                       value_type c)
 {
   Invariant checker(*this);
@@ -429,7 +429,7 @@ inline typename TString<CharType, TraitType, Allocator, S>::iterator TString<Cha
   {
     temp.push_back(*b);
   }
-  temp.append(i, cend());
+  temp.Append(i, cend());
   swap(temp);
   return begin() + pos;
 }
@@ -484,7 +484,7 @@ inline bool TString<CharType, TraitType, Allocator, S>::replaceAliased(
   // Aliased replace, copy to new string
   TString temp;
   temp.Reserve(Size() - (i2 - i1) + std::distance(s1, s2));
-  temp.append(begin(), i1).append(s1, s2).append(i2, end());
+  temp.Append(begin(), i1).Append(s1, s2).Append(i2, end());
   swap(temp);
   return true;
 }
@@ -527,7 +527,7 @@ inline void TString<CharType, TraitType, Allocator, S>::replaceImpl(
     iterator i1, iterator i2, InputIterator b, InputIterator e, std::input_iterator_tag)
 {
   TString temp(begin(), i1);
-  temp.append(b, e).append(i2, end());
+  temp.Append(b, e).Append(i2, end());
   swap(temp);
 }
 
@@ -618,7 +618,7 @@ inline TString<CharType, TraitType, Allocator, S> operator+(const TString<CharTy
 {
   TString<CharType, TraitType, Allocator, S> result;
   result.Reserve(lhs.Size() + rhs.Size());
-  result.append(lhs).append(rhs);
+  result.Append(lhs).Append(rhs);
   return result;
 }
 
@@ -627,7 +627,7 @@ template <typename CharType, class TraitType, class Allocator, class S>
 inline TString<CharType, TraitType, Allocator, S> operator+(TString<CharType, TraitType, Allocator, S> &&     lhs,
                                                             const TString<CharType, TraitType, Allocator, S> &rhs)
 {
-  return std::move(lhs.append(rhs));
+  return std::move(lhs.Append(rhs));
 }
 
 // C++11 21.4.8.1/3
@@ -650,7 +650,7 @@ template <typename CharType, class TraitType, class Allocator, class S>
 inline TString<CharType, TraitType, Allocator, S> operator+(TString<CharType, TraitType, Allocator, S> &&lhs,
                                                             TString<CharType, TraitType, Allocator, S> &&rhs)
 {
-  return std::move(lhs.append(rhs));
+  return std::move(lhs.Append(rhs));
 }
 
 // C++11 21.4.8.1/5
@@ -662,7 +662,7 @@ inline TString<CharType, TraitType, Allocator, S> operator+(const CharType *    
   TString<CharType, TraitType, Allocator, S> result;
   const auto                                 len = TString<CharType, TraitType, Allocator, S>::traits_type::length(lhs);
   result.Reserve(len + rhs.Size());
-  result.append(lhs, len).append(rhs);
+  result.Append(lhs, len).Append(rhs);
   return result;
 }
 
@@ -682,7 +682,7 @@ inline TString<CharType, TraitType, Allocator, S> operator+(const CharType *    
   // Meh, no go. Do it by hand since we have len already.
   TString<CharType, TraitType, Allocator, S> result;
   result.Reserve(len + rhs.Size());
-  result.append(lhs, len).append(rhs);
+  result.Append(lhs, len).Append(rhs);
   return result;
 }
 
@@ -693,8 +693,8 @@ inline TString<CharType, TraitType, Allocator, S> operator+(CharType            
 {
   TString<CharType, TraitType, Allocator, S> result;
   result.Reserve(1 + rhs.Size());
-  result.push_back(lhs);
-  result.append(rhs);
+  result.PushBack(lhs);
+  result.Append(rhs);
   return result;
 }
 
@@ -726,7 +726,7 @@ inline TString<CharType, TraitType, Allocator, S> operator+(const TString<CharTy
   TString<CharType, TraitType, Allocator, S> result;
   const size_type                            len = traits_type::length(rhs);
   result.Reserve(lhs.Size() + len);
-  result.append(lhs).append(rhs, len);
+  result.Append(lhs).Append(rhs, len);
   return result;
 }
 
@@ -746,8 +746,8 @@ inline TString<CharType, TraitType, Allocator, S> operator+(const TString<CharTy
 {
   TString<CharType, TraitType, Allocator, S> result;
   result.Reserve(lhs.Size() + 1);
-  result.append(lhs);
-  result.push_back(rhs);
+  result.Append(lhs);
+  result.PushBack(rhs);
   return result;
 }
 
@@ -921,7 +921,7 @@ inline std::basic_istream<typename TString<CharType, TraitType, Allocator, S>::v
         break;
       }
       if (isspace(got)) { break; }
-      str.push_back(got);
+      str.PushBack(got);
       got = is.rdbuf()->snextc();
     }
   }
