@@ -18,8 +18,10 @@ TEST(test, test)
 {
     std::string ss("abcd");
     fbstring fs("asdfafsasdf");
+    fbstring fa("ccf");
     // randomString<std::string>(&ss);
     std::cout << fs.c_str();
+    std::cout << fs + fa;
     // clause11_21_4_2_a(ss);
     // clause11_21_4_2_a(fs);
     // auto x = random(0, 9);

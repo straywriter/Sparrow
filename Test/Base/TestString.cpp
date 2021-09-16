@@ -13,7 +13,7 @@
 #include <string>
 
 using namespace std;
-using namespace folly;
+//using namespace folly;
 
 using namespace Sparrow;
 #include <memory>
@@ -21,10 +21,16 @@ using namespace Sparrow;
 
 TEST(test, test)
 {
-	String a("abcasdfasd\n");
+	TestString a("abcasdfasd\n");
+	TestString b("ccc;ll");
+	std::cout << a+b<<'\n';
+	std::cout << *a.begin();
+	b.reserve();
+	/*
+
 	std::string::size_type st = 1;
 	size_t st1 = 1;
-	std::cout <<( typeid(st)==typeid(st1));
+	std::cout <<( typeid(st )==typeid(st1));
 	String b("abc\n");
 	auto c(b);
 	std::cout << c.Data();
@@ -32,8 +38,10 @@ TEST(test, test)
 	std::cout << a.At(2);
 	a.Front() = 'x';
 	std::cout << *a.begin()<<'\n';
-	String  sst = a + b;
-	std::cout << sst.Data();
+
+	*/
+//	String  sst = a + b;
+	//std::cout << sst.Data();
 //	String lc = { 'c','b','a'
 	//};
 	//std::cout << lc;
