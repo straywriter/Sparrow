@@ -42,8 +42,8 @@ TEST(String, Rebuild)
   ReBuild(sparrow_wide_string);
 
   EXPECT_EQ(std_string.data(), std::string());
-  EXPECT_EQ(sparrow_string.data(), TestString());
-  EXPECT_EQ(sparrow_wide_string.data(), TestWideString());
+  EXPECT_EQ(sparrow_string.Data(), TestString());
+  EXPECT_EQ(sparrow_wide_string.Data(), TestWideString());
 
   std::cout << std_string << '\n';
   std::cout << sparrow_string << '\n';
@@ -212,7 +212,7 @@ TEST(String, rvalueIterators)
   // you cannot take &* of a move-iterator, so use that for testing
   TestString s = "base";
   TestString r = "hello";
-  r.replace(r.begin(), r.end(), make_move_iterator(s.begin()), make_move_iterator(s.end()));
+  r.Replace(r.begin(), r.end(), make_move_iterator(s.begin()), make_move_iterator(s.end()));
   EXPECT_EQ("base", r);
 
   // The following test is probably not required by the standard.
@@ -220,7 +220,7 @@ TEST(String, rvalueIterators)
   TestString b   = "123abcXYZ";
   auto       ait = b.begin() + 3;
   auto       Xit = b.begin() + 6;
-  b.replace(ait, b.end(), b.begin(), Xit);
+  b.Replace(ait, b.end(), b.begin(), Xit);
   EXPECT_EQ("123123abc", b); // if things go wrong, you'd get "123123123"
 }
 
@@ -232,7 +232,7 @@ TEST(String, moveTerminator)
   k = std::move(s);
 
   EXPECT_EQ(0, s.Size());
-  EXPECT_EQ('\0', *s.c_str());
+  EXPECT_EQ('\0', *s.Data());
 }
 
 namespace
@@ -660,16 +660,16 @@ void clause11_21_4_2_b(String &test)
         rng = RandomT(localSeed);                                                                                      \
         f_fbstring(c);                                                                                                 \
         EXPECT_EQ(r, c) << "Lengths: " << r.size() << " vs. " << c.Size() << "\nReference: '" << r << "'"              \
-                        << "\nActual:    '" << c.data()[0] << "'";                                                     \
+                        << "\nActual:    '" << c.Data()[0] << "'";                                                     \
                                                                                                                        \
         rng = RandomT(localSeed);                                                                                      \
         f_wfbstring(wc);                                                                                               \
-        auto  wret = wcslen(wc.c_str());                                                                                \
+        auto  wret = wcslen(wc.Data());                                                                                \
         auto mbv  = std::vector<char>(wret + 1);                                                                       \
         auto mb   = mbv.data();                                                                                        \
-        auto  ret  = wcstombs(mb, wc.c_str(), wret + 1);                                                                \
+        auto  ret  = wcstombs(mb, wc.Data(), wret + 1);                                                                \
         if (ret == wret) { mb[wret] = '\0'; }                                                                          \
-        const char *mc = c.c_str();                                                                                    \
+        const char *mc = c.Data();                                                                                    \
         std::string one(mb);                                                                                           \
         std::string two(mc);                                                                                           \
         EXPECT_EQ(one, two);                                                                                           \

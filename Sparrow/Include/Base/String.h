@@ -333,7 +333,7 @@ public:
   // Compatibility with std::string
   std::basic_string<CharType, TraitType, Allocator> ToStdString() const
   {
-    return std::basic_string<CharType, TraitType, Allocator>(data(), Size());
+    return std::basic_string<CharType, TraitType, Allocator>(Data(), Size());
   }
 
   TString &operator=(const value_type *s) { return Assign(s); }
@@ -360,7 +360,7 @@ public:
   TString &operator=(std::initializer_list<value_type> il) { return Assign(il.begin(), il.end()); }
 
 #if FOLLY_HAS_STRING_VIEW
-  operator std::basic_string_view<value_type, traits_type>() const noexcept { return {data(), Size()}; }
+  operator std::basic_string_view<value_type, traits_type>() const noexcept { return {Data(), Size()}; }
 #endif
 public:
     iterator Begin() { return storage.mutableData(); }
@@ -442,7 +442,7 @@ public:
   {
     // Shrink only if slack memory is sufficiently large
     if (Capacity() < Size() * 3 / 2) { return; }
-    TString(cbegin(), cend()).swap(*this);
+    TString(cbegin(), cend()).Swap(*this);
   }
 
   void Clear() { Resize(0); }
@@ -510,7 +510,7 @@ public:
   TString &Assign(const TString &str)
   {
     if (&str == this) { return *this; }
-    return Assign(str.data(), str.Size());
+    return Assign(str.Data(), str.Size());
   }
 
   TString &Assign(TString &&str) { return *this = std::move(str); }
@@ -526,16 +526,16 @@ public:
   template <class ItOrLength, class ItOrChar>
   TString &Assign(ItOrLength first_or_n, ItOrChar last_or_c)
   {
-    return replace(begin(), end(), first_or_n, last_or_c);
+    return Replace(begin(), end(), first_or_n, last_or_c);
   }
 
-  TString &Insert(size_type pos1, const TString &str) { return Insert(pos1, str.data(), str.Size()); }
+  TString &Insert(size_type pos1, const TString &str) { return Insert(pos1, str.Data(), str.Size()); }
 
   TString &Insert(size_type pos1, const TString &str, size_type pos2, size_type n)
   {
     enforce<std::out_of_range>(pos2 <= str.Length(), "");
     procrustes(n, str.Length() - pos2);
-    return Insert(pos1, str.data() + pos2, n);
+    return Insert(pos1, str.Data() + pos2, n);
   }
 
   TString &Insert(size_type pos, const value_type *s, size_type n)
@@ -595,7 +595,7 @@ public:
 
   iterator Insert(const_iterator p, std::initializer_list<value_type> il) { return Insert(p, il.begin(), il.end()); }
 
-  TString &erase(size_type pos = 0, size_type n = npos)
+  TString &Erase(size_type pos = 0, size_type n = npos)
   {
     Invariant checker(*this);
 
@@ -606,38 +606,38 @@ public:
     return *this;
   }
 
-  iterator erase(iterator position)
+  iterator Erase(iterator position)
   {
     const size_type pos(position - begin());
     enforce<std::out_of_range>(pos <= Size(), "");
-    erase(pos, 1);
+    Erase(pos, 1);
     return begin() + pos;
   }
 
-  iterator erase(iterator first, iterator last)
+  iterator Erase(iterator first, iterator last)
   {
     const size_type pos(first - begin());
-    erase(pos, last - first);
+    Erase(pos, last - first);
     return begin() + pos;
   }
 
   // Replaces at most n1 chars of *this, starting with pos1 with the
   // content of str
-  TString &replace(size_type pos1, size_type n1, const TString &str)
+  TString &Replace(size_type pos1, size_type n1, const TString &str)
   {
-    return replace(pos1, n1, str.data(), str.Size());
+    return Replace(pos1, n1, str.Data(), str.Size());
   }
 
   // Replaces at most n1 chars of *this, starting with pos1,
   // with at most n2 chars of str starting with pos2
-  TString &replace(size_type pos1, size_type n1, const TString &str, size_type pos2, size_type n2)
+  TString &Replace(size_type pos1, size_type n1, const TString &str, size_type pos2, size_type n2)
   {
     enforce<std::out_of_range>(pos2 <= str.Length(), "");
-    return replace(pos1, n1, str.data() + pos2, std::min(n2, str.Size() - pos2));
+    return Replace(pos1, n1, str.Data() + pos2, std::min(n2, str.Size() - pos2));
   }
 
   // Replaces at most n1 chars of *this, starting with pos, with chars from s
-  TString &replace(size_type pos, size_type n1, const value_type *s) { return replace(pos, n1, s, traitsLength(s)); }
+  TString &Replace(size_type pos, size_type n1, const value_type *s) { return Replace(pos, n1, s, traitsLength(s)); }
 
   // Replaces at most n1 chars of *this, starting with pos, with n2
   // occurrences of c
@@ -647,19 +647,19 @@ public:
   // Replaces at most n1 chars of *this, starting with pos, with at
   // most n2 chars of str.  str must have at least n2 chars.
   template <class StrOrLength, class NumOrChar>
-  TString &replace(size_type pos, size_type n1, StrOrLength s_or_n2, NumOrChar n_or_c)
+  TString &Replace(size_type pos, size_type n1, StrOrLength s_or_n2, NumOrChar n_or_c)
   {
     Invariant checker(*this);
 
     enforce<std::out_of_range>(pos <= Size(), "");
     procrustes(n1, Length() - pos);
     const iterator b = begin() + pos;
-    return replace(b, b + n1, s_or_n2, n_or_c);
+    return Replace(b, b + n1, s_or_n2, n_or_c);
   }
 
-  TString &replace(iterator i1, iterator i2, const TString &str) { return replace(i1, i2, str.data(), str.Length()); }
+  TString &Replace(iterator i1, iterator i2, const TString &str) { return Replace(i1, i2, str.Data(), str.Length()); }
 
-  TString &replace(iterator i1, iterator i2, const value_type *s) { return replace(i1, i2, s, traitsLength(s)); }
+  TString &Replace(iterator i1, iterator i2, const value_type *s) { return Replace(i1, i2, s, traitsLength(s)); }
 
 private:
   TString &replaceImplDiscr(iterator i1, iterator i2, const value_type *s, size_type n, std::integral_constant<int, 2>);
@@ -671,49 +671,51 @@ private:
 
 private:
   template <class FwdIterator>
-  bool replaceAliased(iterator /* i1 */, iterator /* i2 */, FwdIterator /* s1 */, FwdIterator /* s2 */, std::false_type)
+  bool ReplaceAliased(iterator /* i1 */, iterator /* i2 */, FwdIterator /* s1 */, FwdIterator /* s2 */, std::false_type)
   {
     return false;
   }
 
   template <class FwdIterator>
-  bool replaceAliased(iterator i1, iterator i2, FwdIterator s1, FwdIterator s2, std::true_type);
+  bool ReplaceAliased(iterator i1, iterator i2, FwdIterator s1, FwdIterator s2, std::true_type);
 
   template <class FwdIterator>
-  void replaceImpl(iterator i1, iterator i2, FwdIterator s1, FwdIterator s2, std::forward_iterator_tag);
+  void ReplaceImpl(iterator i1, iterator i2, FwdIterator s1, FwdIterator s2, std::forward_iterator_tag);
 
   template <class InputIterator>
-  void replaceImpl(iterator i1, iterator i2, InputIterator b, InputIterator e, std::input_iterator_tag);
+  void ReplaceImpl(iterator i1, iterator i2, InputIterator b, InputIterator e, std::input_iterator_tag);
 
 public:
   template <class T1, class T2>
-  TString &replace(iterator i1, iterator i2, T1 first_or_n_or_s, T2 last_or_c_or_n)
+  TString &Replace(iterator i1, iterator i2, T1 first_or_n_or_s, T2 last_or_c_or_n)
   {
     constexpr bool num1 = std::numeric_limits<T1>::is_specialized, num2 = std::numeric_limits<T2>::is_specialized;
     using Sel = std::integral_constant<int, num1 ? (num2 ? 1 : -1) : (num2 ? 2 : 0)>;
     return replaceImplDiscr(i1, i2, first_or_n_or_s, last_or_c_or_n, Sel());
   }
 
-  size_type copy(value_type *s, size_type n, size_type pos = 0) const
+  size_type Copy(value_type *s, size_type n, size_type pos = 0) const
   {
     enforce<std::out_of_range>(pos <= Size(), "");
     procrustes(n, Size() - pos);
 
-    if (n != 0) { fbstring_detail::podCopy(data() + pos, data() + pos + n, s); }
+    if (n != 0) { fbstring_detail::podCopy(Data() + pos, Data() + pos + n, s); }
     return n;
   }
 
-  void swap(TString &rhs) { storage.swap(rhs.storage); }
+  void Swap(TString &rhs) { storage.swap(rhs.storage); }
 
+  private:
   const value_type *c_str() const { return storage.c_str(); }
 
-  const value_type *data() const { return c_str(); }
+  public:
+  const value_type *Data() const { return c_str(); }
 
-  value_type *data() { return storage.data(); }
+  value_type *Data() { return storage.data(); }
 
   allocator_type get_allocator() const { return allocator_type(); }
 
-  size_type find(const TString &str, size_type pos = 0) const { return find(str.data(), pos, str.Length()); }
+  size_type find(const TString &str, size_type pos = 0) const { return find(str.Data(), pos, str.Length()); }
 
   size_type find(const value_type *needle, size_type pos, size_type nsize) const;
 
@@ -721,7 +723,7 @@ public:
 
   size_type find(value_type c, size_type pos = 0) const { return find(&c, pos, 1); }
 
-  size_type rfind(const TString &str, size_type pos = npos) const { return rfind(str.data(), pos, str.Length()); }
+  size_type rfind(const TString &str, size_type pos = npos) const { return rfind(str.Data(), pos, str.Length()); }
 
   size_type rfind(const value_type *s, size_type pos, size_type n) const;
 
@@ -731,7 +733,7 @@ public:
 
   size_type find_first_of(const TString &str, size_type pos = 0) const
   {
-    return find_first_of(str.data(), pos, str.Length());
+    return find_first_of(str.Data(), pos, str.Length());
   }
 
   size_type find_first_of(const value_type *s, size_type pos, size_type n) const;
@@ -745,7 +747,7 @@ public:
 
   size_type find_last_of(const TString &str, size_type pos = npos) const
   {
-    return find_last_of(str.data(), pos, str.Length());
+    return find_last_of(str.Data(), pos, str.Length());
   }
 
   size_type find_last_of(const value_type *s, size_type pos, size_type n) const;
@@ -759,7 +761,7 @@ public:
 
   size_type find_first_not_of(const TString &str, size_type pos = 0) const
   {
-    return find_first_not_of(str.data(), pos, str.Size());
+    return find_first_not_of(str.Data(), pos, str.Size());
   }
 
   size_type find_first_not_of(const value_type *s, size_type pos, size_type n) const;
@@ -773,7 +775,7 @@ public:
 
   size_type find_last_not_of(const TString &str, size_type pos = npos) const
   {
-    return find_last_not_of(str.data(), pos, str.Length());
+    return find_last_not_of(str.Data(), pos, str.Length());
   }
 
   size_type find_last_not_of(const value_type *s, size_type pos, size_type n) const;
@@ -788,13 +790,13 @@ public:
   TString substr(size_type pos = 0, size_type n = npos) const &
   {
     enforce<std::out_of_range>(pos <= Size(), "");
-    return TString(data() + pos, std::min(n, Size() - pos));
+    return TString(Data() + pos, std::min(n, Size() - pos));
   }
 
   TString substr(size_type pos = 0, size_type n = npos) &&
   {
     enforce<std::out_of_range>(pos <= Size(), "");
-    erase(0, pos);
+    Erase(0, pos);
     if (n < Size()) { Resize(n); }
     return std::move(*this);
   }
@@ -807,7 +809,7 @@ public:
 
   int compare(size_type pos1, size_type n1, const TString &str) const
   {
-    return compare(pos1, n1, str.data(), str.Size());
+    return compare(pos1, n1, str.Data(), str.Size());
   }
 
   int compare(size_type pos1, size_type n1, const value_type *s) const { return compare(pos1, n1, s, traitsLength(s)); }
@@ -817,14 +819,14 @@ public:
     enforce<std::out_of_range>(pos1 <= Size(), "");
     procrustes(n1, Size() - pos1);
     // The line below fixed by Jean-Francois Bastien, 04-23-2007. Thanks!
-    const int r = traits_type::compare(pos1 + data(), s, std::min(n1, n2));
+    const int r = traits_type::compare(pos1 + Data(), s, std::min(n1, n2));
     return r != 0 ? r : n1 > n2 ? 1 : n1 < n2 ? -1 : 0;
   }
 
   int compare(size_type pos1, size_type n1, const TString &str, size_type pos2, size_type n2) const
   {
     enforce<std::out_of_range>(pos2 <= str.Size(), "");
-    return compare(pos1, n1, str.data() + pos2, std::min(n2, str.Size() - pos2));
+    return compare(pos1, n1, str.Data() + pos2, std::min(n2, str.Size() - pos2));
   }
 
   // Code from Jean-Francois Bastien (03/26/2007)
@@ -833,7 +835,7 @@ public:
     // Could forward to compare(0, size(), s, traitsLength(s))
     // but that does two extra checks
     const size_type n1(Size()), n2(traitsLength(s));
-    const int       r = traits_type::compare(data(), s, std::min(n1, n2));
+    const int       r = traits_type::compare(Data(), s, std::min(n1, n2));
     return r != 0 ? r : n1 > n2 ? 1 : n1 < n2 ? -1 : 0;
   }
 

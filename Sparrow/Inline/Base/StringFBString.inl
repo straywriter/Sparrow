@@ -167,7 +167,7 @@ inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, 
 #ifndef NDEBUG
   auto desiredSize = Size() + str.Size();
 #endif
-  Append(str.data(), str.Size());
+  Append(str.Data(), str.Size());
   assert(Size() == desiredSize);
   return *this;
 }
@@ -194,7 +194,7 @@ FOLLY_NOINLINE TString<CharType, TraitType, Allocator, S> &TString<CharType, Tra
     return *this;
   }
   auto const oldSize = Size();
-  auto const oldData = data();
+  auto const oldData = Data();
   auto       pData   = storage.expandNoinit(n, /* expGrowth = */ true);
 
   // Check for aliasing (rare). We could use "<=" here but in theory
@@ -208,7 +208,7 @@ FOLLY_NOINLINE TString<CharType, TraitType, Allocator, S> &TString<CharType, Tra
   {
     assert(le(s + n, oldData + oldSize));
     // expandNoinit() could have moved the storage, restore the source.
-    s = data() + (s - oldData);
+    s = Data() + (s - oldData);
     folly::fbstring_detail::podMove(s, s + n, pData);
   }
   else
@@ -317,7 +317,7 @@ inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<Ch
   if (nsize == 0) { return pos; }
   // Don't use std::search, use a Boyer-Moore-like trick by comparing
   // the last characters first
-  auto const haystack   = data();
+  auto const haystack   = Data();
   auto const nsize_1    = nsize - 1;
   auto const lastNeedle = needle[nsize_1];
 
@@ -441,7 +441,7 @@ inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, 
   assert(i1 <= i2);
   assert(begin() <= i1 && i1 <= end());
   assert(begin() <= i2 && i2 <= end());
-  return replace(i1, i2, s, s + n);
+  return Replace(i1, i2, s, s + n);
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
@@ -452,7 +452,7 @@ inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, 
   if (n1 > n2)
   {
     std::fill(i1, i1 + n2, c);
-    erase(i1 + n2, i2);
+    Erase(i1 + n2, i2);
   }
   else
   {
@@ -469,13 +469,13 @@ inline TString<CharType, TraitType, Allocator, S> &TString<CharType, TraitType, 
     iterator i1, iterator i2, InputIter b, InputIter e, std::integral_constant<int, 0>)
 {
   using Cat = typename std::iterator_traits<InputIter>::iterator_category;
-  replaceImpl(i1, i2, b, e, Cat());
+  ReplaceImpl(i1, i2, b, e, Cat());
   return *this;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
 template <class FwdIterator>
-inline bool TString<CharType, TraitType, Allocator, S>::replaceAliased(
+inline bool TString<CharType, TraitType, Allocator, S>::ReplaceAliased(
     iterator i1, iterator i2, FwdIterator s1, FwdIterator s2, std::true_type)
 {
   std::less_equal<const value_type *> le {};
@@ -485,13 +485,13 @@ inline bool TString<CharType, TraitType, Allocator, S>::replaceAliased(
   TString temp;
   temp.Reserve(Size() - (i2 - i1) + std::distance(s1, s2));
   temp.Append(begin(), i1).Append(s1, s2).Append(i2, end());
-  swap(temp);
+  Swap(temp);
   return true;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
 template <class FwdIterator>
-inline void TString<CharType, TraitType, Allocator, S>::replaceImpl(
+inline void TString<CharType, TraitType, Allocator, S>::ReplaceImpl(
     iterator i1, iterator i2, FwdIterator s1, FwdIterator s2, std::forward_iterator_tag)
 {
   Invariant checker(*this);
@@ -499,7 +499,7 @@ inline void TString<CharType, TraitType, Allocator, S>::replaceImpl(
   // Handle aliased replace
   using Sel
       = bool_constant<std::is_same<FwdIterator, iterator>::value || std::is_same<FwdIterator, const_iterator>::value>;
-  if (replaceAliased(i1, i2, s1, s2, Sel())) { return; }
+  if (ReplaceAliased(i1, i2, s1, s2, Sel())) { return; }
 
   auto const n1 = i2 - i1;
   assert(n1 >= 0);
@@ -510,7 +510,7 @@ inline void TString<CharType, TraitType, Allocator, S>::replaceImpl(
   {
     // shrinks
     std::copy(s1, s2, i1);
-    erase(i1 + n2, i2);
+    Erase(i1 + n2, i2);
   }
   else
   {
@@ -523,7 +523,7 @@ inline void TString<CharType, TraitType, Allocator, S>::replaceImpl(
 
 template <typename CharType, class TraitType, class Allocator, class S>
 template <class InputIterator>
-inline void TString<CharType, TraitType, Allocator, S>::replaceImpl(
+inline void TString<CharType, TraitType, Allocator, S>::ReplaceImpl(
     iterator i1, iterator i2, InputIterator b, InputIterator e, std::input_iterator_tag)
 {
   TString temp(begin(), i1);
@@ -890,7 +890,7 @@ inline bool operator>=(const typename TString<CharType, TraitType, Allocator, S>
 template <typename CharType, class TraitType, class Allocator, class S>
 void swap(TString<CharType, TraitType, Allocator, S> &lhs, TString<CharType, TraitType, Allocator, S> &rhs)
 {
-  lhs.swap(rhs);
+  lhs.Swap(rhs);
 }
 
 // TODO: make this faster.
@@ -911,7 +911,7 @@ inline std::basic_istream<typename TString<CharType, TraitType, Allocator, S>::v
   {
     auto n = is.width();
     if (n <= 0) { n = str.MaxSize(); }
-    str.erase();
+    str.Erase();
     for (auto got = is.rdbuf()->sgetc(); extracted != size_t(n); ++extracted)
     {
       if (got == TraitType::eof())
@@ -950,7 +950,7 @@ inline std::basic_ostream<typename TString<CharType, TraitType, Allocator, S>::v
     size_t __len  = str.Size();
     bool   __left = (os.flags() & _ostream_type::adjustfield) == _ostream_type::left;
     if (__pad_and_output(
-            _Ip(os), str.data(), __left ? str.data() + __len : str.data(), str.data() + __len, os, os.fill())
+            _Ip(os), str.Data(), __left ? str.Data() + __len : str.Data(), str.Data() + __len, os, os.fill())
             .failed())
     {
       os.setstate(_ostream_type::badbit | _ostream_type::failbit);
@@ -959,9 +959,9 @@ inline std::basic_ostream<typename TString<CharType, TraitType, Allocator, S>::v
 #elif defined(_MSC_VER)
   typedef decltype(os.precision()) streamsize;
   // MSVC doesn't define __ostream_insert
-  os.write(str.data(), static_cast<streamsize>(str.Size()));
+  os.write(str.Data(), static_cast<streamsize>(str.Size()));
 #else
-  std::__ostream_insert(os, str.data(), str.Size());
+  std::__ostream_insert(os, str.Data(), str.Size());
 #endif
   return os;
 }
