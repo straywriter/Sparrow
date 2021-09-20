@@ -1,5 +1,6 @@
 project(Sparrow)
 
+
 set(IncludeDir ${CMAKE_CURRENT_SOURCE_DIR}/Include)
 
 # Base
@@ -13,24 +14,24 @@ set(IncludeDir ${CMAKE_CURRENT_SOURCE_DIR}/Include)
 # PROPERTIES FOLDER "Sparrow/")
 
 # Core
-file(GLOB_RECURSE CoreIncludeFile ${CMAKE_CURRENT_SOURCE_DIR}/Include/Core/*.h)
-file(GLOB_RECURSE CoreSourceFile ${CMAKE_CURRENT_SOURCE_DIR}/Src/Core/*.cpp)
-add_library(Core)
-target_sources(Core PUBLIC ${CoreIncludeFile} ${CoreSourceFile})
-target_include_directories(Core PUBLIC ${IncludeDir})
-target_link_libraries(Core PUBLIC spdlog)
-set_target_properties(Core PROPERTIES FOLDER "Sparrow/")
+# file(GLOB_RECURSE CoreIncludeFile ${CMAKE_CURRENT_SOURCE_DIR}/Include/Core/*.h)
+# file(GLOB_RECURSE CoreSourceFile ${CMAKE_CURRENT_SOURCE_DIR}/Src/Core/*.cpp)
+# add_library(Core)
+# target_sources(Core PUBLIC ${CoreIncludeFile} ${CoreSourceFile})
+# target_include_directories(Core PUBLIC ${IncludeDir})
+# target_link_libraries(Core PUBLIC spdlog)
+# set_target_properties(Core PROPERTIES FOLDER "Sparrow/")
 
-
-# Core
-file(GLOB_RECURSE BaseIncludeFile ${CMAKE_CURRENT_SOURCE_DIR}/Include/Base/*.h)
-file(GLOB_RECURSE BaseSourceFile ${CMAKE_CURRENT_SOURCE_DIR}/Src/Base/*.cpp)
-file(GLOB_RECURSE BaseInlineFile ${CMAKE_CURRENT_SOURCE_DIR}/Inline/Base/*.inl)
-add_library(SparrowBase)
-target_sources(SparrowBase PUBLIC ${BaseIncludeFile} ${BaseSourceFile} ${BaseInlineFile})
-target_include_directories(SparrowBase PUBLIC ${IncludeDir} ${CMAKE_CURRENT_SOURCE_DIR}/Inline)
-target_link_libraries(SparrowBase PUBLIC spdlog FBString Boost::algorithm)
-set_target_properties(SparrowBase PROPERTIES FOLDER "Sparrow/")
+include (CMake/SprrowBase.cmake)
+# # Core
+# file(GLOB_RECURSE BaseIncludeFile ${CMAKE_CURRENT_SOURCE_DIR}/Include/Base/*.h)
+# file(GLOB_RECURSE BaseSourceFile ${CMAKE_CURRENT_SOURCE_DIR}/Src/Base/*.cpp)
+# file(GLOB_RECURSE BaseInlineFile ${CMAKE_CURRENT_SOURCE_DIR}/Inline/Base/*.inl)
+# add_library(SparrowBase)
+# target_sources(SparrowBase PUBLIC ${BaseIncludeFile} ${BaseSourceFile} ${BaseInlineFile})
+# target_include_directories(SparrowBase PUBLIC ${IncludeDir} ${CMAKE_CURRENT_SOURCE_DIR}/Inline)
+# target_link_libraries(SparrowBase PUBLIC spdlog FBString Boost::algorithm)
+# set_target_properties(SparrowBase PROPERTIES FOLDER "Sparrow/")
 
 # Render file(GLOB_RECURSE RenderIncludeFile
 # ${CMAKE_CURRENT_SOURCE_DIR}/Include/Render/*.h) file(GLOB_RECURSE

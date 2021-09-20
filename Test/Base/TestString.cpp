@@ -142,7 +142,7 @@ TEST(String, testMoveOperatorPlusRhs)
 TEST(String, findWithNpos)
 {
   TestString fbstr("localhost:80");
-  EXPECT_EQ(TestString::npos, fbstr.find(":", TestString::npos));
+  EXPECT_EQ(TestString::npos, fbstr.Find(":", TestString::npos));
 }
 
 /*
@@ -497,7 +497,7 @@ struct custom_traits : public std::char_traits<char>
 
 TEST(FBString, convertToStringView)
 {
-  folly::TestString s("foo");
+  TestString s("foo");
   std::string_view  sv = s;
   EXPECT_EQ(sv, "foo");
   Sparrow::TString<char, custom_traits> s2("bar");

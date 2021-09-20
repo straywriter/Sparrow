@@ -661,30 +661,6 @@ public:
 
   TString &Replace(iterator i1, iterator i2, const value_type *s) { return Replace(i1, i2, s, traitsLength(s)); }
 
-private:
-  TString &replaceImplDiscr(iterator i1, iterator i2, const value_type *s, size_type n, std::integral_constant<int, 2>);
-
-  TString &replaceImplDiscr(iterator i1, iterator i2, size_type n2, value_type c, std::integral_constant<int, 1>);
-
-  template <class InputIter>
-  TString &replaceImplDiscr(iterator i1, iterator i2, InputIter b, InputIter e, std::integral_constant<int, 0>);
-
-private:
-  template <class FwdIterator>
-  bool ReplaceAliased(iterator /* i1 */, iterator /* i2 */, FwdIterator /* s1 */, FwdIterator /* s2 */, std::false_type)
-  {
-    return false;
-  }
-
-  template <class FwdIterator>
-  bool ReplaceAliased(iterator i1, iterator i2, FwdIterator s1, FwdIterator s2, std::true_type);
-
-  template <class FwdIterator>
-  void ReplaceImpl(iterator i1, iterator i2, FwdIterator s1, FwdIterator s2, std::forward_iterator_tag);
-
-  template <class InputIterator>
-  void ReplaceImpl(iterator i1, iterator i2, InputIterator b, InputIterator e, std::input_iterator_tag);
-
 public:
   template <class T1, class T2>
   TString &Replace(iterator i1, iterator i2, T1 first_or_n_or_s, T2 last_or_c_or_n)
@@ -713,87 +689,87 @@ public:
 
   value_type *Data() { return storage.data(); }
 
-  allocator_type get_allocator() const { return allocator_type(); }
+  allocator_type GetAllocator() const { return allocator_type(); }
 
-  size_type find(const TString &str, size_type pos = 0) const { return find(str.Data(), pos, str.Length()); }
+  size_type Find(const TString &str, size_type pos = 0) const { return Find(str.Data(), pos, str.Length()); }
 
-  size_type find(const value_type *needle, size_type pos, size_type nsize) const;
+  size_type Find(const value_type *needle, size_type pos, size_type nsize) const;
 
-  size_type find(const value_type *s, size_type pos = 0) const { return find(s, pos, traitsLength(s)); }
+  size_type Find(const value_type *s, size_type pos = 0) const { return Find(s, pos, traitsLength(s)); }
 
-  size_type find(value_type c, size_type pos = 0) const { return find(&c, pos, 1); }
+  size_type Find(value_type c, size_type pos = 0) const { return Find(&c, pos, 1); }
 
-  size_type rfind(const TString &str, size_type pos = npos) const { return rfind(str.Data(), pos, str.Length()); }
+  size_type ReverseFind(const TString &str, size_type pos = npos) const { return ReverseFind(str.Data(), pos, str.Length()); }
 
-  size_type rfind(const value_type *s, size_type pos, size_type n) const;
+  size_type ReverseFind(const value_type *s, size_type pos, size_type n) const;
 
-  size_type rfind(const value_type *s, size_type pos = npos) const { return rfind(s, pos, traitsLength(s)); }
+  size_type ReverseFind(const value_type *s, size_type pos = npos) const { return ReverseFind(s, pos, traitsLength(s)); }
 
-  size_type rfind(value_type c, size_type pos = npos) const { return rfind(&c, pos, 1); }
+  size_type ReverseFind(value_type c, size_type pos = npos) const { return ReverseFind(&c, pos, 1); }
 
-  size_type find_first_of(const TString &str, size_type pos = 0) const
+  size_type FindFirst(const TString &str, size_type pos = 0) const
   {
-    return find_first_of(str.Data(), pos, str.Length());
+    return FindFirst(str.Data(), pos, str.Length());
   }
 
-  size_type find_first_of(const value_type *s, size_type pos, size_type n) const;
+  size_type FindFirst(const value_type *s, size_type pos, size_type n) const;
 
-  size_type find_first_of(const value_type *s, size_type pos = 0) const
+  size_type FindFirst(const value_type *s, size_type pos = 0) const
   {
-    return find_first_of(s, pos, traitsLength(s));
+    return FindFirst(s, pos, traitsLength(s));
   }
 
-  size_type find_first_of(value_type c, size_type pos = 0) const { return find_first_of(&c, pos, 1); }
+  size_type FindFirst(value_type c, size_type pos = 0) const { return FindFirst(&c, pos, 1); }
 
-  size_type find_last_of(const TString &str, size_type pos = npos) const
+  size_type FindLast(const TString &str, size_type pos = npos) const
   {
-    return find_last_of(str.Data(), pos, str.Length());
+    return FindLast(str.Data(), pos, str.Length());
   }
 
-  size_type find_last_of(const value_type *s, size_type pos, size_type n) const;
+  size_type FindLast(const value_type *s, size_type pos, size_type n) const;
 
-  size_type find_last_of(const value_type *s, size_type pos = npos) const
+  size_type FindLast(const value_type *s, size_type pos = npos) const
   {
-    return find_last_of(s, pos, traitsLength(s));
+    return FindLast(s, pos, traitsLength(s));
   }
 
-  size_type find_last_of(value_type c, size_type pos = npos) const { return find_last_of(&c, pos, 1); }
+  size_type FindLast(value_type c, size_type pos = npos) const { return FindLast(&c, pos, 1); }
 
-  size_type find_first_not_of(const TString &str, size_type pos = 0) const
+  size_type FindFirstNot(const TString &str, size_type pos = 0) const
   {
-    return find_first_not_of(str.Data(), pos, str.Size());
+    return FindFirstNot(str.Data(), pos, str.Size());
   }
 
-  size_type find_first_not_of(const value_type *s, size_type pos, size_type n) const;
+  size_type FindFirstNot(const value_type *s, size_type pos, size_type n) const;
 
-  size_type find_first_not_of(const value_type *s, size_type pos = 0) const
+  size_type FindFirstNot(const value_type *s, size_type pos = 0) const
   {
-    return find_first_not_of(s, pos, traitsLength(s));
+    return FindFirstNot(s, pos, traitsLength(s));
   }
 
-  size_type find_first_not_of(value_type c, size_type pos = 0) const { return find_first_not_of(&c, pos, 1); }
+  size_type FindFirstNot(value_type c, size_type pos = 0) const { return FindFirstNot(&c, pos, 1); }
 
-  size_type find_last_not_of(const TString &str, size_type pos = npos) const
+  size_type FindLastNot(const TString &str, size_type pos = npos) const
   {
-    return find_last_not_of(str.Data(), pos, str.Length());
+    return FindLastNot(str.Data(), pos, str.Length());
   }
 
-  size_type find_last_not_of(const value_type *s, size_type pos, size_type n) const;
+  size_type FindLastNot(const value_type *s, size_type pos, size_type n) const;
 
-  size_type find_last_not_of(const value_type *s, size_type pos = npos) const
+  size_type FindLastNot(const value_type *s, size_type pos = npos) const
   {
-    return find_last_not_of(s, pos, traitsLength(s));
+    return FindLastNot(s, pos, traitsLength(s));
   }
 
-  size_type find_last_not_of(value_type c, size_type pos = npos) const { return find_last_not_of(&c, pos, 1); }
+  size_type FindLastNot(value_type c, size_type pos = npos) const { return FindLastNot(&c, pos, 1); }
 
-  TString substr(size_type pos = 0, size_type n = npos) const &
+  TString SubString(size_type pos = 0, size_type n = npos) const &
   {
     enforce<std::out_of_range>(pos <= Size(), "");
     return TString(Data() + pos, std::min(n, Size() - pos));
   }
 
-  TString substr(size_type pos = 0, size_type n = npos) &&
+  TString SubString(size_type pos = 0, size_type n = npos) &&
   {
     enforce<std::out_of_range>(pos <= Size(), "");
     Erase(0, pos);
@@ -801,20 +777,20 @@ public:
     return std::move(*this);
   }
 
-  int compare(const TString &str) const
+  int Compare(const TString &str) const
   {
     // FIX due to Goncalo N M de Carvalho July 18, 2005
-    return compare(0, Size(), str);
+    return Compare(0, Size(), str);
   }
 
-  int compare(size_type pos1, size_type n1, const TString &str) const
+  int Compare(size_type pos1, size_type n1, const TString &str) const
   {
-    return compare(pos1, n1, str.Data(), str.Size());
+    return Compare(pos1, n1, str.Data(), str.Size());
   }
 
-  int compare(size_type pos1, size_type n1, const value_type *s) const { return compare(pos1, n1, s, traitsLength(s)); }
+  int Compare(size_type pos1, size_type n1, const value_type *s) const { return Compare(pos1, n1, s, traitsLength(s)); }
 
-  int compare(size_type pos1, size_type n1, const value_type *s, size_type n2) const
+  int Compare(size_type pos1, size_type n1, const value_type *s, size_type n2) const
   {
     enforce<std::out_of_range>(pos1 <= Size(), "");
     procrustes(n1, Size() - pos1);
@@ -823,14 +799,14 @@ public:
     return r != 0 ? r : n1 > n2 ? 1 : n1 < n2 ? -1 : 0;
   }
 
-  int compare(size_type pos1, size_type n1, const TString &str, size_type pos2, size_type n2) const
+  int Compare(size_type pos1, size_type n1, const TString &str, size_type pos2, size_type n2) const
   {
     enforce<std::out_of_range>(pos2 <= str.Size(), "");
-    return compare(pos1, n1, str.Data() + pos2, std::min(n2, str.Size() - pos2));
+    return Compare(pos1, n1, str.Data() + pos2, std::min(n2, str.Size() - pos2));
   }
 
   // Code from Jean-Francois Bastien (03/26/2007)
-  int compare(const value_type *s) const
+  int Compare(const value_type *s) const
   {
     // Could forward to compare(0, size(), s, traitsLength(s))
     // but that does two extra checks
@@ -863,6 +839,32 @@ private:
   private:
     const TString &s_;
   };
+
+
+private:
+  TString &replaceImplDiscr(iterator i1, iterator i2, const value_type *s, size_type n, std::integral_constant<int, 2>);
+
+  TString &replaceImplDiscr(iterator i1, iterator i2, size_type n2, value_type c, std::integral_constant<int, 1>);
+
+  template <class InputIter>
+  TString &replaceImplDiscr(iterator i1, iterator i2, InputIter b, InputIter e, std::integral_constant<int, 0>);
+
+  template <class FwdIterator>
+  bool ReplaceAliased(iterator /* i1 */, iterator /* i2 */, FwdIterator /* s1 */, FwdIterator /* s2 */, std::false_type)
+  {
+    return false;
+  }
+
+  template <class FwdIterator>
+  bool ReplaceAliased(iterator i1, iterator i2, FwdIterator s1, FwdIterator s2, std::true_type);
+
+  template <class FwdIterator>
+  void ReplaceImpl(iterator i1, iterator i2, FwdIterator s1, FwdIterator s2, std::forward_iterator_tag);
+
+  template <class InputIterator>
+  void ReplaceImpl(iterator i1, iterator i2, InputIterator b, InputIterator e, std::input_iterator_tag);
+
+
 };
 
 using String = TString<char>;

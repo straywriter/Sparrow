@@ -306,7 +306,7 @@ inline typename TString<CharType, TraitType, Allocator, S>::istream_type &TStrin
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
-inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<CharType, TraitType, Allocator, S>::find(
+inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<CharType, TraitType, Allocator, S>::Find(
     const value_type *needle, const size_type pos, const size_type nsize) const
 {
   auto const size = this->Size();
@@ -532,7 +532,7 @@ inline void TString<CharType, TraitType, Allocator, S>::ReplaceImpl(
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
-inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<CharType, TraitType, Allocator, S>::rfind(
+inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<CharType, TraitType, Allocator, S>::ReverseFind(
     const value_type *s, size_type pos, size_type n) const
 {
   if (n > Length()) { return npos; }
@@ -550,7 +550,7 @@ inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<Ch
 
 template <typename CharType, class TraitType, class Allocator, class S>
 inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<CharType, TraitType, Allocator, S>::
-    find_first_of(const value_type *s, size_type pos, size_type n) const
+    FindFirst(const value_type *s, size_type pos, size_type n) const
 {
   if (pos > Length() || n == 0) { return npos; }
   const_iterator i(begin() + pos), finish(end());
@@ -563,7 +563,7 @@ inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<Ch
 
 template <typename CharType, class TraitType, class Allocator, class S>
 inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<CharType, TraitType, Allocator, S>::
-    find_last_of(const value_type *s, size_type pos, size_type n) const
+    FindLast(const value_type *s, size_type pos, size_type n) const
 {
   if (!Empty() && n > 0)
   {
@@ -580,7 +580,7 @@ inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<Ch
 
 template <typename CharType, class TraitType, class Allocator, class S>
 inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<CharType, TraitType, Allocator, S>::
-    find_first_not_of(const value_type *s, size_type pos, size_type n) const
+    FindFirstNot(const value_type *s, size_type pos, size_type n) const
 {
   if (pos < Length())
   {
@@ -595,7 +595,7 @@ inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<Ch
 
 template <typename CharType, class TraitType, class Allocator, class S>
 inline typename TString<CharType, TraitType, Allocator, S>::size_type TString<CharType, TraitType, Allocator, S>::
-    find_last_not_of(const value_type *s, size_type pos, size_type n) const
+    FindLastNot(const value_type *s, size_type pos, size_type n) const
 {
   if (!this->Empty())
   {
@@ -764,7 +764,7 @@ template <typename CharType, class TraitType, class Allocator, class S>
 inline bool operator==(const TString<CharType, TraitType, Allocator, S> &lhs,
                        const TString<CharType, TraitType, Allocator, S> &rhs)
 {
-  return lhs.Size() == rhs.Size() && lhs.compare(rhs) == 0;
+  return lhs.Size() == rhs.Size() && lhs.Compare(rhs) == 0;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
@@ -778,7 +778,7 @@ template <typename CharType, class TraitType, class Allocator, class S>
 inline bool operator==(const TString<CharType, TraitType, Allocator, S> &                     lhs,
                        const typename TString<CharType, TraitType, Allocator, S>::value_type *rhs)
 {
-  return lhs.compare(rhs) == 0;
+  return lhs.Compare(rhs) == 0;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
@@ -806,21 +806,21 @@ template <typename CharType, class TraitType, class Allocator, class S>
 inline bool operator<(const TString<CharType, TraitType, Allocator, S> &lhs,
                       const TString<CharType, TraitType, Allocator, S> &rhs)
 {
-  return lhs.compare(rhs) < 0;
+  return lhs.Compare(rhs) < 0;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
 inline bool operator<(const TString<CharType, TraitType, Allocator, S> &                     lhs,
                       const typename TString<CharType, TraitType, Allocator, S>::value_type *rhs)
 {
-  return lhs.compare(rhs) < 0;
+  return lhs.Compare(rhs) < 0;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
 inline bool operator<(const typename TString<CharType, TraitType, Allocator, S>::value_type *lhs,
                       const TString<CharType, TraitType, Allocator, S> &                     rhs)
 {
-  return rhs.compare(lhs) > 0;
+  return rhs.Compare(lhs) > 0;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S>
@@ -975,7 +975,7 @@ template <typename CharType, class TraitType, class Allocator, class S, class A2
 inline bool operator==(const TString<CharType, TraitType, Allocator, S> &lhs,
                        const std::basic_string<CharType, TraitType, A2> &rhs)
 {
-  return lhs.compare(0, lhs.Size(), rhs.data(), rhs.size()) == 0;
+  return lhs.Compare(0, lhs.Size(), rhs.data(), rhs.size()) == 0;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S, class A2>
@@ -1003,14 +1003,14 @@ template <typename CharType, class TraitType, class Allocator, class S, class A2
 inline bool operator<(const TString<CharType, TraitType, Allocator, S> &lhs,
                       const std::basic_string<CharType, TraitType, A2> &rhs)
 {
-  return lhs.compare(0, lhs.Size(), rhs.data(), rhs.size()) < 0;
+  return lhs.Compare(0, lhs.Size(), rhs.data(), rhs.size()) < 0;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S, class A2>
 inline bool operator>(const TString<CharType, TraitType, Allocator, S> &lhs,
                       const std::basic_string<CharType, TraitType, A2> &rhs)
 {
-  return lhs.compare(0, lhs.Size(), rhs.data(), rhs.size()) > 0;
+  return lhs.Compare(0, lhs.Size(), rhs.data(), rhs.size()) > 0;
 }
 
 template <typename CharType, class TraitType, class Allocator, class S, class A2>

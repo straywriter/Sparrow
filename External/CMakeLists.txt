@@ -51,4 +51,4 @@ add_subdirectory(meshoptimizer)
 
 add_subdirectory(webgpu)
 
-add_subdirectory(cgltf)
+# add_subdirectory(cgltf)

@@ -1,92 +1,119 @@
 #pragma once
 
-#include <memory>
+#include <External/spdlog.h>
+using namespace spdlog;
 
-// #include "spdlog/spdlog.h"
+#include <ctime>
+#include <iostream>
+#include <memory>
+#include <Base/Format.h>
+#include <stdio.h>
 
 namespace Sparrow
 {
-
-namespace Log
-{
-void Info();
-
-}
-
-template <class T>
-class Singleton
+class Console
 {
 
 public:
-  static T &GetInstance()
+  template <typename... Args>
+  inline static void Trace(fmt::format_string<Args...> fmt, Args &&...args)
   {
-    static T instance;
-    return instance;
+    // default_logger_raw()->set_pattern("[%Y-%m-%d %H:%M:%S.%e][%l] %v")
+
+    default_logger_raw()->trace(fmt, std::forward<Args>(args)...);
   }
-  constexpr Singleton(const Singleton &) = delete;
-  // constexpr Singleton(const Singleton&&)      = delete;
 
-  constexpr Singleton &operator=(const Singleton &) = delete;
-  // constexpr Singleton& operator=(const Singleton&&) = delete;
+  template <typename... Args>
+  inline static void Debug(fmt::format_string<Args...> fmt, Args &&...args)
+  {
+    default_logger_raw()->debug(fmt, std::forward<Args>(args)...);
+  }
 
-protected:
-  Singleton()  = default;
-  ~Singleton() = default;
-};
+  template <typename... Args>
+  inline static void Info(fmt::format_string<Args...> fmt, Args &&...args)
+  {
+    default_logger_raw()->info(fmt, std::forward<Args>(args)...);
+  }
 
-class ConsoleLogger
-{
-public:
-  ConsoleLogger();
-  ~ConsoleLogger();
+  template <typename... Args>
+  inline static void Warn(fmt::format_string<Args...> fmt, Args &&...args)
+  {
+    default_logger_raw()->warn(fmt, std::forward<Args>(args)...);
+  }
 
-  ConsoleLogger(ConsoleLogger &) = delete;
-  void operator=(ConsoleLogger &) = delete;
+  template <typename... Args>
+  inline static void Error(fmt::format_string<Args...> fmt, Args &&...args)
+  {
+    default_logger_raw()->error(fmt, std::forward<Args>(args)...);
+  }
 
-public:
-  std::shared_ptr<spdlog::logger> console;
-};
-
-class ExternalLogger
-{
-public:
-  ExternalLogger();
-  ~ExternalLogger();
-  ExternalLogger(ExternalLogger &) = delete;
-  void operator=(ExternalLogger &) = delete;
-
-public:
-  std::shared_ptr<spdlog::logger> external;
+  template <typename... Args>
+  inline static void Critical(fmt::format_string<Args...> fmt, Args &&...args)
+  {
+    default_logger_raw()->critical(fmt, std::forward<Args>(args)...);
+  }
 };
 
 class Log
 {
+private:
+  static std::shared_ptr<spdlog::logger> file_log;
+  // = []() -> std::shared_ptr<spdlog::logger>
+  // { return std::move(spdlog::basic_logger_mt("basic_logger", "logs/basic-log.txt")); }();
+
 public:
-  static std::shared_ptr<spdlog::logger> &GetConsoleLogger()
+  template <typename... Args>
+  inline static void Info(fmt::format_string<Args...> fmt, Args &&...args)
   {
-    static ConsoleLogger instance;
-    return instance.console;
-  }
-  static std::shared_ptr<spdlog::logger> &GetExternalLogger()
-  {
-    static ExternalLogger instance;
-    return instance.external;
+    file_log->info(fmt, std::forward<Args>(args)...);
   }
 
-private:
+  template <typename... Args>
+  inline static void Trace(fmt::format_string<Args...> fmt, Args &&...args)
+  {
+    file_log->trace(fmt, std::forward<Args>(args)...);
+  }
+
+  template <typename... Args>
+  inline static void Debug(fmt::format_string<Args...> fmt, Args &&...args)
+  {
+    file_log->debug(fmt, std::forward<Args>(args)...);
+  }
+
+  template <typename... Args>
+  inline static void Warn(fmt::format_string<Args...> fmt, Args &&...args)
+  {
+    file_log->warn(fmt, std::forward<Args>(args)...);
+  }
+
+  template <typename... Args>
+  inline static void Error(fmt::format_string<Args...> fmt, Args &&...args)
+  {
+    file_log->error(fmt, std::forward<Args>(args)...);
+  }
+
+  template <typename... Args>
+  inline static void Critical(fmt::format_string<Args...> fmt, Args &&...args)
+  {
+    file_log->critical(fmt, std::forward<Args>(args)...);
+  }
+
+public:
 };
 
-#define OUT_INFO(...)     ::Sparrow::Log::GetConsoleLogger()->info(__VA_ARGS__)
-#define OUT_WARN(...)     ::Sparrow::Log::GetConsoleLogger()->warn(__VA_ARGS__)
-#define OUT_TRACE(...)    ::Sparrow::Log::GetConsoleLogger()->trace(__VA_ARGS__)
-#define OUT_ERROR(...)    ::Sparrow::Log::GetConsoleLogger()->error(__VA_ARGS__)
-#define OUT_CRITICAL(...) ::Sparrow::Log::GetConsoleLogger()->critical(__VA_ARGS__)
+std::shared_ptr<spdlog::logger> Log::file_log = []() -> std::shared_ptr<spdlog::logger>
+{
+  auto temp_time = std::time(nullptr);
 
-#define LOG_INFO(...)     ::Sparrow::Log::GetExternalLogger()->info(__VA_ARGS__)
-#define LOG_WARN(...)     ::Sparrow::Log::GetExternalLogger()->warn(__VA_ARGS__)
-#define LOG_TRACE(...)    ::Sparrow::Log::GetExternalLogger()->trace(__VA_ARGS__)
-#define LOG_ERROR(...)    ::Sparrow::Log::GetExternalLogger()->error(__VA_ARGS__)
-#define LOG_CRITICAL(...) ::Sparrow::Log::GetExternalLogger()->critical(__VA_ARGS__)
+  auto temp_log = spdlog::create_async_nb<spdlog::sinks::basic_file_sink_mt>(
+      "Log", Sparrow::Format("Logs/{:%Y-%m-%d %H%M%S}.log", *std::localtime(&temp_time)));
+  temp_log->set_pattern("[%Y-%m-%d %H:%M:%S.%e][%=10l] %v");
+// #ifdef DEBUG
+  temp_log->set_level(spdlog::level::debug);
+// #else
+//   temp_log->set_level(spdlog::level::info);
+// #endif
+  return std::move(temp_log);
+}();
 
 } // namespace Sparrow
-#include "Core/Inline/Log-spd.inl"

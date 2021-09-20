@@ -5,7 +5,7 @@ set(GMockIncludeDir ${GoogleTestIncludeDir} ${CMAKE_CURRENT_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(GMockSourceDir ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-add_library(gmock SHARED)
+add_library(gmock )
 target_sources(gmock PUBLIC ${GMockSourceDir}/gmock-all.cc
                             ${GoogleTestSourceDir}/gtest-all.cc)
 target_include_directories(gmock PUBLIC ${GMockIncludeDir})
